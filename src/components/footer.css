@@ -1,0 +1,145 @@
+.site-footer {
+background: #123f3b;
+color: #fffdf7;
+padding: 70px 7% 0;
+}
+
+.footer-main {
+width: min(1200px, 100%);
+margin: auto;
+display: grid;
+grid-template-columns: 1.4fr 1fr 1.2fr 1fr;
+gap: 45px;
+padding-bottom: 60px;
+}
+
+.footer-logo {
+display: inline-flex;
+align-items: center;
+gap: 12px;
+font-family: "Playfair Display", serif;
+font-size: 23px;
+letter-spacing: 3px;
+}
+
+.footer-logo-symbol {
+width: 43px;
+height: 43px;
+border: 1px solid #bd985d;
+color: #bd985d;
+display: grid;
+place-items: center;
+font-size: 25px;
+}
+
+.footer-brand > p {
+max-width: 300px;
+margin-top: 24px;
+color: #d0d7ce;
+font-size: 13px;
+line-height: 2.2;
+}
+
+.footer-socials {
+display: flex;
+gap: 10px;
+margin-top: 25px;
+}
+
+.footer-socials a {
+width: 35px;
+height: 35px;
+border: 1px solid rgba(189,152,93,.6);
+border-radius: 50%;
+display: grid;
+place-items: center;
+color: #bd985d;
+font-size: 11px;
+transition: .3s;
+}
+
+.footer-socials a:hover {
+background: #bd985d;
+color: #123f3b;
+}
+
+.footer-column {
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+gap: 16px;
+}
+
+.footer-column h3 {
+color: #d9b879;
+font-size: 17px;
+margin-bottom: 10px;
+}
+
+.footer-column a,
+.footer-column p,
+.footer-placeholder {
+color: #d0d7ce;
+font-size: 12px;
+line-height: 1.8;
+transition: color .3s;
+}
+
+.footer-column a:hover {
+color: #d9b879;
+}
+
+.footer-placeholder {
+color: #aab9ae;
+margin-top: -12px;
+}
+
+.footer-bottom {
+border-top: 1px solid rgba(255,255,255,.15);
+min-height: 75px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 20px;
+color: #c1ccc3;
+font-size: 11px;
+}
+
+.footer-bottom-mark {
+color: #bd985d;
+letter-spacing: 1px;
+}
+
+[dir="rtl"] .footer-column {
+align-items: flex-start;
+}
+
+@media (max-width: 900px) {
+.footer-main {
+grid-template-columns: repeat(2, 1fr);
+gap: 40px 25px;
+}
+}
+
+@media (max-width: 520px) {
+.site-footer {
+padding: 55px 7% 0;
+}
+
+.footer-main {
+grid-template-columns: 1fr 1fr;
+gap: 35px 18px;
+}
+
+.footer-brand {
+grid-column: 1 / -1;
+}
+
+.footer-bottom {
+flex-direction: column;
+justify-content: center;
+text-align: center;
+padding: 20px 0;
+line-height: 2;
+}
+}

@@ -1,0 +1,246 @@
+.contact-page {
+background: var(--cream);
+color: var(--teal);
+}
+
+.contact-hero {
+padding: 85px 7% 70px;
+text-align: center;
+background: radial-gradient(circle, rgba(189,152,93,.10), transparent 65%);
+}
+
+.contact-eyebrow,
+.contact-small-title {
+display: block;
+color: var(--gold);
+font-size: 11px;
+letter-spacing: 3px;
+margin-bottom: 18px;
+}
+
+.contact-hero h1 {
+font-size: clamp(34px, 5vw, 54px);
+}
+
+.contact-hero p {
+max-width: 600px;
+margin: 20px auto 0;
+color: var(--muted);
+line-height: 2;
+}
+
+.contact-decoration {
+display: block;
+color: var(--gold);
+font-size: 25px;
+margin-top: 25px;
+}
+
+.contact-layout {
+width: min(1100px, 88%);
+margin: 0 auto 100px;
+display: grid;
+grid-template-columns: .85fr 1.15fr;
+background: var(--ivory);
+border: 1px solid var(--border);
+}
+
+.contact-information {
+position: relative;
+overflow: hidden;
+padding: 55px 40px;
+background: var(--teal);
+color: var(--ivory);
+}
+
+.contact-information h2,
+.contact-form h2 {
+font-size: 27px;
+margin-bottom: 38px;
+}
+
+.contact-info-item {
+display: flex;
+align-items: flex-start;
+gap: 17px;
+margin-bottom: 30px;
+position: relative;
+z-index: 1;
+}
+
+.contact-info-icon {
+width: 40px;
+height: 40px;
+flex-shrink: 0;
+border: 1px solid var(--gold);
+border-radius: 50%;
+color: var(--gold);
+display: grid;
+place-items: center;
+font-size: 18px;
+}
+
+.contact-info-item h3 {
+font-size: 15px;
+margin-bottom: 8px;
+}
+
+.contact-info-item p {
+font-size: 12px;
+color: #d5d8ce;
+line-height: 1.8;
+overflow-wrap: anywhere;
+}
+
+.contact-info-decoration {
+position: absolute;
+bottom: -20px;
+left: 10px;
+font-family: "Playfair Display", serif;
+font-size: 65px;
+color: rgba(255,255,255,.05);
+}
+
+.contact-form {
+padding: 55px 50px;
+display: flex;
+flex-direction: column;
+}
+
+.contact-form h2 {
+margin-bottom: 30px;
+}
+
+.contact-form label {
+font-size: 12px;
+margin: 15px 0 9px;
+color: var(--teal);
+}
+
+.contact-form input,
+.contact-form textarea {
+width: 100%;
+padding: 14px;
+border: 1px solid var(--border);
+background: #fff;
+color: var(--teal);
+outline: none;
+font-size: 13px;
+border-radius: 0;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+border-color: var(--gold);
+}
+
+.contact-form textarea {
+resize: vertical;
+min-height: 120px;
+}
+
+.contact-form button {
+margin-top: 25px;
+padding: 16px 22px;
+border: 1px solid var(--teal);
+background: var(--teal);
+color: white;
+font-size: 13px;
+transition: .3s;
+}
+
+.contact-form button:hover {
+background: var(--gold);
+border-color: var(--gold);
+}
+
+.contact-form button span {
+color: var(--gold);
+margin-left: 10px;
+}
+
+.contact-feedback {
+margin-top: 18px;
+color: var(--teal);
+font-size: 13px;
+line-height: 1.8;
+}
+
+[dir="rtl"] .contact-form {
+text-align: right;
+}
+
+[dir="rtl"] .contact-form input,
+[dir="rtl"] .contact-form textarea {
+text-align: right;
+}
+
+@media (max-width: 800px) {
+.contact-layout {
+grid-template-columns: 1fr;
+width: 90%;
+margin-bottom: 65px;
+}
+
+.contact-information,
+.contact-form {
+padding: 38px 25px;
+}
+
+.contact-hero {
+padding-top: 65px;
+}
+}
+.contact-form button:disabled {
+opacity: 0.7;
+cursor: wait;
+}
+
+.contact-feedback {
+padding: 13px 15px;
+border: 1px solid var(--border);
+background: rgba(255, 253, 247, 0.7);
+animation: fakhara-feedback-in 0.4s ease;
+}
+
+.contact-feedback.is-success {
+border-color: rgba(189, 152, 93, 0.55);
+color: var(--teal);
+}
+
+.contact-feedback.is-success::before {
+content: "?";
+display: inline-flex;
+align-items: center;
+justify-content: center;
+width: 20px;
+height: 20px;
+margin-right: 9px;
+border-radius: 50%;
+background: rgba(189, 152, 93, 0.16);
+color: var(--gold);
+font-size: 11px;
+animation: fakhara-check-pop 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.contact-feedback.is-error {
+border-color: rgba(168, 61, 50, 0.35);
+color: #8e3b31;
+background: rgba(168, 61, 50, 0.05);
+}
+
+[dir="rtl"] .contact-feedback.is-success::before {
+margin-right: 0;
+margin-left: 9px;
+}
+
+@keyframes fakhara-feedback-in {
+from { opacity: 0; transform: translateY(6px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fakhara-check-pop {
+0% { transform: scale(0.4); opacity: 0; }
+60% { transform: scale(1.15); opacity: 1; }
+100% { transform: scale(1); opacity: 1; }
+}

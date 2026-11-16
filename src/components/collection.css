@@ -1,0 +1,306 @@
+.collection-page {
+  min-height: 70vh;
+  background: var(--cream);
+  color: var(--teal);
+}
+
+.collection-banner {
+  min-height: 310px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--teal);
+  text-align: center;
+  padding: 65px 20px;
+}
+
+.collection-banner-pattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.09;
+  background-image:
+    repeating-linear-gradient(45deg, transparent 0 24px, #d9bd8b 25px 26px),
+    repeating-linear-gradient(-45deg, transparent 0 24px, #d9bd8b 25px 26px);
+  mask-image: linear-gradient(to bottom, black, transparent);
+}
+
+.collection-banner-content {
+  position: relative;
+  z-index: 1;
+}
+
+.collection-breadcrumb {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  color: #e5d7bd;
+  font-size: 12px;
+  margin-bottom: 35px;
+}
+
+.collection-breadcrumb a:hover {
+  color: white;
+}
+
+.collection-eyebrow {
+  color: var(--gold);
+  font-size: 10px;
+  letter-spacing: 4px;
+}
+
+.collection-banner h1 {
+  color: #fffdf7;
+  font-family: "Playfair Display", serif;
+  font-size: clamp(38px, 6vw, 64px);
+  font-weight: 500;
+  margin: 15px 0 10px;
+}
+
+[dir="rtl"] .collection-banner h1 {
+  font-family: "Amiri", serif;
+}
+
+.collection-banner p {
+  color: #e5dfd1;
+  font-size: 14px;
+}
+
+.collection-gold-line {
+  width: 55px;
+  height: 1px;
+  background: var(--gold);
+  margin: 25px auto 0;
+}
+
+.collection-showcase {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: var(--cream);
+}
+
+.collection-products-section {
+  width: min(1160px, 88%);
+  margin: auto;
+  padding: 85px 0 110px;
+}
+
+.collection-heading {
+  text-align: center;
+  margin-bottom: 45px;
+}
+
+.collection-small-title {
+  color: var(--gold);
+  letter-spacing: 4px;
+  font-size: 10px;
+}
+
+.collection-heading h2 {
+  font-family: "Playfair Display", serif;
+  font-size: 34px;
+  font-weight: 500;
+  margin: 12px 0;
+}
+
+[dir="rtl"] .collection-heading h2 {
+  font-family: "Amiri", serif;
+}
+
+.collection-count {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.collection-product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+}
+
+.collection-product-card {
+  background: var(--ivory);
+  border: 1px solid var(--border);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.collection-product-card:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 15px 35px rgba(18, 63, 59, 0.1);
+}
+
+.collection-image-wrap {
+  height: 300px;
+  position: relative;
+  overflow: hidden;
+  background: #eee8dc;
+}
+
+.collection-product-image {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background:
+    radial-gradient(circle at center, #f8f4eb 0, #eee7d9 75%);
+}
+
+.image-decoration {
+  color: rgba(189, 152, 93, 0.35);
+  font-family: "Amiri", serif;
+  font-size: 90px;
+}
+
+.image-note {
+  color: #9b927f;
+  font-size: 9px;
+  letter-spacing: 3px;
+}
+
+.collection-image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.collection-product-card:hover .collection-image-wrap img {
+  transform: scale(1.05);
+}
+
+.collection-view-icon {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--ivory);
+  color: var(--teal);
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+[dir="rtl"] .collection-view-icon {
+  right: auto;
+  left: 15px;
+}
+
+.collection-product-card:hover .collection-view-icon {
+  background: var(--teal);
+  color: white;
+}
+
+.collection-product-info {
+  padding: 22px 20px;
+}
+
+.collection-product-info h3 {
+  font-family: "Playfair Display", serif;
+  font-size: 19px;
+  font-weight: 500;
+  margin-bottom: 9px;
+}
+
+[dir="rtl"] .collection-product-info h3 {
+  font-family: "Amiri", serif;
+}
+
+.collection-product-info p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.8;
+  min-height: 42px;
+}
+
+.collection-product-rating {
+  margin-top: 14px;
+}
+
+.collection-product-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+  margin-top: 17px;
+}
+
+.collection-product-bottom strong {
+  color: var(--teal);
+  font-size: 14px;
+}
+
+.collection-product-bottom span {
+  color: var(--gold);
+  font-size: 11px;
+}
+
+.collection-no-products {
+  min-height: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  border: 1px solid var(--border);
+  background: var(--ivory);
+  color: var(--muted);
+  text-align: center;
+}
+
+.empty-pottery-symbol {
+  font-family: "Amiri", serif;
+  font-size: 65px;
+  color: var(--gold);
+}
+
+.collection-empty {
+  padding: 100px 20px;
+  text-align: center;
+}
+
+@media (max-width: 850px) {
+  .collection-product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .collection-image-wrap {
+    height: 250px;
+  }
+}
+
+@media (max-width: 550px) {
+  .collection-banner {
+    min-height: 260px;
+  }
+
+  .collection-products-section {
+    width: 90%;
+    padding: 60px 0 75px;
+  }
+
+  .collection-product-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .collection-image-wrap {
+    height: 290px;
+  }
+
+  .collection-heading h2 {
+    font-size: 28px;
+  }
+}
+.collection-image-wrap {
+  position: relative;
+}
