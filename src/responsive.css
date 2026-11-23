@@ -1,0 +1,362 @@
+.site-header {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+html,
+body,
+#root {
+  max-width: 100%;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+@media (max-width: 1024px) {
+  [class*="-container"],
+  [class*="-inner"],
+  [class*="-layout"],
+  [class*="-grid"] {
+    min-width: 0;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 900px) {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  li,
+  span,
+  a,
+  label,
+  button,
+  input,
+  textarea,
+  select {
+    overflow-wrap: anywhere;
+  }
+
+  .header-inner {
+    width: 92%;
+    gap: 12px;
+  }
+
+  .brand-logo {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .brand-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .header-actions {
+    flex-shrink: 0;
+  }
+
+  .main-navigation {
+    max-height: calc(100vh - 75px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .home-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .home-hero-art {
+    min-height: 360px;
+  }
+
+  .home-hero-arch {
+    width: min(70%, 320px);
+    height: 340px;
+  }
+
+  .home-story {
+    grid-template-columns: 1fr;
+  }
+
+  .story-visual {
+    min-height: 320px;
+  }
+
+  .story-frame {
+    height: 300px;
+  }
+
+  .home-track-inner {
+    gap: 24px;
+  }
+
+  .admin-table-wrap,
+  .admin-sales-chart {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .account-nav {
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .account-nav::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (min-width: 851px) and (max-width: 1000px) {
+  .collection-product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .collection-image-wrap {
+    height: 260px;
+  }
+}
+
+@media (min-width: 651px) and (max-width: 900px) {
+  .featured-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 561px) and (max-width: 900px) {
+  .collections-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 551px) and (max-width: 900px) {
+  .wishlist-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 521px) and (max-width: 900px) {
+  .product-search-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 550px) {
+  input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea {
+    min-height: 44px;
+    font-size: 16px;
+  }
+
+  .cart-quantity button,
+  .quantity-controls button,
+  .home-map-zoom button {
+    width: 44px;
+    height: 44px;
+  }
+
+  .cart-quantity span {
+    min-width: 32px;
+  }
+
+  .cart-remove {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding-inline: 6px;
+  }
+
+  .cart-item-total {
+    white-space: normal;
+  }
+
+  .wishlist-card-actions button,
+  .product-rating-form__submit {
+    min-height: 44px;
+  }
+
+  .wishlist-details-link {
+    padding-block: 12px;
+  }
+
+  .wishlist-image {
+    height: 220px;
+  }
+
+  .collection-image-wrap {
+    height: 240px;
+  }
+
+  .featured-image {
+    height: 220px;
+  }
+
+  .home-map-directions {
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    scroll-padding-top: 80px;
+  }
+
+  .header-inner {
+    width: 94%;
+    min-height: 72px;
+    gap: 8px;
+  }
+
+  .site-header .main-navigation {
+    top: 72px;
+    max-height: calc(100vh - 72px);
+  }
+
+  .brand-symbol {
+    width: 36px;
+    height: 36px;
+  }
+
+  .brand-symbol img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .brand-name {
+    font-size: 14px;
+  }
+
+  .brand-name small {
+    font-size: 5px;
+  }
+
+  .mobile-menu-button {
+    position: relative;
+    flex: 0 0 32px;
+    width: 32px;
+    height: 32px;
+    gap: 4px;
+  }
+
+  .mobile-menu-button span {
+    width: 20px;
+  }
+
+  .header-actions {
+    gap: 3px;
+  }
+
+  .header-icon-link {
+    position: relative;
+    width: 28px;
+    min-height: 36px;
+    display: grid;
+    place-items: center;
+  }
+
+  .header-icon-link::before,
+  .mobile-menu-button::before,
+  .search-overlay-close::before {
+    content: "";
+    position: absolute;
+    inset: -6px;
+  }
+
+  .header-icon-link .header-svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .language-select {
+    width: 42px;
+    min-height: 36px;
+    padding-inline: 2px;
+    font-size: 10px;
+  }
+
+  .search-overlay-close {
+    position: relative;
+    width: 44px;
+    height: 44px;
+  }
+
+  .search-overlay-input-row input {
+    font-size: 16px;
+  }
+
+  .fakhara-toast-container,
+  .fakhara-toast-container.is-rtl {
+    top: 80px;
+  }
+
+  .fakhara-toast__action {
+    min-height: 36px;
+    padding-inline: 4px;
+  }
+
+  .fakhara-toast__close {
+    width: 32px;
+    height: 32px;
+  }
+
+  .whatsapp-fab {
+    width: 50px;
+    height: 50px;
+  }
+
+  .footer-column a,
+  .footer-socials a {
+    display: flex;
+    align-items: center;
+    min-height: 36px;
+  }
+}
+
+@media (max-width: 360px) {
+  .header-inner {
+    gap: 5px;
+  }
+
+  .brand-symbol {
+    width: 34px;
+    height: 34px;
+  }
+
+  .brand-name {
+    font-size: 13px;
+  }
+
+  .brand-name small {
+    display: none;
+  }
+
+  .mobile-menu-button {
+    flex-basis: 30px;
+    width: 30px;
+  }
+
+  .header-actions {
+    gap: 1px;
+  }
+
+  .header-icon-link {
+    width: 26px;
+  }
+
+  .language-select {
+    width: 38px;
+  }
+}

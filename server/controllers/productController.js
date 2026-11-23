@@ -242,7 +242,11 @@ function normalizeVariant(value, index) {
 
 function normalizeProduct(
   body,
-  { requireAll = true, fallbackGalleryImages = [] } = {}
+  {
+    requireAll = true,
+    fallbackGalleryImages = [],
+    fallbackSortOrder = 0,
+  } = {}
 ) {
   const productId = readString(
     body?.productId ?? body?.id,
@@ -316,12 +320,16 @@ function normalizeProduct(
     featured: readBoolean(body?.featured, false),
     sortOrder: readNumber(body?.sortOrder, "sortOrder", {
       required: false,
-      fallback: 0,
+      fallback: fallbackSortOrder,
     }),
   };
 }
 
 async function resolveCategory(slug) {
+  if (slug === "featured") {
+    return { _id: null, slug };
+  }
+
   const category = await Category.findOne({ slug });
 
   if (!category) {
@@ -591,6 +599,7 @@ export const updateProduct = asyncHandler(async (request, response) => {
 
   const payload = normalizeProduct(request.body, {
     fallbackGalleryImages: product.galleryImages || [],
+    fallbackSortOrder: product.sortOrder || 0,
   });
   const category = await resolveCategory(payload.category);
 
@@ -615,7 +624,7 @@ export const updateProduct = asyncHandler(async (request, response) => {
   await product.save();
 
   const nextImages = new Set(productImageUrls(product));
-  removeUploadedImages(
+  await removeUploadedImages(
     previousImages.filter((url) => !nextImages.has(url))
   );
 
@@ -646,7 +655,7 @@ export const deleteProduct = asyncHandler(async (request, response) => {
     Favorite.deleteMany({ productId: product.productId }),
     syncCategoryProducts(product.category, product._id, { add: false }),
   ]);
-  removeUploadedImages(productImageUrls(product));
+  await removeUploadedImages(productImageUrls(product));
 
   response.json({
     success: true,

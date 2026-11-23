@@ -461,7 +461,7 @@ export default function ProductRating({ productId, variant = "full" }) {
                         )}
                       </p>
                       <span className="product-reviews__author">
-                        {t.customer}
+                        {item.customerName || t.customer}
                       </span>
                     </li>
                   ))}

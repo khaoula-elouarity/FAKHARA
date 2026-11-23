@@ -39,8 +39,20 @@ import {
 import { getDashboardStats } from "../controllers/adminController.js";
 import {
   getAdminSettings,
+  updateAdminHomepage,
   updateAdminSettings,
 } from "../controllers/settingsController.js";
+import {
+  getAdminDiscoveryPages,
+  getAdminFeaturedItems,
+  updateAdminDiscoveryPages,
+  updateAdminFeaturedItems,
+} from "../controllers/discoveryController.js";
+import {
+  getAdminFeaturedSection,
+  restoreAdminFeaturedSection,
+  updateAdminFeaturedSection,
+} from "../controllers/featuredSectionController.js";
 import { uploadProductImage } from "../controllers/uploadController.js";
 import { loginLimiter } from "../middleware/rateLimits.js";
 import { uploadImage } from "../middleware/upload.js";
@@ -64,6 +76,23 @@ router.get("/me", me);
 // Public storefront settings are editable by any authenticated administrator.
 router.get("/settings", getAdminSettings);
 router.put("/settings", updateAdminSettings);
+router.put("/homepage", updateAdminHomepage);
+
+// Homepage "Pieces worth discovering" section. Any authenticated administrator
+// may manage it; the public site only reads the published values.
+router.get("/featured-section", getAdminFeaturedSection);
+router.put("/featured-section", updateAdminFeaturedSection);
+router.post("/featured-section/restore", restoreAdminFeaturedSection);
+router.post(
+  "/featured-section/uploads",
+  uploadImage,
+  uploadProductImage
+);
+
+router.get("/featured-items", getAdminFeaturedItems);
+router.put("/featured-items", updateAdminFeaturedItems);
+router.get("/discovery-pages", getAdminDiscoveryPages);
+router.put("/discovery-pages", updateAdminDiscoveryPages);
 
 router.post("/admins", authorize("superadmin"), createAdmin);
 

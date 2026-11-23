@@ -18,6 +18,21 @@ export function notFoundHandler(request, response) {
   });
 }
 
+function isDatabaseConnectionError(error) {
+  const name = String(error?.name || "");
+  const code = String(error?.code || "");
+
+  return (
+    [
+      "MongoServerSelectionError",
+      "MongooseServerSelectionError",
+      "MongoNetworkError",
+      "MongoTimeoutError",
+    ].includes(name) ||
+    ["ENOTFOUND", "ECONNREFUSED", "ETIMEDOUT"].includes(code)
+  );
+}
+
 export function errorHandler(error, request, response, _next) {
   if (response.headersSent) {
     return;
@@ -70,6 +85,18 @@ export function errorHandler(error, request, response, _next) {
       success: false,
       error: "invalid_json",
       message: "The request body contains invalid JSON.",
+    });
+    return;
+  }
+
+  if (isDatabaseConnectionError(error)) {
+    console.error(
+      `Database request failed (${error?.code || error?.name || "unknown"}).`
+    );
+    response.status(503).json({
+      success: false,
+      error: "database_unavailable",
+      message: "The order database is temporarily unavailable.",
     });
     return;
   }

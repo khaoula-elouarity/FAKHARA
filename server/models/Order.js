@@ -14,6 +14,15 @@ export const ORDER_STATUSES = [
   "cancelled",
 ];
 
+export const TRACKING_STATUSES = [
+  "pending",
+  "confirmed",
+  "preparing",
+  "shipped",
+  "out_for_delivery",
+  "delivered",
+];
+
 const orderItemVariantSchema = new Schema(
   {
     key: { type: String, default: "", trim: true },
@@ -46,6 +55,21 @@ const customerSchema = new Schema(
     city: { type: String, required: true, trim: true },
     address: { type: String, required: true, trim: true },
     postalCode: { type: String, default: "", trim: true },
+  },
+  { _id: false }
+);
+
+const statusHistorySchema = new Schema(
+  {
+    status: { type: String, enum: ORDER_STATUSES, required: true },
+    at: { type: Date, required: true, default: Date.now },
+    source: {
+      type: String,
+      enum: ["system", "admin", "customer"],
+      default: "system",
+      required: true,
+    },
+    actor: { type: Schema.Types.ObjectId, default: null },
   },
   { _id: false }
 );
@@ -85,6 +109,7 @@ const orderSchema = new Schema(
       index: true,
     },
     user: { type: Schema.Types.ObjectId, ref: "User", default: null },
+    statusHistory: { type: [statusHistorySchema], default: [] },
   },
   {
     timestamps: true,

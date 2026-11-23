@@ -9,7 +9,9 @@ export const ADMIN_COOKIE_NAME = "fakhara_admin_token";
 
 export const ADMIN_COOKIE_OPTIONS = {
   httpOnly: true,
-  sameSite: "lax",
+  // The browser reaches the API on a separate Vercel origin in production.
+  // Cross-site fetch cookies require SameSite=None and Secure.
+  sameSite: env.nodeEnv === "production" ? "none" : "lax",
   secure: env.nodeEnv === "production",
   maxAge: 7 * 24 * 60 * 60 * 1000,
   path: "/",

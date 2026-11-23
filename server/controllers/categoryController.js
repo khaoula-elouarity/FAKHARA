@@ -106,7 +106,7 @@ export const updateCategory = asyncHandler(async (request, response) => {
   await category.save();
 
   if (previousImage && previousImage !== category.image) {
-    removeUploadedImage(previousImage);
+    await removeUploadedImage(previousImage);
   }
 
   response.json({
@@ -177,7 +177,7 @@ export const deleteCategory = asyncHandler(async (request, response) => {
 
   const image = category.image;
   await category.deleteOne();
-  removeUploadedImage(image);
+  await removeUploadedImage(image);
 
   response.json({
     success: true,

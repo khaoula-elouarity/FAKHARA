@@ -1,11 +1,11 @@
-import { mkdirSync } from "node:fs";
-
 import mongoose from "mongoose";
 
+import ApiError from "../utils/ApiError.js";
 import env from "./env.js";
 
-let memoryServer = null;
 let loggingAttached = false;
+let connectionPromise = null;
+let connectionEstablished = false;
 
 const CONNECT_ATTEMPTS =
   Math.max(1, Number(process.env.MONGO_CONNECT_ATTEMPTS) || 3);
@@ -45,10 +45,16 @@ function attachConnectionLogging() {
 
   mongoose.connection.on("disconnected", () => {
     console.warn("MongoDB disconnected.");
+    if (connectionEstablished) {
+      connectionEstablished = false;
+      connectionPromise = null;
+    }
   });
 
   mongoose.connection.on("error", (error) => {
-    console.error("MongoDB connection error:", error.message);
+    console.error(
+      `MongoDB connection error (${error?.code || error?.name || "unknown"}).`
+    );
   });
 }
 
@@ -69,7 +75,7 @@ async function connectWithRetry(uri) {
     } catch (error) {
       lastError = error;
       console.error(
-        `MongoDB connection attempt ${attempt}/${CONNECT_ATTEMPTS} failed for ${describeMongoTarget(uri)}: ${error.message}`
+        `MongoDB connection attempt ${attempt}/${CONNECT_ATTEMPTS} failed for ${describeMongoTarget(uri)} (${error?.code || error?.name || "unknown"}).`
       );
       await mongoose.disconnect().catch(() => {});
 
@@ -80,59 +86,46 @@ async function connectWithRetry(uri) {
   }
 
   throw new Error(
-    `Unable to connect to MongoDB at ${describeMongoTarget(uri)} after ${CONNECT_ATTEMPTS} attempts: ${lastError?.message || "unknown error"}`
+    `Unable to connect to MongoDB at ${describeMongoTarget(uri)} after ${CONNECT_ATTEMPTS} attempts (${lastError?.code || lastError?.name || "unknown error"}).`
   );
 }
 
 export async function connectDatabase() {
   attachConnectionLogging();
 
-  if (env.mongoUri) {
-    // A configured database is authoritative: never silently fall back to a
-    // local/in-memory database, otherwise an admin could edit the wrong data.
-    return connectWithRetry(env.mongoUri);
+  if (mongoose.connection.readyState === 1) {
+    return mongoose.connection;
   }
 
-  if (env.nodeEnv === "production") {
-    throw new Error(
-      "MONGODB_URI is required in production. Set it in your .env file."
-    );
+  // Share one in-flight connection attempt across concurrent requests in a
+  // warm Vercel instance. Mongoose's connection is process-wide and is reused
+  // for later invocations.
+  if (connectionPromise) {
+    return connectionPromise;
   }
 
-  const { MongoMemoryServer } = await import("mongodb-memory-server");
-  mkdirSync(env.mongoMemoryDbPath, { recursive: true });
+  connectionPromise = (async () => {
+    if (!env.mongoUri) {
+      throw ApiError.serviceUnavailable("database_unavailable");
+    }
 
-  memoryServer = await MongoMemoryServer.create({
-    instance: {
-      dbPath: env.mongoMemoryDbPath,
-      args: [
-        "--wiredTigerCacheSizeGB",
-        "0.25",
-        "--setParameter",
-        "diagnosticDataCollectionEnabled=false",
-      ],
-    },
+    try {
+      const connection = await connectWithRetry(env.mongoUri);
+      connectionEstablished = true;
+      return connection;
+    } catch {
+      throw ApiError.serviceUnavailable("database_unavailable");
+    }
+  })().catch((error) => {
+    connectionPromise = null;
+    throw error;
   });
 
-  const uri = memoryServer.getUri();
-
-  await mongoose.connect(uri, {
-    dbName: env.mongoDbName,
-    serverSelectionTimeoutMS: 15000,
-  });
-
-  console.log(
-    `Development MongoDB started at ${uri} (persistent data: ${env.mongoMemoryDbPath}).`
-  );
-
-  return mongoose.connection;
+  return connectionPromise;
 }
 
 export async function disconnectDatabase() {
+  connectionPromise = null;
+  connectionEstablished = false;
   await mongoose.disconnect();
-
-  if (memoryServer) {
-    await memoryServer.stop();
-    memoryServer = null;
-  }
 }

@@ -6,11 +6,11 @@
   "scripts": {
     "dev": "concurrently -k -n api,client -c yellow,cyan \"npm:dev:server\" \"npm:dev:client\"",
     "dev:client": "vite",
-    "dev:server": "node --watch server/index.js",
+    "dev:server": "node --watch server/dev.js",
     "build": "vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "start": "node server/index.js",
+    "start": "node server/dev.js",
     "seed:admin": "node server/scripts/seedAdmin.js",
     "admin:check": "node server/scripts/adminCheck.js",
     "admin:reset": "node server/scripts/seedAdmin.js --reset",

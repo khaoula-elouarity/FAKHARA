@@ -6,8 +6,8 @@
   min-height: 100vh;
   background: var(--cream);
   color: var(--teal);
-  overflow: hidden;
-  overflow: clip;
+  overflow-x: clip;
+  overflow-y: visible;
 }
 
 .container {

@@ -139,6 +139,22 @@ export function createOrder(payload) {
   });
 }
 
+export function trackOrder(payload) {
+  return request("/api/orders/track", {
+    method: "POST",
+    body: payload,
+    admin: false,
+  });
+}
+
+export function confirmOrderReceipt(payload) {
+  return request("/api/orders/confirm-receipt", {
+    method: "POST",
+    body: payload,
+    admin: false,
+  });
+}
+
 export function createCustomizationRequest(payload) {
   return request("/api/customizations", {
     method: "POST",
@@ -185,7 +201,7 @@ export function fetchAdminStats() {
   return request("/api/admin/stats");
 }
 
-export async function uploadAdminImage(file) {
+async function uploadAdminImageTo(path, file) {
   if (!file) {
     throw new ApiRequestError("image_required");
   }
@@ -203,7 +219,7 @@ export async function uploadAdminImage(file) {
   let response;
 
   try {
-    response = await fetch(buildApiUrl("/api/admin/uploads"), {
+    response = await fetch(buildApiUrl(path), {
       method: "POST",
       credentials: "include",
       headers,
@@ -228,6 +244,14 @@ export async function uploadAdminImage(file) {
   }
 
   return payload;
+}
+
+export function uploadAdminImage(file) {
+  return uploadAdminImageTo("/api/admin/uploads", file);
+}
+
+export function uploadAdminFeaturedImage(file) {
+  return uploadAdminImageTo("/api/admin/featured-section/uploads", file);
 }
 
 export function fetchAdminProducts(params) {
@@ -364,6 +388,52 @@ export function updateAdminSettings(payload) {
   return request("/api/admin/settings", {
     method: "PUT",
     body: payload,
+  });
+}
+
+export function updateAdminHomepage(homepage) {
+  return request("/api/admin/homepage", {
+    method: "PUT",
+    body: { homepage },
+  });
+}
+
+export function fetchAdminFeaturedSection() {
+  return request("/api/admin/featured-section");
+}
+
+export function updateAdminFeaturedSection(featuredSection) {
+  return request("/api/admin/featured-section", {
+    method: "PUT",
+    body: { featuredSection },
+  });
+}
+
+export function restoreAdminFeaturedSection() {
+  return request("/api/admin/featured-section/restore", {
+    method: "POST",
+  });
+}
+
+export function fetchAdminFeaturedItems() {
+  return request("/api/admin/featured-items");
+}
+
+export function updateAdminFeaturedItems(featuredItems) {
+  return request("/api/admin/featured-items", {
+    method: "PUT",
+    body: { featuredItems },
+  });
+}
+
+export function fetchAdminDiscoveryPages() {
+  return request("/api/admin/discovery-pages");
+}
+
+export function updateAdminDiscoveryPages(discoveryPages) {
+  return request("/api/admin/discovery-pages", {
+    method: "PUT",
+    body: { discoveryPages },
   });
 }
 

@@ -11,10 +11,11 @@
  *  - Les rôles ne sont jamais modifiables côté client.
  */
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { useLanguage } from "../context/Languagecontext.jsx";
+import { useStore } from "../context/StoreContext.jsx";
 import { useToast } from "../context/ToastContext.jsx";
 import {
   adminLogin,
@@ -43,6 +44,9 @@ import {
   updateAdminProduct,
   uploadAdminImage,
 } from "../services/api.js";
+import AdminDiscoveryPages from "./AdminDiscoveryPages.jsx";
+import AdminFeaturedSection from "./AdminFeaturedSection.jsx";
+import AdminHomepageContent from "./AdminHomepageContent.jsx";
 import AdminWhatsAppSettings from "./AdminWhatsAppSettings.jsx";
 import "./AdminDashboard.css";
 
@@ -72,6 +76,9 @@ const ui = {
     messages: "الرسائل",
     customizations: "طلبات التخصيص",
     customers: "العملاء",
+    homepageContent: "محتوى الصفحة الرئيسية",
+    featuredSection: "قطعة تستحق الاكتشاف",
+    discoveryPages: "صفحات الاكتشاف",
     settings: "إعدادات واتساب",
     revenue: "المبيعات الإجمالية",
     averageOrderValue: "متوسط قيمة الطلب",
@@ -136,6 +143,15 @@ const ui = {
     productId: "معرّف المنتج",
     category: "المجموعة",
     price: "السعر",
+    productName: "اسم المنتوج",
+    productDescription: "الوصف",
+    productPrice: "الثمن",
+    productInfo: "معلومات المنتوج",
+    productInfoHint: "أدخل المعلومات الأساسية للمنتوج فقط.",
+    chooseImage: "اختيار الصورة",
+    optional: "(اختياري)",
+    mainImageHint: "اختر صورة واحدة من جهازك. يمكنك تغييرها أو إزالتها قبل الحفظ.",
+    mainImageRequired: "يرجى اختيار الصورة الرئيسية قبل الحفظ.",
     image: "رابط الصورة",
     mainImage: "الصورة الرئيسية",
     additionalImages: "صور إضافية",
@@ -185,6 +201,7 @@ const ui = {
     deleteError: "تعذر حذف العنصر.",
     saved: "تم الحفظ.",
     deleted: "تم الحذف.",
+    deliveryConfirmation: "التوصيل يُؤكَّد من العميل فقط بعد استلام الطلب.",
     statuses: {
       pending: "جديد",
       confirmed: "مؤكد",
@@ -227,6 +244,9 @@ const ui = {
     messages: "Messages",
     customizations: "Personnalisations",
     customers: "Clients",
+    homepageContent: "Contenu de la page d'accueil",
+    featuredSection: "Pièce à découvrir",
+    discoveryPages: "Pages de découverte",
     settings: "Paramètres WhatsApp",
     revenue: "Ventes totales",
     averageOrderValue: "Panier moyen",
@@ -291,6 +311,15 @@ const ui = {
     productId: "Identifiant produit",
     category: "Collection",
     price: "Prix",
+    productName: "Nom du produit",
+    productDescription: "Description",
+    productPrice: "Prix",
+    productInfo: "Informations du produit",
+    productInfoHint: "Saisissez uniquement les informations essentielles.",
+    chooseImage: "Choisir l'image",
+    optional: "(facultatif)",
+    mainImageHint: "Choisissez une image sur votre appareil. Vous pouvez la remplacer ou la retirer avant l'enregistrement.",
+    mainImageRequired: "Veuillez choisir l'image principale avant l'enregistrement.",
     image: "URL de l'image",
     mainImage: "Image principale",
     additionalImages: "Images supplémentaires",
@@ -340,6 +369,7 @@ const ui = {
     deleteError: "Impossible de supprimer.",
     saved: "Enregistré.",
     deleted: "Supprimé.",
+    deliveryConfirmation: "La livraison est confirmée uniquement par le client après réception.",
     statuses: {
       pending: "Nouvelle",
       confirmed: "Confirmée",
@@ -381,6 +411,9 @@ const ui = {
     messages: "Messages",
     customizations: "Customizations",
     customers: "Customers",
+    homepageContent: "Homepage content",
+    featuredSection: "Pieces worth discovering",
+    discoveryPages: "Discovery pages",
     settings: "WhatsApp settings",
     revenue: "Total sales",
     averageOrderValue: "Average order value",
@@ -445,6 +478,15 @@ const ui = {
     productId: "Product ID",
     category: "Collection",
     price: "Price",
+    productName: "Product name",
+    productDescription: "Description",
+    productPrice: "Price",
+    productInfo: "Product information",
+    productInfoHint: "Enter only the essential product details.",
+    chooseImage: "Choose image",
+    optional: "(optional)",
+    mainImageHint: "Pick one image from your device. You can change or remove it before saving.",
+    mainImageRequired: "Please choose a main image before saving.",
     image: "Image URL",
     mainImage: "Main image",
     additionalImages: "Additional images",
@@ -494,6 +536,7 @@ const ui = {
     deleteError: "Could not delete.",
     saved: "Saved.",
     deleted: "Deleted.",
+    deliveryConfirmation: "Delivery is confirmed only by the customer after receipt.",
     statuses: {
       pending: "New",
       confirmed: "Confirmed",
@@ -520,6 +563,9 @@ const tabs = [
   "messages",
   "customizations",
   "customers",
+  "homepageContent",
+  "featuredSection",
+  "discoveryPages",
   "settings",
 ];
 
@@ -541,6 +587,9 @@ const TAB_ROUTES = {
   messages: "/admin/messages",
   customizations: "/admin/customizations",
   customers: "/admin/customers",
+  homepageContent: "/admin/homepage-content",
+  featuredSection: "/admin/featured-section",
+  discoveryPages: "/admin/discovery-pages",
   settings: "/admin/settings",
 };
 
@@ -550,12 +599,21 @@ const ORDER_STATUS_OPTIONS = [
   "preparing",
   "shipped",
   "out_for_delivery",
-  "delivered",
   "cancelled",
 ];
 
 const LOW_STOCK_THRESHOLD = 5;
 const GALLERY_SLOTS = 4;
+
+const IMAGE_ACCEPT = "image/jpeg,image/png,image/webp,image/gif,image/avif";
+
+function createProductId() {
+  const random =
+    typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+      ? crypto.randomUUID().slice(0, 8)
+      : Math.random().toString(36).slice(2, 10);
+  return `fakhara-${random}`;
+}
 
 function tabFromPath(pathname) {
   const entry = Object.entries(TAB_ROUTES).find(
@@ -576,6 +634,7 @@ const emptyProduct = {
   image: "",
   galleryImages: ["", "", "", ""],
   stock: 0,
+  sortOrder: 0,
   isActive: true,
   featured: false,
   name: { ar: "", fr: "", en: "" },
@@ -647,6 +706,7 @@ async function validateAdminSession() {
 
 export default function AdminDashboard() {
   const { language } = useLanguage();
+  const { reload, reloadSettings } = useStore();
   const { addToast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
@@ -682,6 +742,8 @@ export default function AdminDashboard() {
   const [customerDetailLoading, setCustomerDetailLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const mainImageInputRef = useRef(null);
+  const galleryImageInputRefs = useRef([]);
 
   // 1) Si pas de token, ne rien afficher tant que la vérification n'est pas faite.
   useEffect(() => {
@@ -812,6 +874,7 @@ export default function AdminDashboard() {
       }
 
       await Promise.all(jobs);
+      await Promise.all([reload(), reloadSettings()]);
     } catch (error) {
       if (error.status === 401) {
         setAdminToken("");
@@ -823,12 +886,23 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
     }
-  }, [can, navigate]);
+  }, [can, navigate, reload, reloadSettings]);
 
   // 2) Régénérer les données quand un admin est connecté.
   useEffect(() => {
     if (admin) loadData();
   }, [admin, loadData]);
+
+  const productCategoryOptions = useMemo(
+    () => [
+      { slug: "featured", label: t.featuredSection },
+      ...categories.map((category) => ({
+        slug: category.id || category.slug,
+        label: localized(category.name, language) || category.id || category.slug,
+      })),
+    ],
+    [categories, language, t.featuredSection]
+  );
 
   const filteredOrders = useMemo(() => {
     const search = orderSearch.trim().toLowerCase();
@@ -967,12 +1041,17 @@ export default function AdminDashboard() {
   function openNewProduct() {
     setProductForm({
       ...emptyProduct,
-      category: categories[0]?.slug || "",
+      productId: createProductId(),
+      category:
+        productCategoryOptions.find(
+          (category) => category.slug !== "featured"
+        )?.slug || "featured",
       galleryImages: normalizeGallerySlots(),
       name: { ...emptyProduct.name },
       cardTitle: { ...emptyProduct.cardTitle },
       description: { ...emptyProduct.description },
     });
+    galleryImageInputRefs.current = [];
   }
 
   function openProduct(product) {
@@ -984,6 +1063,7 @@ export default function AdminDashboard() {
       image: product.image || "",
       galleryImages: normalizeGallerySlots(product.galleryImages),
       stock: product.stock || 0,
+      sortOrder: product.sortOrder || 0,
       isActive: product.isActive !== false,
       featured: Boolean(product.featured),
       name: { ...emptyProduct.name, ...product.name },
@@ -991,10 +1071,15 @@ export default function AdminDashboard() {
       description: { ...emptyProduct.description, ...product.description },
       variantsText: JSON.stringify(product.images || [], null, 2),
     });
+    galleryImageInputRefs.current = [];
   }
 
   async function saveProduct(event) {
     event.preventDefault();
+    if (productForm.isNew && !productForm.image) {
+      addToast({ type: "error", message: t.mainImageRequired });
+      return;
+    }
     setSaving(true);
     try {
       let variants = [];
@@ -1011,6 +1096,7 @@ export default function AdminDashboard() {
         image: productForm.image,
         galleryImages: normalizeGallerySlots(productForm.galleryImages),
         stock: Number(productForm.stock),
+        sortOrder: Number(productForm.sortOrder) || 0,
         isActive: productForm.isActive,
         featured: productForm.featured,
         name: productForm.name,
@@ -1189,6 +1275,48 @@ export default function AdminDashboard() {
     } finally {
       setUploadingImage(false);
       event.target.value = "";
+    }
+  }
+
+  function setProductTextField(field, value) {
+    setProductForm((current) =>
+      current
+        ? {
+            ...current,
+            [field]: {
+              ...current[field],
+              ar: value,
+              fr: value,
+              en: value,
+            },
+          }
+        : current
+    );
+  }
+
+  function removeMainImage() {
+    setProductForm((current) =>
+      current ? { ...current, image: "" } : current
+    );
+    if (mainImageInputRef.current) {
+      mainImageInputRef.current.value = "";
+    }
+  }
+
+  function removeGalleryImage(index) {
+    setProductForm((current) =>
+      current
+        ? {
+            ...current,
+            galleryImages: normalizeGallerySlots(current.galleryImages).map(
+              (image, slot) => (slot === index ? "" : image)
+            ),
+          }
+        : current
+    );
+    const input = galleryImageInputRefs.current[index];
+    if (input) {
+      input.value = "";
     }
   }
 
@@ -1638,12 +1766,20 @@ export default function AdminDashboard() {
                         changeOrderStatus(order, event.target.value)
                       }
                     >
+                      {order.status === "delivered" && (
+                        <option value="delivered" disabled>
+                          {t.statuses.delivered}
+                        </option>
+                      )}
                       {ORDER_STATUS_OPTIONS.map((status) => (
                         <option value={status} key={status}>
                           {t.statuses[status]}
                         </option>
                       ))}
                     </select>
+                    <small className="admin-order-status-hint">
+                      {t.deliveryConfirmation}
+                    </small>
                     {canWrite("orders") && (
                       <button
                         type="button"
@@ -2050,6 +2186,11 @@ export default function AdminDashboard() {
         </section>
       )}
 
+      {activeTab === "homepageContent" && <AdminHomepageContent />}
+      {activeTab === "featuredSection" && <AdminFeaturedSection />}
+
+      {activeTab === "discoveryPages" && <AdminDiscoveryPages />}
+
       {activeTab === "settings" && <AdminWhatsAppSettings />}
 
       {customerDetail && (
@@ -2110,90 +2251,156 @@ export default function AdminDashboard() {
                 ×
               </button>
             </div>
-            <form className="admin-form" onSubmit={saveProduct}>
-              <label>
-                {t.productId}
-                <input
-                  value={productForm.productId}
-                  onChange={(event) =>
-                    setProductForm((current) => ({ ...current, productId: event.target.value }))
-                  }
-                  disabled={!productForm.isNew}
-                  required
-                />
-              </label>
-              <label>
-                {t.category}
-                <select
-                  value={productForm.category}
-                  onChange={(event) =>
-                    setProductForm((current) => ({ ...current, category: event.target.value }))
-                  }
-                  required
-                >
-                  <option value="">-</option>
-                  {categories.map((category) => (
-                    <option value={category.id} key={category.id}>
-                      {localized(category.name, language)}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                {t.price}
-                <input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={productForm.price}
-                  onChange={(event) =>
-                    setProductForm((current) => ({ ...current, price: event.target.value }))
-                  }
-                  required
-                />
-              </label>
-              <label>
-                {t.stock}
-                <input
-                  type="number"
-                  min="0"
-                  value={productForm.stock}
-                  onChange={(event) =>
-                    setProductForm((current) => ({ ...current, stock: event.target.value }))
-                  }
-                />
-              </label>
-              <label className="admin-form-wide">
-                {t.mainImage}
-                <input
-                  value={productForm.image}
-                  onChange={(event) =>
-                    setProductForm((current) => ({
-                      ...current,
-                      image: event.target.value,
-                    }))
-                  }
-                />
-              </label>
-              <div className="admin-form-wide admin-upload">
-                <label className="admin-upload-button">
-                  <input
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
-                    disabled={uploadingImage}
-                    onChange={(event) => handleImageUpload(event, "product")}
-                  />
-                  <span>{uploadingImage ? t.uploading : t.uploadImage}</span>
-                </label>
-                {productForm.image ? (
-                  <div className="admin-upload-preview">
-                    <img src={productForm.image} alt={t.imagePreview} />
-                  </div>
-                ) : null}
+            <form className="admin-form admin-product-form" onSubmit={saveProduct}>
+              <div className="admin-form-wide admin-product-section">
+                <div className="admin-product-section-heading">
+                  <strong>{t.productInfo}</strong>
+                  <span>{t.productInfoHint}</span>
+                </div>
+                <div className="admin-product-fields">
+                  <label>
+                    {t.productName}
+                    <input
+                      value={productForm.name.ar}
+                      onChange={(event) =>
+                        setProductTextField("name", event.target.value)
+                      }
+                      required
+                    />
+                  </label>
+                  <label>
+                    {t.category}
+                    <select
+                      value={productForm.category}
+                      onChange={(event) =>
+                        setProductForm((current) => ({
+                          ...current,
+                          category: event.target.value,
+                        }))
+                      }
+                      required
+                    >
+                      <option value="">-</option>
+                      {productCategoryOptions.map((category) => (
+                        <option value={category.slug} key={category.slug}>
+                          {category.label}
+                        </option>
+                      ))}
+                      {productForm.category &&
+                      !productCategoryOptions.some(
+                        (category) => category.slug === productForm.category
+                      ) ? (
+                        <option value={productForm.category}>
+                          {productForm.category}
+                        </option>
+                      ) : null}
+                    </select>
+                  </label>
+                  <label>
+                    {t.productPrice}
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={productForm.price}
+                      onChange={(event) =>
+                        setProductForm((current) => ({
+                          ...current,
+                          price: event.target.value,
+                        }))
+                      }
+                      required
+                    />
+                  </label>
+                  <label>
+                    {t.order}
+                    <input
+                      type="number"
+                      min="0"
+                      value={productForm.sortOrder}
+                      onChange={(event) =>
+                        setProductForm((current) => ({
+                          ...current,
+                          sortOrder: event.target.value,
+                        }))
+                      }
+                    />
+                  </label>
+                  <label>
+                    {t.stock}
+                    <input
+                      type="number"
+                      min="0"
+                      value={productForm.stock}
+                      onChange={(event) =>
+                        setProductForm((current) => ({
+                          ...current,
+                          stock: event.target.value,
+                        }))
+                      }
+                    />
+                  </label>
+                  <label className="admin-form-wide">
+                    {t.productDescription}
+                    <textarea
+                      rows="3"
+                      value={productForm.description.ar}
+                      onChange={(event) =>
+                        setProductTextField("description", event.target.value)
+                      }
+                    />
+                  </label>
+                </div>
               </div>
-              <div className="admin-form-wide admin-gallery-editor">
+
+              <div className="admin-form-wide admin-product-section">
+                <div className="admin-product-section-heading">
+                  <strong>{t.mainImage}</strong>
+                  <span>{t.mainImageHint}</span>
+                </div>
+                <div className="admin-main-image">
+                  <div className="admin-main-image-preview">
+                    {productForm.image ? (
+                      <img src={productForm.image} alt={t.imagePreview} />
+                    ) : (
+                      <span>{t.emptyImageSlot}</span>
+                    )}
+                  </div>
+                  <div className="admin-main-image-actions">
+                    <button
+                      type="button"
+                      className="admin-image-button"
+                      disabled={uploadingImage}
+                      onClick={() => mainImageInputRef.current?.click()}
+                    >
+                      {uploadingImage ? t.uploading : t.chooseImage}
+                    </button>
+                    {productForm.image ? (
+                      <button
+                        type="button"
+                        className="admin-image-remove"
+                        onClick={removeMainImage}
+                      >
+                        {t.removeImage}
+                      </button>
+                    ) : null}
+                    <input
+                      ref={mainImageInputRef}
+                      className="admin-image-input"
+                      type="file"
+                      accept={IMAGE_ACCEPT}
+                      onChange={(event) => handleImageUpload(event, "product")}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="admin-form-wide admin-product-section admin-gallery-editor">
                 <div className="admin-gallery-heading">
-                  <strong>{t.additionalImages}</strong>
+                  <strong>
+                    {t.additionalImages}{" "}
+                    <span className="admin-optional">{t.optional}</span>
+                  </strong>
                   <span>{t.galleryHint}</span>
                 </div>
                 <div className="admin-gallery-grid">
@@ -2210,16 +2417,7 @@ export default function AdminDashboard() {
                           {image ? (
                             <button
                               type="button"
-                              onClick={() =>
-                                setProductForm((current) => ({
-                                  ...current,
-                                  galleryImages: normalizeGallerySlots(
-                                    current.galleryImages
-                                  ).map((value, slot) =>
-                                    slot === index ? "" : value
-                                  ),
-                                }))
-                              }
+                              onClick={() => removeGalleryImage(index)}
                             >
                               {t.removeImage}
                             </button>
@@ -2232,128 +2430,42 @@ export default function AdminDashboard() {
                             <span>{t.emptyImageSlot}</span>
                           )}
                         </div>
+                        <button
+                          type="button"
+                          className="admin-gallery-upload admin-image-button"
+                          disabled={uploadingImage}
+                          onClick={() =>
+                            galleryImageInputRefs.current[index]?.click()
+                          }
+                        >
+                          {uploadingImage
+                            ? t.uploading
+                            : image
+                              ? t.replaceImage
+                              : t.addImage}
+                        </button>
                         <input
-                          value={image}
-                          placeholder={t.image}
+                          ref={(node) => {
+                            galleryImageInputRefs.current[index] = node;
+                          }}
+                          className="admin-image-input"
+                          type="file"
+                          accept={IMAGE_ACCEPT}
                           onChange={(event) =>
-                            setProductForm((current) => ({
-                              ...current,
-                              galleryImages: normalizeGallerySlots(
-                                current.galleryImages
-                              ).map((value, slot) =>
-                                slot === index
-                                  ? event.target.value
-                                  : value
-                              ),
-                            }))
+                            handleImageUpload(event, "gallery", index)
                           }
                         />
-                        <label className="admin-upload-button admin-gallery-upload">
-                          <input
-                            type="file"
-                            accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
-                            disabled={uploadingImage}
-                            onChange={(event) =>
-                              handleImageUpload(event, "gallery", index)
-                            }
-                          />
-                          <span>
-                            {uploadingImage
-                              ? t.uploading
-                              : image
-                                ? t.replaceImage
-                                : t.addImage}
-                          </span>
-                        </label>
                       </div>
                     )
                   )}
                 </div>
               </div>
-              {["ar", "fr", "en"].map((code) => (
-                <label key={`name-${code}`}>
-                  {code === "ar" ? t.nameAr : code === "fr" ? t.nameFr : t.nameEn}
-                  <input
-                    value={productForm.name[code]}
-                    onChange={(event) =>
-                      setProductForm((current) => ({
-                        ...current,
-                        name: { ...current.name, [code]: event.target.value },
-                      }))
-                    }
-                    required={code === "en"}
-                  />
-                </label>
-              ))}
-              {["ar", "fr", "en"].map((code) => (
-                <label key={`card-title-${code}`}>
-                  {code === "ar" ? t.cardTitleAr : code === "fr" ? t.cardTitleFr : t.cardTitleEn}
-                  <input
-                    value={productForm.cardTitle[code]}
-                    onChange={(event) =>
-                      setProductForm((current) => ({
-                        ...current,
-                        cardTitle: { ...current.cardTitle, [code]: event.target.value },
-                      }))
-                    }
-                  />
-                </label>
-              ))}
-              {["ar", "fr", "en"].map((code) => (
-                <label key={`description-${code}`} className="admin-form-wide">
-                  {code === "ar" ? t.descriptionAr : code === "fr" ? t.descriptionFr : t.descriptionEn}
-                  <textarea rows="3" value={productForm.description[code]} onChange={(event) =>
-                    setProductForm((current) => ({
-                      ...current,
-                      description: { ...current.description, [code]: event.target.value },
-                    }))
-                  } />
-                </label>
-              ))}
-              <label className="admin-form-wide">
-                {t.variants}
-                <textarea
-                  rows="8"
-                  value={productForm.variantsText}
-                  onChange={(event) =>
-                    setProductForm((current) => ({
-                      ...current,
-                      variantsText: event.target.value,
-                    }))
-                  }
-                />
-              </label>
-              <label className="admin-checkbox">
-                <input
-                  type="checkbox"
-                  checked={productForm.isActive}
-                  onChange={(event) =>
-                    setProductForm((current) => ({
-                      ...current,
-                      isActive: event.target.checked,
-                    }))
-                  }
-                />
-                {t.active}
-              </label>
-              <label className="admin-checkbox">
-                <input
-                  type="checkbox"
-                  checked={productForm.featured}
-                  onChange={(event) =>
-                    setProductForm((current) => ({
-                      ...current,
-                      featured: event.target.checked,
-                    }))
-                  }
-                />
-                {t.featured}
-              </label>
+
               <div className="admin-modal-actions admin-form-wide">
                 <button type="button" onClick={() => setProductForm(null)}>
                   {t.cancel}
                 </button>
-                <button type="submit" disabled={saving}>
+                <button type="submit" disabled={saving || uploadingImage}>
                   {saving ? t.loading : t.save}
                 </button>
               </div>

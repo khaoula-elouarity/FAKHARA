@@ -1,14 +1,19 @@
-import { mkdirSync, unlink } from "node:fs";
+import { unlink } from "node:fs";
 import path from "node:path";
 
 import env from "../config/env.js";
+import { deleteCloudinaryImage } from "./cloudinary.js";
 
 export const uploadsDir = path.join(env.dataDir, "uploads");
 
-mkdirSync(uploadsDir, { recursive: true });
-
 export function isUploadedImage(url) {
-  return typeof url === "string" && url.startsWith("/uploads/");
+  return (
+    typeof url === "string" &&
+    (url.startsWith("/uploads/") ||
+      url.startsWith(
+        `https://res.cloudinary.com/${env.cloudinary.cloudName}/image/upload/`
+      ))
+  );
 }
 
 /**
@@ -16,8 +21,19 @@ export function isUploadedImage(url) {
  * Only generated files inside the uploads directory can be removed; external
  * URLs and path traversal attempts are ignored.
  */
-export function removeUploadedImage(url) {
+export async function removeUploadedImage(url) {
   if (!isUploadedImage(url)) {
+    return;
+  }
+
+  if (url.startsWith("https://res.cloudinary.com/")) {
+    try {
+      await deleteCloudinaryImage(url);
+    } catch {
+      // Keep database edits successful when the storage provider is
+      // temporarily unavailable. Orphaned files can be cleaned up later.
+      console.warn("Could not remove an image from Cloudinary.");
+    }
     return;
   }
 
@@ -38,8 +54,8 @@ export function removeUploadedImage(url) {
   });
 }
 
-export function removeUploadedImages(urls) {
-  for (const url of new Set(urls.filter(Boolean))) {
-    removeUploadedImage(url);
-  }
+export async function removeUploadedImages(urls) {
+  await Promise.all(
+    [...new Set(urls.filter(Boolean))].map((url) => removeUploadedImage(url))
+  );
 }

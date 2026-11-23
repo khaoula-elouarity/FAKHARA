@@ -9,6 +9,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 
 import env from "./config/env.js";
+import { connectDatabase } from "./config/db.js";
 import {
   apiLimiter,
 } from "./middleware/rateLimits.js";
@@ -97,24 +98,39 @@ export function createApp() {
     })
   );
 
+  app.use("/api", async (request, _response, next) => {
+    if (request.path === "/health") {
+      next();
+      return;
+    }
+
+    try {
+      await connectDatabase();
+      next();
+    } catch (error) {
+      next(error);
+    }
+  });
   app.use("/api", apiLimiter, apiRoutes);
   app.use("/api", notFoundHandler);
 
   // Product/category images uploaded from the admin dashboard.
-  app.use(
-    "/uploads",
-    express.static(uploadsDir, {
-      index: false,
-      maxAge: "7d",
-    })
-  );
-  app.use("/uploads", (_request, response) => {
-    response.status(404).json({
-      success: false,
-      error: "image_not_found",
-      message: "Image not found.",
+  if (env.nodeEnv !== "production") {
+    app.use(
+      "/uploads",
+      express.static(uploadsDir, {
+        index: false,
+        maxAge: "7d",
+      })
+    );
+    app.use("/uploads", (_request, response) => {
+      response.status(404).json({
+        success: false,
+        error: "image_not_found",
+        message: "Image not found.",
+      });
     });
-  });
+  }
 
   const distDir = path.join(env.projectDir, "dist");
   const indexFile = path.join(distDir, "index.html");

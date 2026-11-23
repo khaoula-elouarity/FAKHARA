@@ -2,6 +2,7 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 
 import ContactMessage from "../models/ContactMessage.js";
+import Order from "../models/Order.js";
 import Product from "../models/Product.js";
 import Review from "../models/Review.js";
 import env from "../config/env.js";
@@ -77,6 +78,7 @@ export async function migrateLegacyData() {
   }
 
   await backfillReviewReferences();
+  await backfillOrderStatusHistory();
 }
 
 /**
@@ -122,6 +124,42 @@ async function backfillReviewReferences() {
   );
 
   console.log(`Linked ${reviews.length} review(s) to their product.`);
+}
+
+async function backfillOrderStatusHistory() {
+  const orders = await Order.find({
+    $or: [{ statusHistory: { $exists: false } }, { statusHistory: { $size: 0 } }],
+  }).lean();
+
+  if (orders.length === 0) {
+    return;
+  }
+
+  const operations = orders.map((order) => {
+    const createdAt = order.createdAt || order.updatedAt || new Date();
+    const history = [
+      { status: "pending", at: createdAt, source: "system", actor: null },
+    ];
+
+    if (order.status && order.status !== "pending") {
+      history.push({
+        status: order.status,
+        at: order.updatedAt || createdAt,
+        source: "system",
+        actor: null,
+      });
+    }
+
+    return {
+      updateOne: {
+        filter: { _id: order._id },
+        update: { $set: { statusHistory: history } },
+      },
+    };
+  });
+
+  await Order.bulkWrite(operations);
+  console.log(`Backfilled status history for ${orders.length} order(s).`);
 }
 
 export default migrateLegacyData;

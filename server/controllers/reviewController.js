@@ -45,6 +45,7 @@ async function buildSummary(productId, customerId) {
     reviews: reviews.map((review) => ({
       id: String(review._id),
       rating: review.rating,
+      customerName: review.customerName || "",
       review: review.review || "",
       createdAt: review.createdAt,
       updatedAt: review.updatedAt,
@@ -52,6 +53,7 @@ async function buildSummary(productId, customerId) {
     userRating: userRating
       ? {
           rating: userRating.rating,
+          customerName: userRating.customerName || "",
           review: userRating.review || "",
           createdAt: userRating.createdAt,
           updatedAt: userRating.updatedAt,
@@ -96,6 +98,12 @@ export const createProductReview = asyncHandler(async (request, response) => {
   }
 
   const customerId = customerSession.ensureCustomer(request, response);
+  const customerName = request.user
+    ? [request.user.firstName, request.user.lastName]
+        .filter(Boolean)
+        .join(" ")
+        .trim() || request.user.name || ""
+    : "";
   const existing = await Review.findOne({ productId, customerId });
   const product = await Product.findOne({ productId }).select("_id");
 
@@ -105,6 +113,7 @@ export const createProductReview = asyncHandler(async (request, response) => {
       $set: {
         rating: request.body.rating,
         review,
+        customerName,
         product: product?._id || null,
         user: request.user?._id || null,
       },

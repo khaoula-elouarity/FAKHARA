@@ -11,7 +11,8 @@ collections: "مجموعاتنا",
 contact: "تواصل معنا",
 home: "الرئيسية",
 about: "من نحن",
-customize: "اصنع هديتك",
+trackOrder: "تتبع طلبي",
+
 contactLink: "اتصل بنا",
 categories: [
 ["الطواجن", "/collections/tagines"],
@@ -31,7 +32,8 @@ collections: "Nos collections",
 contact: "Contact",
 home: "Accueil",
 about: "À propos",
-customize: "Créer votre cadeau",
+trackOrder: "Suivre ma commande",
+
 contactLink: "Nous contacter",
 categories: [
 ["Tajines", "/collections/tagines"],
@@ -51,7 +53,8 @@ collections: "Our collections",
 contact: "Contact",
 home: "Home",
 about: "About us",
-customize: "Create your gift",
+trackOrder: "Track My Order",
+
 contactLink: "Contact us",
 categories: [
 ["Tagines", "/collections/tagines"],
@@ -92,7 +95,7 @@ return (
       <h3>{content.explore}</h3>
       <Link to="/">{content.home}</Link>
       <Link to="/about">{content.about}</Link>
-      <Link to="/customize">{content.customize}</Link>
+      <Link to="/track-order">{content.trackOrder}</Link>
       <Link to="/contact">{content.contactLink}</Link>
     </div>
 

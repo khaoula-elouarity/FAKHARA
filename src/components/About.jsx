@@ -68,6 +68,11 @@ export default function About() {
           <p>{t.story}</p>
         </div>
         <div className="about-empty-art">
+          <img
+            src="/image/homee/tarath-pottery.jpeg"
+            alt="Moroccan Craftsmanship"
+            className="about-empty-art-image"
+          />
           <span>✧</span>
           <small>Moroccan Craftsmanship</small>
         </div>

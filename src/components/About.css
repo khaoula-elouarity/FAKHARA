@@ -11,9 +11,12 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background:
-    radial-gradient(circle at center, rgba(189,152,93,.10), transparent 55%),
-    var(--cream);
+  background-image:
+    linear-gradient(rgba(248, 244, 235, 0.88), rgba(248, 244, 235, 0.82)),
+    url("/image/torat.jpeg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .about-eyebrow {
@@ -77,6 +80,8 @@
 }
 
 .about-empty-art {
+  position: relative;
+  overflow: hidden;
   min-height: 340px;
   border: 1px solid var(--border);
   background:
@@ -89,11 +94,25 @@
   color: var(--gold);
 }
 
+.about-empty-art-image {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
 .about-empty-art span {
+  position: relative;
+  z-index: 1;
   font-size: 65px;
 }
 
 .about-empty-art small {
+  position: relative;
+  z-index: 1;
   margin-top: 15px;
   letter-spacing: 3px;
   font-size: 10px;

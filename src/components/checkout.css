@@ -385,6 +385,26 @@
   font-size: 18px;
 }
 
+.checkout-success-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 26px;
+}
+
+.checkout-secondary-link {
+  color: var(--teal);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.checkout-secondary-link:hover {
+  text-decoration: underline;
+}
+
 .checkout-empty h1 {
   font-size: 23px;
   font-weight: 500;

@@ -10,6 +10,7 @@ import { CustomerAuthProvider } from "./context/CustomerAuthContext.jsx";
 
 import "./index.css";
 import "./App.css";
+import "./responsive.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

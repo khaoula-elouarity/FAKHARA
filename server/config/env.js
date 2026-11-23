@@ -22,6 +22,7 @@ dotenv.config({
 const dataDir = path.resolve(
   process.env.FAKHARA_DATA_DIR || path.join(projectDir, "server", "data")
 );
+const nodeEnv = process.env.NODE_ENV || "development";
 
 function parseOrigins(value) {
   return String(value || "")
@@ -38,10 +39,24 @@ function resolveClientOrigins() {
     ]),
   ];
 
-  return origins.length ? origins : ["http://localhost:5173"];
+  if (origins.length) {
+    return origins;
+  }
+
+  if (nodeEnv === "production") {
+    throw new Error(
+      "CLIENT_URL (or CLIENT_ORIGIN) must contain the production frontend origin."
+    );
+  }
+
+  return ["http://localhost:5173"];
 }
 
-mkdirSync(dataDir, { recursive: true });
+// Vercel's deployed source filesystem is read-only. File-backed development
+// helpers may create their directory only outside production.
+if (nodeEnv !== "production") {
+  mkdirSync(dataDir, { recursive: true });
+}
 
 function loadJwtSecret() {
   if (process.env.JWT_SECRET) {
@@ -52,7 +67,7 @@ function loadJwtSecret() {
     return process.env.JWT_SECRET;
   }
 
-  if (process.env.NODE_ENV === "production") {
+  if (nodeEnv === "production") {
     throw new Error("JWT_SECRET is required in production.");
   }
 
@@ -70,19 +85,39 @@ function loadJwtSecret() {
   return secret;
 }
 
+const mongoUri = process.env.MONGODB_URI || "";
+if (nodeEnv === "production" && !mongoUri) {
+  throw new Error("MONGODB_URI is required in production.");
+}
+
+const cloudinary = {
+  cloudName: process.env.CLOUDINARY_CLOUD_NAME || "",
+  apiKey: process.env.CLOUDINARY_API_KEY || "",
+  apiSecret: process.env.CLOUDINARY_API_SECRET || "",
+};
+if (
+  nodeEnv === "production" &&
+  Object.values(cloudinary).some((value) => !value)
+) {
+  throw new Error(
+    "CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET are required in production."
+  );
+}
+
 export const env = {
-  nodeEnv: process.env.NODE_ENV || "development",
+  nodeEnv,
   port: Number(process.env.PORT) || 5000,
   host: process.env.HOST || "0.0.0.0",
   projectDir,
   dataDir,
-  mongoUri: process.env.MONGODB_URI || "",
+  mongoUri,
   mongoDbName: process.env.MONGO_DB_NAME || "fakhara",
   mongoMemoryDbPath:
     process.env.MONGO_MEMORY_DB_PATH || path.join(dataDir, "mongodb"),
   jwtSecret: loadJwtSecret(),
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || "7d",
   clientOrigins: resolveClientOrigins(),
+  cloudinary,
   mailFrom: process.env.MAIL_FROM || "",
   resendApiKey: process.env.RESEND_API_KEY || "",
   adminName: process.env.ADMIN_NAME || "FAKHARA Admin",

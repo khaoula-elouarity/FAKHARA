@@ -12,6 +12,7 @@ const reviewSchema = new Schema(
     // Mongoose reference to the registered customer, when the review was
     // written by a logged-in user.
     user: { type: Schema.Types.ObjectId, ref: "User", default: null, index: true },
+    customerName: { type: String, default: "", trim: true, maxlength: 120 },
     rating: { type: Number, required: true, min: 1, max: 5 },
     review: { type: String, default: "", trim: true, maxlength: 1000 },
   },

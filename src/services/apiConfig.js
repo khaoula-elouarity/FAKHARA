@@ -7,13 +7,16 @@
  */
 
 const configuredBaseUrl = (import.meta.env.VITE_API_URL || "").trim();
+const productionApiUrl = "https://fakhara-backend.vercel.app/api";
 
 /**
  * Normalized base URL without a trailing slash.
  * Empty string means "same origin": requests go to /api/... and are
  * forwarded to the backend by the Vite dev proxy (vite.config.js).
  */
-export const API_BASE_URL = configuredBaseUrl.replace(/\/+$/, "");
+export const API_BASE_URL = (
+  configuredBaseUrl || (import.meta.env.PROD ? productionApiUrl : "")
+).replace(/\/+$/, "");
 
 /** True when the frontend talks to the backend on a different origin. */
 export const IS_ABSOLUTE_API_URL = API_BASE_URL !== "";

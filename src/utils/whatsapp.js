@@ -32,25 +32,36 @@ export function buildWhatsAppLink(
   return message ? `${baseUrl}?text=${encodeURIComponent(message)}` : baseUrl;
 }
 
-export function buildProductInquiryMessage(productName, productUrl) {
+export function buildProductInquiryMessage(
+  productName,
+  productUrl,
+  price,
+  currency = "DH"
+) {
   const name = String(productName || "").trim() || "منتج فخاري";
-
-  return [
-    "السلام عليكم، أرغب في الاستفسار عن هذا المنتج من متجر فخارة:",
+  const lines = [
+    "السلام عليكم، أرغب في طلب هذا المنتج من متجر فخارة:",
     name,
-    productUrl,
-  ]
-    .filter(Boolean)
-    .join("\n");
+  ];
+
+  if (price !== undefined && price !== null && price !== "") {
+    lines.push(`الثمن: ${price} ${currency}`);
+  }
+
+  lines.push(productUrl);
+
+  return lines.filter(Boolean).join("\n");
 }
 
 export function buildProductWhatsAppLink(
   value,
   productName,
-  productUrl
+  productUrl,
+  price,
+  currency
 ) {
   return buildWhatsAppLink(
     value,
-    buildProductInquiryMessage(productName, productUrl)
+    buildProductInquiryMessage(productName, productUrl, price, currency)
   );
 }

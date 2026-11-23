@@ -98,11 +98,6 @@ export default function ProductDetails() {
   const productPageUrl = `${window.location.origin}/product/${encodeURIComponent(
     product.id
   )}`;
-  const whatsappProductLink = buildProductWhatsAppLink(
-    whatsappNumber,
-    productName,
-    productPageUrl
-  );
 
   const variants = Array.isArray(product.images) ? product.images : [];
   const galleryItems = [];
@@ -159,6 +154,13 @@ export default function ProductDetails() {
     selectedVariant?.price !== undefined
       ? selectedVariant.price
       : product.price;
+  const whatsappProductLink = buildProductWhatsAppLink(
+    whatsappNumber,
+    productName,
+    productPageUrl,
+    displayedPrice,
+    t.currency
+  );
 
   function selectGalleryImage(index) {
     setActiveImage(index);
@@ -322,7 +324,11 @@ export default function ProductDetails() {
             </a>
 
             <Link
-              to={`/collections/${product.category}`}
+              to={
+                product.category === "featured"
+                  ? "/"
+                  : `/collections/${product.category}`
+              }
               className="product-back-link"
             >
               {language === "ar" ? "→" : "←"} {t.back}

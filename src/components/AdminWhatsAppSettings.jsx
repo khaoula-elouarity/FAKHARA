@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 
 import { useLanguage } from "../context/Languagecontext.jsx";
+import { useStore } from "../context/StoreContext.jsx";
 import { useToast } from "../context/ToastContext.jsx";
 import { fetchAdminSettings, updateAdminSettings } from "../services/api.js";
 import {
@@ -81,6 +82,7 @@ const labels = {
 
 export default function AdminWhatsAppSettings() {
   const { language } = useLanguage();
+  const { reloadSettings } = useStore();
   const { addToast } = useToast();
   const t = labels[language] || labels.en;
 
@@ -157,6 +159,7 @@ export default function AdminWhatsAppSettings() {
       setForm(displayNumber);
       setCurrentNumber(displayNumber);
       setSaved(true);
+      await reloadSettings().catch(() => {});
       addToast({ type: "success", message: t.saved });
     } catch (saveError) {
       setError(

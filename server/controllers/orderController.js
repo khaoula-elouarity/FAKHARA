@@ -1,3 +1,5 @@
+import { createHash, timingSafeEqual } from "node:crypto";
+
 import Order, { ORDER_STATUSES } from "../models/Order.js";
 import Product from "../models/Product.js";
 import User from "../models/User.js";
@@ -15,6 +17,117 @@ import {
 
 const MAX_ITEMS = 50;
 const MAX_QUANTITY = 99;
+
+function normalizePhoneDigits(value) {
+  let digits = String(value || "").replace(/\D/g, "");
+
+  if (digits.startsWith("00212")) {
+    digits = digits.slice(2);
+  }
+
+  if (digits.startsWith("212") && digits.length === 12) {
+    digits = `0${digits.slice(3)}`;
+  }
+
+  return digits;
+}
+
+function phoneHash(value) {
+  return createHash("sha256").update(normalizePhoneDigits(value)).digest();
+}
+
+function normalizeHistoryEntry(entry) {
+  return {
+    status: entry.status,
+    at: entry.at,
+    source: entry.source || "system",
+  };
+}
+
+function getStatusHistory(order) {
+  const stored = Array.isArray(order.statusHistory) ? order.statusHistory : [];
+
+  if (stored.length > 0) {
+    return [...stored]
+      .sort((a, b) => new Date(a.at) - new Date(b.at))
+      .map(normalizeHistoryEntry);
+  }
+
+  const createdAt = order.createdAt || order.updatedAt || new Date();
+  const fallback = [
+    { status: "pending", at: createdAt, source: "system" },
+  ];
+
+  if (order.status !== "pending") {
+    fallback.push({
+      status: order.status,
+      at: order.updatedAt || createdAt,
+      source: "system",
+    });
+  }
+
+  return fallback;
+}
+
+function maskPhone(value) {
+  const digits = normalizePhoneDigits(value);
+
+  if (digits.length < 4) {
+    return "****";
+  }
+
+  return `${"•".repeat(digits.length - 4)}${digits.slice(-4)}`;
+}
+
+function buildTrackingOrder(order) {
+  return {
+    orderNumber: order.orderNumber,
+    status: order.status,
+    createdAt: order.createdAt,
+    updatedAt: order.updatedAt,
+    customer: {
+      fullName: order.customer.fullName,
+      city: order.customer.city,
+      phone: maskPhone(order.customer.phone),
+    },
+    items: order.items.map((item) => ({
+      productId: item.productId,
+      name: item.name,
+      image: item.image,
+      variant: item.variant
+        ? { key: item.variant.key, name: item.variant.name }
+        : null,
+      price: item.price,
+      quantity: item.quantity,
+    })),
+    subtotal: order.subtotal,
+    deliveryFee: order.deliveryFee,
+    total: order.total,
+    paymentMethod: order.paymentMethod,
+    statusHistory: getStatusHistory(order),
+    canConfirmReceipt: order.status === "out_for_delivery",
+  };
+}
+
+async function findOrderForTracking(body) {
+  const orderNumber = readString(body?.orderNumber, "orderNumber", {
+    max: 40,
+  }).toUpperCase();
+  const phone = readPhone(body?.phone);
+  const order = await Order.findOne({ orderNumber }).lean();
+  const suppliedHash = phoneHash(phone);
+  const expectedHash = order
+    ? phoneHash(order.customer.phone)
+    : Buffer.alloc(suppliedHash.length);
+
+  if (!order || !timingSafeEqual(suppliedHash, expectedHash)) {
+    throw ApiError.notFound("verification_failed", {
+      message: "Order number and phone number do not match.",
+    });
+  }
+
+  return order;
+}
 
 function normalizeCustomer(body) {
   return {
@@ -190,6 +303,9 @@ export const createOrder = asyncHandler(async (request, response) => {
     paymentMethod: "cash_on_delivery",
     status: "pending",
     user: currentUser ? currentUser._id : null,
+    statusHistory: [
+      { status: "pending", at: new Date(), source: "system" },
+    ],
   });
 
   await order.save();
@@ -290,19 +406,95 @@ export const updateOrderStatus = asyncHandler(async (request, response) => {
     });
   }
 
-  const order = await Order.findByIdAndUpdate(
-    request.params.orderId,
-    { $set: { status } },
-    { returnDocument: "after", runValidators: true }
-  );
+  if (status === "delivered") {
+    throw ApiError.conflict("delivery_confirmation_required", {
+      message: "Only the customer can confirm receipt of an order.",
+    });
+  }
+
+  const order = await Order.findById(request.params.orderId);
 
   if (!order) {
     throw ApiError.notFound("order_not_found");
   }
 
+  if (order.status === status) {
+    throw ApiError.conflict("status_unchanged");
+  }
+
+  if (order.status === "cancelled") {
+    throw ApiError.conflict("invalid_status_transition");
+  }
+
+  order.status = status;
+  order.statusHistory.push({
+    status,
+    at: new Date(),
+    source: "admin",
+    actor: request.admin?._id || null,
+  });
+  await order.save();
+
   response.json({
     success: true,
     order: order.toJSON(),
+  });
+});
+
+export const trackOrder = asyncHandler(async (request, response) => {
+  const order = await findOrderForTracking(request.body);
+
+  response.json({
+    success: true,
+    order: buildTrackingOrder(order),
+  });
+});
+
+export const confirmOrderReceipt = asyncHandler(async (request, response) => {
+  const order = await findOrderForTracking(request.body);
+
+  if (order.status === "delivered") {
+    response.json({
+      success: true,
+      order: buildTrackingOrder(order),
+    });
+    return;
+  }
+
+  const now = new Date();
+  const updatedOrder = await Order.findOneAndUpdate(
+    { _id: order._id, status: "out_for_delivery" },
+    {
+      $set: { status: "delivered" },
+      $push: {
+        statusHistory: {
+          status: "delivered",
+          at: now,
+          source: "customer",
+          actor: null,
+        },
+      },
+    },
+    { returnDocument: "after", runValidators: true }
+  );
+
+  if (!updatedOrder) {
+    const freshOrder = await Order.findById(order._id).lean();
+
+    if (freshOrder?.status === "delivered") {
+      response.json({
+        success: true,
+        order: buildTrackingOrder(freshOrder),
+      });
+      return;
+    }
+
+    throw ApiError.conflict("delivery_not_ready");
+  }
+
+  response.json({
+    success: true,
+    order: buildTrackingOrder(updatedOrder),
   });
 });
 

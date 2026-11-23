@@ -5,7 +5,7 @@ import { useStore } from "../context/StoreContext.jsx";
 import { useToast } from "../context/ToastContext.jsx";
 import { useCustomerAuth } from "../context/CustomerAuthContext.jsx";
 import deliveryPrices from "../data/delivery";
-import { createOrder } from "../services/api.js";
+import { ApiRequestError, createOrder } from "../services/api.js";
 import {
   cartLineKey,
   getFeedback,
@@ -88,6 +88,15 @@ export default function Checkout() {
       confirm: "تأكيد الطلب",
       required: "المرجو ملء جميع الخانات الضرورية بشكل صحيح.",
       empty: "السلة فارغة. اختاري منتجاتك أولاً.",
+      saveFailed: "تعذر حفظ الطلب. المرجو المحاولة مرة أخرى.",
+      serverUnavailable: "الخادم غير متاح حالياً. المرجو المحاولة بعد قليل.",
+      databaseUnavailable:
+        "تعذر الاتصال بقاعدة بيانات الطلبات. المرجو المحاولة بعد قليل.",
+      invalidOrder:
+        "بعض بيانات الطلب غير صحيحة. راجع المعلومات وحاول مجدداً.",
+      productUnavailable:
+        "أحد المنتجات لم يعد متاحاً. راجع السلة وحاول مجدداً.",
+      rateLimited: "طلبات كثيرة جداً. انتظري قليلاً ثم حاولي مجدداً.",
       success: "تم تسجيل طلبك بنجاح!",
       orderNumber: "رقم الطلب",
       thanks:
@@ -97,6 +106,7 @@ export default function Checkout() {
       paymentMethod: "طريقة الأداء",
       quantity: "الكمية",
       home: "العودة للرئيسية",
+      trackThisOrder: "تتبع هذا الطلب",
       currency: "درهم",
     },
     fr: {
@@ -118,6 +128,15 @@ export default function Checkout() {
       confirm: "Confirmer la commande",
       required: "Veuillez remplir correctement les champs obligatoires.",
       empty: "Votre panier est vide.",
+      saveFailed: "Impossible d'enregistrer la commande. Réessayez.",
+      serverUnavailable: "Le serveur est momentanément indisponible. Réessayez dans un instant.",
+      databaseUnavailable:
+        "Impossible de joindre la base des commandes. Réessayez dans un instant.",
+      invalidOrder:
+        "Certaines informations de la commande sont incorrectes. Vérifiez-les et réessayez.",
+      productUnavailable:
+        "Un produit n'est plus disponible. Vérifiez votre panier et réessayez.",
+      rateLimited: "Trop de demandes. Patientez un peu puis réessayez.",
       success: "Votre commande a été enregistrée !",
       orderNumber: "Numéro de commande",
       thanks:
@@ -127,6 +146,7 @@ export default function Checkout() {
       paymentMethod: "Mode de paiement",
       quantity: "Quantité",
       home: "Retour à l'accueil",
+      trackThisOrder: "Suivre cette commande",
       currency: "DH",
     },
     en: {
@@ -148,6 +168,15 @@ export default function Checkout() {
       confirm: "Confirm order",
       required: "Please complete all required fields correctly.",
       empty: "Your cart is empty.",
+      saveFailed: "Could not save the order. Please try again.",
+      serverUnavailable: "The server is temporarily unavailable. Please try again shortly.",
+      databaseUnavailable:
+        "Could not reach the order database. Please try again shortly.",
+      invalidOrder:
+        "Some order details are incorrect. Review them and try again.",
+      productUnavailable:
+        "A product is no longer available. Review your cart and try again.",
+      rateLimited: "Too many requests. Wait a moment and try again.",
       success: "Your order has been recorded!",
       orderNumber: "Order number",
       thanks:
@@ -157,6 +186,7 @@ export default function Checkout() {
       paymentMethod: "Payment method",
       quantity: "Quantity",
       home: "Back to home",
+      trackThisOrder: "Track this order",
       currency: "MAD",
     },
   };
@@ -243,18 +273,39 @@ export default function Checkout() {
           quantity: item.quantity,
         })),
       });
+      const order = payload?.order;
+
+      if (!payload?.success || !order?.orderNumber) {
+        throw new ApiRequestError("incomplete_order_response");
+      }
 
       localStorage.removeItem("fakhara-cart");
-      setConfirmedOrder(payload.order);
+      setConfirmedOrder(order);
       addToast({ type: "success", message: feedback.orderSaved });
-    } catch {
-      setError(
-        language === "ar"
-          ? "تعذر حفظ الطلب. المرجو المحاولة مرة أخرى."
-          : language === "fr"
-          ? "Impossible d'enregistrer la commande. Réessayez."
-          : "Could not save the order. Please try again."
-      );
+    } catch (orderError) {
+      const code = orderError?.code;
+
+      if (code === "network_error") {
+        setError(t.serverUnavailable);
+      } else if (code === "database_unavailable") {
+        setError(t.databaseUnavailable);
+      } else if (code === "rate_limit_exceeded") {
+        setError(t.rateLimited);
+      } else if (
+        code === "product_not_available" ||
+        code === "variant_not_available"
+      ) {
+        setError(t.productUnavailable);
+      } else if (
+        code?.startsWith("invalid_") ||
+        code === "validation_error" ||
+        code === "order_items_required" ||
+        code === "quantity_too_large"
+      ) {
+        setError(t.invalidOrder);
+      } else {
+        setError(t.saveFailed);
+      }
     } finally {
       setSubmitting(false);
     }
@@ -334,9 +385,19 @@ export default function Checkout() {
             </strong>
           </div>
 
-          <Link to="/" className="checkout-submit">
-            {t.home}
-          </Link>
+          <div className="checkout-success-actions">
+            <Link
+              to={`/track-order?order=${encodeURIComponent(
+                confirmedOrder.orderNumber
+              )}`}
+              className="checkout-submit"
+            >
+              {t.trackThisOrder}
+            </Link>
+            <Link to="/" className="checkout-secondary-link">
+              {t.home}
+            </Link>
+          </div>
         </section>
       </main>
     );

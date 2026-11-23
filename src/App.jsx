@@ -11,12 +11,13 @@ import Home from "./components/Home.jsx";
 import Collection from "./components/collection.jsx";
 import Collections from "./components/Collections.jsx";
 import ProductDetails from "./components/productdetails.jsx";
+import DiscoveryPage from "./components/DiscoveryPage.jsx";
 import Cart from "./components/Cart.jsx";
 import Wishlist from "./components/Wishlist.jsx";
 import Checkout from "./components/checkout.jsx";
+import TrackOrder from "./components/TrackOrder.jsx";
 import About from "./components/About.jsx";
 import Contact from "./components/contact.jsx";
-import CustomizeGift from "./components/CustomizeGift.jsx";
 import ProductSearch from "./components/ProductSearch.jsx";
 import AdminDashboard from "./components/admindashboard.jsx";
 import Account from "./components/account/Account.jsx";
@@ -55,12 +56,13 @@ export default function App() {
         <Route path="/collections" element={<Collections />} />
         <Route path="/collections/:category" element={<Collection />} />
         <Route path="/product/:id" element={<ProductDetails />} />
+        <Route path="/discover/:itemId" element={<DiscoveryPage />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/customize" element={<CustomizeGift />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/track-order" element={<TrackOrder />} />
         <Route path="/search" element={<ProductSearch />} />
         <Route path="/account/login" element={<Login />} />
         <Route path="/account/register" element={<Register />} />
@@ -88,6 +90,8 @@ export default function App() {
         <Route path="/admin/messages" element={<AdminDashboard />} />
         <Route path="/admin/customizations" element={<AdminDashboard />} />
         <Route path="/admin/customers" element={<AdminDashboard />} />
+        <Route path="/admin/featured-section" element={<AdminDashboard />} />
+        <Route path="/admin/discovery-pages" element={<AdminDashboard />} />
         <Route path="/admin/settings" element={<AdminDashboard />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

@@ -1,9 +1,11 @@
 import { randomUUID } from "node:crypto";
+import { mkdirSync } from "node:fs";
 import path from "node:path";
 
 import multer from "multer";
 
 import ApiError from "../utils/ApiError.js";
+import env from "../config/env.js";
 import { uploadsDir } from "../utils/uploads.js";
 
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
@@ -16,8 +18,9 @@ const MIME_EXTENSIONS = new Map([
   ["image/avif", ".avif"],
 ]);
 
-const storage = multer.diskStorage({
+const diskStorage = multer.diskStorage({
   destination: (_request, _file, callback) => {
+    mkdirSync(uploadsDir, { recursive: true });
     callback(null, uploadsDir);
   },
   filename: (_request, file, callback) => {
@@ -29,7 +32,9 @@ const storage = multer.diskStorage({
 });
 
 const uploader = multer({
-  storage,
+  // Production forwards the image bytes to durable object storage. Local disk
+  // storage remains available for development only.
+  storage: env.nodeEnv === "production" ? multer.memoryStorage() : diskStorage,
   limits: { fileSize: MAX_IMAGE_BYTES, files: 1 },
   fileFilter: (_request, file, callback) => {
     if (!MIME_EXTENSIONS.has(file.mimetype)) {

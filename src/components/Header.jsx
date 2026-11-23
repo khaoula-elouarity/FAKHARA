@@ -46,6 +46,7 @@ export default function Header() {
     { label: t.home, path: "/" },
     { label: t.collections, path: "/collections" },
     { label: t.about, path: "/about" },
+    { label: t.trackOrder, path: "/track-order" },
     { label: t.contact, path: "/contact" },
   ];
 
@@ -67,7 +68,9 @@ export default function Header() {
 
         {/* Brand logo */}
         <Link to="/" className="brand-logo" onClick={closeMenu}>
-          <span className="brand-symbol">F</span>
+          <span className="brand-symbol">
+            <img src="/image/logo/logo-fakhara.png" alt="" />
+          </span>
 
           <span className="brand-name">
             FAKHARA
@@ -89,14 +92,6 @@ export default function Header() {
               {item.label}
             </NavLink>
           ))}
-
-          <Link
-            to="/customize"
-            className="mobile-customize-link"
-            onClick={closeMenu}
-          >
-            {t.customize}
-          </Link>
         </nav>
 
         {/* Header actions */}
@@ -216,12 +211,6 @@ export default function Header() {
             <option value="en">EN</option>
           </select>
         </div>
-
-        {/* Customize button */}
-        <Link to="/customize" className="header-customize-button">
-          {t.customize}
-          <span>↗</span>
-        </Link>
 
       </div>
 

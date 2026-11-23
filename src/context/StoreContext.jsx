@@ -107,12 +107,12 @@ export function StoreProvider({ children }) {
 
     fetchPublicSettings({ signal: controller.signal })
       .then((payload) => {
-        const whatsappNumber = payload?.settings?.whatsappNumber;
+        const settings = payload?.settings;
 
-        if (whatsappNumber) {
+        if (settings) {
           setSiteSettings((current) => ({
             ...current,
-            ...payload.settings,
+            ...settings,
           }));
         }
       })
@@ -162,6 +162,20 @@ export function StoreProvider({ children }) {
   );
 
   const reload = useCallback(() => loadCatalog(), [loadCatalog]);
+  const setFeaturedSection = useCallback((featuredSection) => {
+    setSiteSettings((current) => ({ ...current, featuredSection }));
+  }, []);
+
+  const reloadSettings = useCallback(async () => {
+    const payload = await fetchPublicSettings();
+
+    if (payload?.settings) {
+      setSiteSettings((current) => ({
+        ...current,
+        ...payload.settings,
+      }));
+    }
+  }, []);
 
   const value = useMemo(
     () => ({
@@ -172,9 +186,15 @@ export function StoreProvider({ children }) {
       loading,
       error,
       reload,
+      reloadSettings,
+      setFeaturedSection,
       toggleFavorite,
       whatsappNumber:
         siteSettings?.whatsappNumber || DEFAULT_WHATSAPP_NUMBER,
+      homepage: siteSettings?.homepage || null,
+      featuredSection: siteSettings?.featuredSection || null,
+      featuredItems: siteSettings?.featuredItems || [],
+      discoveryPages: siteSettings?.discoveryPages || [],
       isFavorite: (productId) => favorites.includes(productId),
       getProduct: (productId) =>
         products.find((product) => product.id === productId) || null,
@@ -187,6 +207,8 @@ export function StoreProvider({ children }) {
       loading,
       error,
       reload,
+      reloadSettings,
+      setFeaturedSection,
       toggleFavorite,
       siteSettings,
     ]
