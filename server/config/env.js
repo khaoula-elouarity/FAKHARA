@@ -24,29 +24,49 @@ const dataDir = path.resolve(
 );
 const nodeEnv = process.env.NODE_ENV || "development";
 
+const productionClientOrigin = "https://my-fakhara.vercel.app";
+
+function normalizeOrigin(value) {
+  try {
+    const url = new URL(value);
+    if (!["http:", "https:"].includes(url.protocol)) {
+      return "";
+    }
+
+    return url.origin;
+  } catch {
+    return "";
+  }
+}
+
 function parseOrigins(value) {
   return String(value || "")
     .split(",")
     .map((origin) => origin.trim())
+    .map(normalizeOrigin)
     .filter(Boolean);
 }
 
 function resolveClientOrigins() {
+  const configuredOrigins = parseOrigins(process.env.CLIENT_URL);
+  const configuredAlternateOrigins = parseOrigins(process.env.CLIENT_ORIGIN);
+
+  if (nodeEnv === "production") {
+    return [
+      ...new Set([
+        productionClientOrigin,
+        ...configuredOrigins,
+        ...configuredAlternateOrigins,
+      ]),
+    ];
+  }
+
   const origins = [
-    ...new Set([
-      ...parseOrigins(process.env.CLIENT_URL),
-      ...parseOrigins(process.env.CLIENT_ORIGIN),
-    ]),
+    ...new Set([...configuredOrigins, ...configuredAlternateOrigins]),
   ];
 
   if (origins.length) {
     return origins;
-  }
-
-  if (nodeEnv === "production") {
-    throw new Error(
-      "CLIENT_URL (or CLIENT_ORIGIN) must contain the production frontend origin."
-    );
   }
 
   return ["http://localhost:5173"];
@@ -95,13 +115,13 @@ const cloudinary = {
   apiKey: process.env.CLOUDINARY_API_KEY || "",
   apiSecret: process.env.CLOUDINARY_API_SECRET || "",
 };
-if (
-  nodeEnv === "production" &&
-  Object.values(cloudinary).some((value) => !value)
-) {
-  throw new Error(
-    "CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET are required in production."
-  );
+
+export function requireCloudinaryConfig() {
+  if (Object.values(cloudinary).some((value) => !value)) {
+    throw new Error(
+      "CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET are required for image uploads."
+    );
+  }
 }
 
 export const env = {

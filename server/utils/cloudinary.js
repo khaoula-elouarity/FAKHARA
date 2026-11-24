@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 
-import env from "../config/env.js";
+import env, { requireCloudinaryConfig } from "../config/env.js";
 
 function signParameters(parameters) {
   const values = Object.entries(parameters)
@@ -15,6 +15,8 @@ function signParameters(parameters) {
 }
 
 async function cloudinaryRequest(action, parameters, file) {
+  requireCloudinaryConfig();
+
   const timestamp = Math.floor(Date.now() / 1000);
   const signedParameters = { ...parameters, timestamp };
   const form = new FormData();

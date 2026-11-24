@@ -6,28 +6,61 @@ import {
 } from "node:crypto";
 import {
   existsSync,
+  mkdirSync,
   readFileSync,
   writeFileSync,
 } from "node:fs";
+import { homedir } from "node:os";
 import path from "node:path";
 
 const COOKIE_NAME = "fakhara_rating_customer";
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365 * 2;
+const MIN_SIGNING_SECRET_LENGTH = 32;
+const SIGNING_SECRET_ENV_NAMES = ["FAKHARA_RATING_SECRET", "RATING_SECRET"];
 const CUSTOMER_ID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
+function isServerlessRuntime() {
+  return process.env.NODE_ENV === "production" || Boolean(process.env.VERCEL);
+}
+
+function localSecretPath(dataDir) {
+  const legacySecretPath = path.join(dataDir, ".rating-secret");
+
+  if (existsSync(legacySecretPath)) {
+    return legacySecretPath;
+  }
+
+  const stateDir =
+    process.env.FAKHARA_LOCAL_STATE_DIR || path.join(homedir(), ".fakhara");
+  mkdirSync(stateDir, { recursive: true, mode: 0o700 });
+  return path.join(stateDir, ".rating-secret");
+}
+
 function loadSigningSecret(dataDir) {
-  if (process.env.FAKHARA_RATING_SECRET) {
-    if (process.env.FAKHARA_RATING_SECRET.length < 32) {
+  for (const name of SIGNING_SECRET_ENV_NAMES) {
+    const value = process.env[name];
+
+    if (!value) {
+      continue;
+    }
+
+    if (value.length < MIN_SIGNING_SECRET_LENGTH) {
       throw new Error(
-        "FAKHARA_RATING_SECRET must contain at least 32 characters."
+        `${name} must contain at least ${MIN_SIGNING_SECRET_LENGTH} characters.`
       );
     }
 
-    return process.env.FAKHARA_RATING_SECRET;
+    return value;
   }
 
-  const secretPath = path.join(dataDir, ".rating-secret");
+  if (isServerlessRuntime()) {
+    throw new Error(
+      "FAKHARA_RATING_SECRET or RATING_SECRET must be set in production."
+    );
+  }
+
+  const secretPath = localSecretPath(dataDir);
 
   if (existsSync(secretPath)) {
     return readFileSync(secretPath, "utf8").trim();

@@ -87,6 +87,8 @@ export function createApp() {
       origin: corsOrigin,
       credentials: true,
       methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+      preflightContinue: false,
+      optionsSuccessStatus: 204,
     })
   );
   app.use(express.json({ limit: "1mb" }));

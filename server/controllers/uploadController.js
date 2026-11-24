@@ -10,8 +10,8 @@ export const uploadProductImage = asyncHandler(async (request, response) => {
 
   const storedImage =
     env.nodeEnv === "production"
-      ? await uploadImageToCloudinary(request.file).catch(() => {
-          console.error("Product image upload failed.");
+      ? await uploadImageToCloudinary(request.file).catch((error) => {
+          console.error("Product image upload failed:", error?.message || error);
           throw new ApiError(503, "image_storage_unavailable");
         })
       : {
