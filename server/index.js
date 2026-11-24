@@ -4,6 +4,11 @@ import { createApp } from "./app.js";
 
 const app = createApp();
 
+export const config = {
+  runtime: "nodejs",
+  maxDuration: 60,
+};
+
 export { app };
 export default app;
 
