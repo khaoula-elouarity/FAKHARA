@@ -24,7 +24,7 @@ const dataDir = path.resolve(
 );
 const nodeEnv = process.env.NODE_ENV || "development";
 
-const productionClientOrigin = "https://my-fakhara.vercel.app";
+const productionClientOrigin = "https://fakhara-elouarity.vercel.app";
 
 function normalizeOrigin(value) {
   try {

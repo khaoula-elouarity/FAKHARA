@@ -12,3 +12,6 @@ data/
 # Logs
 *.log
 npm-debug.log*
+
+# Vercel CLI local configuration
+.vercel/
