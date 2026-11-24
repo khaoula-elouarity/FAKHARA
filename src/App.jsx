@@ -7,13 +7,13 @@ import Loading from "./components/Loading.jsx";
 import ScrollToTop from "./components/ScrollToTop.jsx";
 import WhatsAppButton from "./components/WhatsAppButton.jsx";
 
-import Home from "./components/Home.jsx";
+import Home from "./components/home.jsx";
 import Collection from "./components/collection.jsx";
 import Collections from "./components/Collections.jsx";
 import ProductDetails from "./components/productdetails.jsx";
 import DiscoveryPage from "./components/DiscoveryPage.jsx";
-import Cart from "./components/Cart.jsx";
-import Wishlist from "./components/Wishlist.jsx";
+import Cart from "./components/cart.jsx";
+import Wishlist from "./components/wishlist.jsx";
 import Checkout from "./components/checkout.jsx";
 import TrackOrder from "./components/TrackOrder.jsx";
 import About from "./components/About.jsx";
