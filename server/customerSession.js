@@ -106,10 +106,18 @@ function isSecureRequest(request) {
 }
 
 export function createCustomerSession({ dataDir }) {
-  const secret = loadSigningSecret(dataDir);
+  let secret = null;
+
+  function getSecret() {
+    if (secret === null) {
+      secret = loadSigningSecret(dataDir);
+    }
+
+    return secret;
+  }
 
   function sign(customerId) {
-    return createHmac("sha256", secret)
+    return createHmac("sha256", getSecret())
       .update(customerId)
       .digest("base64url");
   }
