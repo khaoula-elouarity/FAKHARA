@@ -7,7 +7,7 @@
  */
 
 const configuredBaseUrl = (import.meta.env.VITE_API_URL || "").trim();
-const productionApiUrl = "https://fakhara-elouarity-backend.vercel.app/api";
+const productionApiUrl = "https://fakhara-backend.vercel.app/api";
 
 /**
  * Normalized base URL without a trailing slash.
