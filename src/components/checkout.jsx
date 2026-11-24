@@ -10,7 +10,7 @@ import {
   cartLineKey,
   getFeedback,
 } from "../utils/storeFeedback.js";
-import "./Checkout.css";
+import "./checkout.css";
 
 export default function Checkout() {
   const { language } = useLanguage();

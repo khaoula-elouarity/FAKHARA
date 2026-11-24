@@ -7,7 +7,7 @@ import {
   addProductToCart,
   getFeedback,
 } from "../utils/storeFeedback.js";
-import "./Wishlist.css";
+import "./wishlist.css";
 
 export default function Wishlist() {
   const { language } = useLanguage();

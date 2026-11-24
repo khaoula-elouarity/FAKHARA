@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useParams } from "react-router-dom";
 import { useLanguage } from "../context/Languagecontext.jsx";
 import { useStore } from "../context/StoreContext.jsx";
-import "./Collection.css";
+import "./collection.css";
 import ProductRating from "./ProductRating.jsx";
 import WishlistButton from "./wishlistbutton.jsx";
 

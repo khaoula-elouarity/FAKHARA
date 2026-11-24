@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "../context/Languagecontext.jsx";
-import "./Footer.css";
+import "./footer.css";
 
 const footerContent = {
 ar: {

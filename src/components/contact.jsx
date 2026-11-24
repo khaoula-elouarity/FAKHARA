@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useLanguage } from "../context/Languagecontext.jsx";
 import { useToast } from "../context/ToastContext.jsx";
 import { buildApiUrl } from "../services/apiConfig.js";
-import "./Contact.css";
+import "./contact.css";
 
 const content = {
 ar: {

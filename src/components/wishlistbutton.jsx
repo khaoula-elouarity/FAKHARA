@@ -6,7 +6,7 @@ import {
   getFeedback,
   pulseWishlistIcon,
 } from "../utils/storeFeedback.js";
-import "./WishlistButton.css";
+import "./wishlistbutton.css";
 
 export default function WishlistButton({ productId }) {
   const { language } = useLanguage();

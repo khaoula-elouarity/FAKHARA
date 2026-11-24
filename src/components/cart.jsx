@@ -7,7 +7,7 @@ import {
   cartLineKey,
   getFeedback,
 } from "../utils/storeFeedback.js";
-import "./Cart.css";
+import "./cart.css";
 
 export default function Cart() {
   const { language } = useLanguage();
