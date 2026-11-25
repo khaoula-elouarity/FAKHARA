@@ -1,7 +1,7 @@
 .discovery-page {
   padding: 70px 0 90px;
-  background: var(--ivory, #fbf8f2);
-  color: var(--teal, #173f3a);
+  background: var(--surface-bg);
+  color: var(--text-primary);
 }
 
 .discovery-shell {
@@ -14,13 +14,13 @@
   align-items: center;
   gap: 10px;
   margin-bottom: 28px;
-  color: var(--muted, #6f6a60);
+  color: var(--text-muted);
   font-size: 11px;
 }
 
 .discovery-breadcrumb a,
 .discovery-footer-link a {
-  color: var(--teal, #173f3a);
+  color: var(--text-primary);
   text-decoration: none;
 }
 
@@ -35,7 +35,7 @@
 
 .discovery-image {
   overflow: hidden;
-  background: var(--beige, #eae2d4);
+  background: var(--surface-muted);
   border: 1px solid var(--border, #ddd5c8);
 }
 
@@ -54,11 +54,11 @@
   justify-content: center;
   gap: 10px;
   min-height: 320px;
-  color: var(--muted, #6f6a60);
+  color: var(--text-muted);
 }
 
 .discovery-image-placeholder span {
-  color: var(--gold, #bd985d);
+  color: var(--text-accent);
   font-family: "Playfair Display", serif;
   font-size: 58px;
 }
@@ -69,7 +69,7 @@
 }
 
 .discovery-hero-copy > span {
-  color: var(--gold, #bd985d);
+  color: var(--text-accent);
   font-size: 10px;
   letter-spacing: 2.5px;
 }
@@ -85,7 +85,7 @@
 .discovery-hero-copy p {
   max-width: 520px;
   margin: 0 0 26px;
-  color: var(--muted, #6f6a60);
+  color: var(--text-muted);
   font-size: 14px;
   line-height: 2;
 }
@@ -93,8 +93,8 @@
 .discovery-hero-copy a {
   display: inline-block;
   padding: 12px 22px;
-  background: var(--teal, #173f3a);
-  color: var(--ivory, #fbf8f2);
+  background: var(--accent);
+  color: var(--text-on-accent);
   font-size: 11px;
   text-decoration: none;
 }
@@ -119,7 +119,7 @@
 
 .discovery-block-copy h2 {
   margin: 0 0 16px;
-  color: var(--teal, #173f3a);
+  color: var(--text-primary);
   font-family: "Playfair Display", serif;
   font-size: clamp(24px, 3vw, 36px);
   font-weight: 500;
@@ -127,7 +127,7 @@
 
 .discovery-block-copy p {
   margin: 0;
-  color: var(--muted, #6f6a60);
+  color: var(--text-muted);
   font-size: 14px;
   line-height: 2.1;
   white-space: pre-line;
@@ -135,7 +135,7 @@
 
 .discovery-empty {
   margin: 60px 0;
-  color: var(--muted, #6f6a60);
+  color: var(--text-muted);
   font-size: 13px;
   text-align: center;
 }
@@ -160,7 +160,7 @@
 
 .discovery-not-found p {
   margin-bottom: 24px;
-  color: var(--muted, #6f6a60);
+  color: var(--text-muted);
   font-size: 13px;
 }
 

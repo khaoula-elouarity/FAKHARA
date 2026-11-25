@@ -27,7 +27,7 @@
   width: min(980px, 100%);
   max-height: min(88vh, 820px);
   overflow-y: auto;
-  background: var(--ivory);
+  background: var(--surface-bg);
   border: 1px solid rgba(189, 152, 93, 0.55);
   box-shadow: 0 30px 90px rgba(8, 35, 31, 0.35);
   animation: fakhara-featured-dialog-in 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) both;
@@ -47,15 +47,15 @@
   display: grid;
   place-items: center;
   border: 1px solid rgba(189, 152, 93, 0.5);
-  background: var(--ivory);
-  color: var(--teal);
+  background: var(--surface-bg);
+  color: var(--text-primary);
   cursor: pointer;
   transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
 }
 
 .featured-modal__close:hover {
-  background: var(--teal);
-  color: var(--ivory);
+  background: var(--accent);
+  color: var(--text-on-accent);
   transform: rotate(90deg);
 }
 
@@ -65,7 +65,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #efe8dc;
+  background: var(--surface-muted);
   overflow: hidden;
 }
 
@@ -82,7 +82,7 @@
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  color: var(--gold);
+  color: var(--text-accent);
 }
 
 .featured-modal__image-empty span {
@@ -111,7 +111,7 @@
   height: 48px;
   padding: 0;
   border: 1px solid rgba(255, 253, 247, 0.75);
-  background: var(--ivory);
+  background: var(--surface-bg);
   cursor: pointer;
   opacity: 0.82;
   transition: opacity 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
@@ -134,12 +134,12 @@
 
 .featured-modal__content {
   padding: 42px 44px 38px;
-  color: var(--teal);
+  color: var(--text-primary);
 }
 
 .featured-modal__eyebrow {
   display: block;
-  color: var(--gold);
+  color: var(--text-accent);
   font-size: 9px;
   letter-spacing: 3px;
   text-transform: uppercase;
@@ -167,11 +167,11 @@
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 1px;
-  color: var(--gold);
+  color: var(--text-accent);
 }
 
 .featured-modal__description {
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 13px;
   line-height: 1.9;
 }
@@ -186,11 +186,11 @@
   border-bottom: 1px solid var(--border);
   font-family: "Playfair Display", serif;
   font-size: 28px;
-  color: var(--teal);
+  color: var(--text-primary);
 }
 
 .featured-modal__price small {
-  color: var(--gold);
+  color: var(--text-accent);
   font-family: "DM Sans", sans-serif;
   font-size: 11px;
   letter-spacing: 2px;
@@ -211,14 +211,14 @@
 }
 
 .featured-modal__details dt {
-  color: var(--gold);
+  color: var(--text-accent);
   white-space: nowrap;
 }
 
 .featured-modal__details dd {
   margin: 0;
   text-align: right;
-  color: var(--muted);
+  color: var(--text-muted);
 }
 
 .featured-modal__actions {
@@ -238,15 +238,15 @@
   height: 46px;
   border: 0;
   background: transparent;
-  color: var(--teal);
+  color: var(--text-primary);
   font-size: 16px;
   cursor: pointer;
   transition: background 0.25s ease, color 0.25s ease;
 }
 
 .featured-modal__quantity button:hover:not(:disabled) {
-  background: var(--teal);
-  color: var(--ivory);
+  background: var(--accent);
+  color: var(--text-on-accent);
 }
 
 .featured-modal__quantity button:disabled {
@@ -259,7 +259,7 @@
   text-align: center;
   font-family: "Playfair Display", serif;
   font-size: 15px;
-  color: var(--teal);
+  color: var(--text-primary);
 }
 
 .featured-modal__add,
@@ -279,14 +279,15 @@
 
 .featured-modal__add {
   flex: 1 1 190px;
-  background: var(--teal);
+  background: var(--accent);
   border: 1px solid var(--teal);
-  color: var(--ivory);
+  color: var(--text-on-accent);
 }
 
 .featured-modal__add:hover:not(:disabled) {
-  background: var(--gold);
+  background: var(--accent-gold);
   border-color: var(--gold);
+  color: var(--text-on-gold);
   transform: translateY(-2px);
 }
 
@@ -298,14 +299,14 @@
 .featured-modal__favorite {
   background: transparent;
   border: 1px solid rgba(189, 152, 93, 0.6);
-  color: var(--teal);
+  color: var(--text-primary);
 }
 
 .featured-modal__favorite:hover,
 .featured-modal__favorite.is-active {
   background: rgba(189, 152, 93, 0.12);
   border-color: var(--gold);
-  color: var(--gold);
+  color: var(--text-accent);
 }
 
 .featured-modal .product-rating-panel {

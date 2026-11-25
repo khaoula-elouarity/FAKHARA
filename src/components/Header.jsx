@@ -2,12 +2,14 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { useLanguage } from "../context/Languagecontext.jsx";
 import { useCustomerAuth } from "../context/CustomerAuthContext.jsx";
+import { useTheme } from "../context/ThemeContext.jsx";
 import SearchOverlay from "./SearchOverlay.jsx";
 import "./Header.css";
 
 export default function Header() {
   const { language, setLanguage, t } = useLanguage();
   const { user } = useCustomerAuth();
+  const { theme, toggleTheme } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [cartPulse, setCartPulse] = useState(0);
@@ -46,7 +48,6 @@ export default function Header() {
     { label: t.home, path: "/" },
     { label: t.collections, path: "/collections" },
     { label: t.about, path: "/about" },
-    { label: t.trackOrder, path: "/track-order" },
     { label: t.contact, path: "/contact" },
   ];
 
@@ -151,6 +152,33 @@ export default function Header() {
             </svg>
           </button>
 
+          {/* Language selector */}
+          <select
+            className="language-select"
+            value={language}
+            onChange={(event) => setLanguage(event.target.value)}
+            aria-label={t.language}
+          >
+            <option value="ar">AR</option>
+            <option value="fr">FR</option>
+            <option value="en">EN</option>
+          </select>
+
+          {/* Theme toggle */}
+          <button
+            type="button"
+            className="header-icon-link theme-toggle"
+            onClick={toggleTheme}
+            aria-label={theme === "light" ? "Switch to night mode" : "Switch to light mode"}
+            title={theme === "light" ? "Night mode" : "Light mode"}
+          >
+            {theme === "light" ? (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="header-svg" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" /></svg>
+            ) : (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="header-svg" aria-hidden="true"><path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z" /></svg>
+            )}
+          </button>
+
           {/* Wishlist */}
           <Link
             key={`wishlist-${wishlistPulse}`}
@@ -199,17 +227,6 @@ export default function Header() {
             </svg>
           </Link>
 
-          {/* Language selector */}
-          <select
-            className="language-select"
-            value={language}
-            onChange={(event) => setLanguage(event.target.value)}
-            aria-label={t.language}
-          >
-            <option value="ar">AR</option>
-            <option value="fr">FR</option>
-            <option value="en">EN</option>
-          </select>
         </div>
 
       </div>

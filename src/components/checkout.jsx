@@ -10,6 +10,7 @@ import {
   cartLineKey,
   getFeedback,
 } from "../utils/storeFeedback.js";
+import { grantOrderTrackingAccess } from "../utils/orderTrackingAccess.js";
 import "./checkout.css";
 
 export default function Checkout() {
@@ -33,7 +34,6 @@ export default function Checkout() {
     email: "",
     city: "",
     address: "",
-    postalCode: "",
   });
 
   useEffect(() => {
@@ -56,11 +56,6 @@ export default function Checkout() {
       city: current.city || defaultAddress?.city || user.city || "",
       address:
         current.address || defaultAddress?.address || user.address || "",
-      postalCode:
-        current.postalCode ||
-        defaultAddress?.postalCode ||
-        user.postalCode ||
-        "",
     }));
   }, [user]);
 
@@ -78,7 +73,6 @@ export default function Checkout() {
       email: "البريد الإلكتروني (اختياري)",
       city: "المدينة",
       address: "العنوان بالتفصيل",
-      postal: "الرمز البريدي (اختياري)",
       summary: "ملخص الطلب",
       subtotal: "مجموع المنتجات",
       delivery: "مصاريف التوصيل",
@@ -118,7 +112,6 @@ export default function Checkout() {
       email: "E-mail (facultatif)",
       city: "Ville",
       address: "Adresse détaillée",
-      postal: "Code postal (facultatif)",
       summary: "Résumé de la commande",
       subtotal: "Sous-total",
       delivery: "Frais de livraison",
@@ -158,7 +151,6 @@ export default function Checkout() {
       email: "Email (optional)",
       city: "City",
       address: "Detailed address",
-      postal: "Postal code (optional)",
       summary: "Order summary",
       subtotal: "Subtotal",
       delivery: "Delivery fee",
@@ -279,6 +271,7 @@ export default function Checkout() {
         throw new ApiRequestError("incomplete_order_response");
       }
 
+      grantOrderTrackingAccess();
       localStorage.removeItem("fakhara-cart");
       setConfirmedOrder(order);
       addToast({ type: "success", message: feedback.orderSaved });
@@ -362,9 +355,6 @@ export default function Checkout() {
               <p>
                 {confirmedOrder.customer.address},{" "}
                 {confirmedOrder.customer.city}
-                {confirmedOrder.customer.postalCode
-                  ? `, ${confirmedOrder.customer.postalCode}`
-                  : ""}
               </p>
 
               <h2 className="checkout-success-card__subheading">
@@ -386,12 +376,7 @@ export default function Checkout() {
           </div>
 
           <div className="checkout-success-actions">
-            <Link
-              to={`/track-order?order=${encodeURIComponent(
-                confirmedOrder.orderNumber
-              )}`}
-              className="checkout-submit"
-            >
+            <Link to="/track-order" className="checkout-submit">
               {t.trackThisOrder}
             </Link>
             <Link to="/" className="checkout-secondary-link">
@@ -486,15 +471,6 @@ export default function Checkout() {
               />
             </label>
 
-            <label>
-              {t.postal}
-              <input
-                name="postalCode"
-                value={form.postalCode}
-                onChange={handleChange}
-                placeholder="20000"
-              />
-            </label>
           </section>
 
           <section className="checkout-payment">

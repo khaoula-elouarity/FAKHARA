@@ -36,76 +36,12 @@ function phoneHash(value) {
   return createHash("sha256").update(normalizePhoneDigits(value)).digest();
 }
 
-function normalizeHistoryEntry(entry) {
-  return {
-    status: entry.status,
-    at: entry.at,
-    source: entry.source || "system",
-  };
-}
-
-function getStatusHistory(order) {
-  const stored = Array.isArray(order.statusHistory) ? order.statusHistory : [];
-
-  if (stored.length > 0) {
-    return [...stored]
-      .sort((a, b) => new Date(a.at) - new Date(b.at))
-      .map(normalizeHistoryEntry);
-  }
-
-  const createdAt = order.createdAt || order.updatedAt || new Date();
-  const fallback = [
-    { status: "pending", at: createdAt, source: "system" },
-  ];
-
-  if (order.status !== "pending") {
-    fallback.push({
-      status: order.status,
-      at: order.updatedAt || createdAt,
-      source: "system",
-    });
-  }
-
-  return fallback;
-}
-
-function maskPhone(value) {
-  const digits = normalizePhoneDigits(value);
-
-  if (digits.length < 4) {
-    return "****";
-  }
-
-  return `${"•".repeat(digits.length - 4)}${digits.slice(-4)}`;
-}
-
 function buildTrackingOrder(order) {
   return {
     orderNumber: order.orderNumber,
     status: order.status,
     createdAt: order.createdAt,
-    updatedAt: order.updatedAt,
-    customer: {
-      fullName: order.customer.fullName,
-      city: order.customer.city,
-      phone: maskPhone(order.customer.phone),
-    },
-    items: order.items.map((item) => ({
-      productId: item.productId,
-      name: item.name,
-      image: item.image,
-      variant: item.variant
-        ? { key: item.variant.key, name: item.variant.name }
-        : null,
-      price: item.price,
-      quantity: item.quantity,
-    })),
-    subtotal: order.subtotal,
-    deliveryFee: order.deliveryFee,
     total: order.total,
-    paymentMethod: order.paymentMethod,
-    statusHistory: getStatusHistory(order),
-    canConfirmReceipt: order.status === "out_for_delivery",
   };
 }
 
@@ -127,6 +63,33 @@ async function findOrderForTracking(body) {
   }
 
   return order;
+}
+
+async function findOrdersForTracking(body) {
+  const fullName = readString(body?.fullName, "fullName", { max: 120 });
+  const phone = readPhone(body?.phone);
+  const namePattern = fullName
+    .trim()
+    .replace(/\s+/g, " ")
+    .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+    .replace(/ /g, "\\s+");
+  const candidates = await Order.find({
+    "customer.fullName": { $regex: namePattern, $options: "i" },
+  })
+    .sort({ createdAt: -1 })
+    .lean();
+  const suppliedHash = phoneHash(phone);
+
+  return candidates
+    .filter((order) =>
+      timingSafeEqual(suppliedHash, phoneHash(order.customer.phone))
+    )
+    .map((order) => ({
+      orderNumber: order.orderNumber,
+      status: order.status,
+      createdAt: order.createdAt,
+      total: order.total,
+    }));
 }
 
 function normalizeCustomer(body) {
@@ -442,11 +405,11 @@ export const updateOrderStatus = asyncHandler(async (request, response) => {
 });
 
 export const trackOrder = asyncHandler(async (request, response) => {
-  const order = await findOrderForTracking(request.body);
+  const orders = await findOrdersForTracking(request.body);
 
   response.json({
     success: true,
-    order: buildTrackingOrder(order),
+    orders,
   });
 });
 

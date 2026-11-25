@@ -15,6 +15,7 @@ import {
   fetchMyOrders,
   updateAddress as updateAddressRequest,
 } from "../../services/api.js";
+import { grantOrderTrackingAccess } from "../../utils/orderTrackingAccess.js";
 import {
   ORDER_FLOW,
   formatAccountDate,
@@ -233,9 +234,6 @@ function OrderCard({ order, expanded, onToggle, t, language }) {
               {order.customer?.email && <p>{order.customer.email}</p>}
               <p>
                 {order.customer?.address}, {order.customer?.city}
-                {order.customer?.postalCode
-                  ? `, ${order.customer.postalCode}`
-                  : ""}
               </p>
             </div>
 
@@ -302,7 +300,6 @@ function AddressCard({
       <p>{address.address}</p>
       <p>
         {address.city}
-        {address.postalCode ? `, ${address.postalCode}` : ""}
       </p>
       {address.phone && <p>{address.phone}</p>}
 
@@ -358,7 +355,6 @@ export default function Account() {
     phone: "",
     city: "",
     address: "",
-    postalCode: "",
     isDefault: false,
   });
   const [addressSaving, setAddressSaving] = useState(false);
@@ -527,7 +523,6 @@ export default function Account() {
       phone: user?.phone || "",
       city: user?.city || "",
       address: user?.address || "",
-      postalCode: user?.postalCode || "",
       isDefault: addresses.length === 0,
     });
     setAddressError("");
@@ -542,7 +537,6 @@ export default function Account() {
       phone: address.phone || "",
       city: address.city || "",
       address: address.address || "",
-      postalCode: address.postalCode || "",
       isDefault: Boolean(address.isDefault),
     });
     setAddressError("");
@@ -760,13 +754,24 @@ export default function Account() {
                 <div className="account-panel">
                   <div className="account-panel-head">
                     <h3>{t.recentOrders}</h3>
-                    <button
-                      type="button"
-                      className="account-text-button"
-                      onClick={() => setActiveTab("orders")}
-                    >
-                      {t.viewAllOrders}
-                    </button>
+                    <div className="account-panel-head-actions">
+                      {orders.length > 0 && (
+                        <Link
+                          to="/track-order"
+                          className="account-text-button"
+                          onClick={grantOrderTrackingAccess}
+                        >
+                          {t.trackOrders}
+                        </Link>
+                      )}
+                      <button
+                        type="button"
+                        className="account-text-button"
+                        onClick={() => setActiveTab("orders")}
+                      >
+                        {t.viewAllOrders}
+                      </button>
+                    </div>
                   </div>
 
                   {ordersLoading ? (
@@ -833,9 +838,6 @@ export default function Account() {
                       <p>{defaultAddress.address}</p>
                       <p>
                         {defaultAddress.city}
-                        {defaultAddress.postalCode
-                          ? `, ${defaultAddress.postalCode}`
-                          : ""}
                       </p>
                       {defaultAddress.phone && (
                         <p>{defaultAddress.phone}</p>
@@ -1021,15 +1023,6 @@ export default function Account() {
                   </label>
 
                   <div className="account-field-row">
-                    <label className="account-field">
-                      <span>{t.postalCode}</span>
-                      <input
-                        type="text"
-                        name="postalCode"
-                        value={addressForm.postalCode}
-                        onChange={handleAddressChange}
-                      />
-                    </label>
                     <label className="account-checkbox">
                       <input
                         type="checkbox"
@@ -1098,13 +1091,24 @@ export default function Account() {
                   <h2>{t.myOrders}</h2>
                   <p>{t.ordersSubtitle}</p>
                 </div>
-                <button
-                  type="button"
-                  className="account-text-button"
-                  onClick={() => loadOrders()}
-                >
-                  {t.refresh}
-                </button>
+                <div className="account-panel-head-actions">
+                  {orders.length > 0 && (
+                    <Link
+                      to="/track-order"
+                      className="account-text-button"
+                      onClick={grantOrderTrackingAccess}
+                    >
+                      {t.trackOrders}
+                    </Link>
+                  )}
+                  <button
+                    type="button"
+                    className="account-text-button"
+                    onClick={() => loadOrders()}
+                  >
+                    {t.refresh}
+                  </button>
+                </div>
               </header>
 
               {ordersLoading ? (

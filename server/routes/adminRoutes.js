@@ -1,11 +1,14 @@
 import { Router } from "express";
 
 import {
+  bootstrapAdmin,
+  bootstrapStatus,
   createAdmin,
   login,
   logout,
   me,
 } from "../controllers/authController.js";
+import { ADMIN_ROLES } from "../models/Admin.js";
 import {
   listContactMessages,
   updateContactStatus,
@@ -65,11 +68,14 @@ import {
 
 const router = Router();
 
+router.get("/bootstrap/status", bootstrapStatus);
+router.post("/bootstrap", loginLimiter, bootstrapAdmin);
 router.post("/login", loginLimiter, login);
 router.post("/logout", logout);
 
-// Every route below requires a valid administrator session.
+// Every route below requires a valid administrator session and role.
 router.use(protectAdmin);
+router.use(authorize(...ADMIN_ROLES));
 
 router.get("/me", me);
 

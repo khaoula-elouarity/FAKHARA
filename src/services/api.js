@@ -1,7 +1,5 @@
 import { buildApiUrl } from "./apiConfig.js";
 
-const ADMIN_TOKEN_KEY = "fakhara-admin-token";
-
 export class ApiRequestError extends Error {
   constructor(code, status = 0, details = null) {
     super(code);
@@ -12,21 +10,9 @@ export class ApiRequestError extends Error {
   }
 }
 
-export function getAdminToken() {
-  return localStorage.getItem(ADMIN_TOKEN_KEY) || "";
-}
-
-export function setAdminToken(token) {
-  if (token) {
-    localStorage.setItem(ADMIN_TOKEN_KEY, token);
-  } else {
-    localStorage.removeItem(ADMIN_TOKEN_KEY);
-  }
-}
-
 async function request(
   path,
-  { method = "GET", body, headers = {}, admin = true, signal } = {}
+  { method = "GET", body, headers = {}, signal } = {}
 ) {
   const requestHeaders = {
     Accept: "application/json",
@@ -35,14 +21,6 @@ async function request(
 
   if (body !== undefined) {
     requestHeaders["Content-Type"] = "application/json";
-  }
-
-  if (admin) {
-    const token = getAdminToken();
-
-    if (token) {
-      requestHeaders.Authorization = `Bearer ${token}`;
-    }
   }
 
   let response;
@@ -181,20 +159,12 @@ export function removeFavoriteRequest(productId) {
   });
 }
 
-export function adminLogin(email, password) {
-  return request("/api/admin/login", {
-    method: "POST",
-    body: { email, password },
-    admin: false,
-  });
-}
-
 export function adminMe() {
   return request("/api/admin/me");
 }
 
 export function adminLogout() {
-  return request("/api/admin/logout", { method: "POST", admin: false });
+  return request("/api/admin/logout", { method: "POST" });
 }
 
 export function fetchAdminStats() {
@@ -206,13 +176,6 @@ async function uploadAdminImageTo(path, file) {
     throw new ApiRequestError("image_required");
   }
 
-  const headers = { Accept: "application/json" };
-  const token = getAdminToken();
-
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
-
   const formData = new FormData();
   formData.append("image", file);
 
@@ -222,7 +185,7 @@ async function uploadAdminImageTo(path, file) {
     response = await fetch(buildApiUrl(path), {
       method: "POST",
       credentials: "include",
-      headers,
+      headers: { Accept: "application/json" },
       body: formData,
     });
   } catch {

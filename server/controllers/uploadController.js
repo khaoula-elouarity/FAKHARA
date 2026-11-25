@@ -8,8 +8,9 @@ export const uploadProductImage = asyncHandler(async (request, response) => {
     throw ApiError.badRequest("image_required");
   }
 
+  const hasCloudinaryConfig = Object.values(env.cloudinary).every(Boolean);
   const storedImage =
-    env.nodeEnv === "production"
+    env.nodeEnv === "production" || hasCloudinaryConfig
       ? await uploadImageToCloudinary(request.file).catch((error) => {
           console.error("Product image upload failed:", error?.message || error);
           throw new ApiError(503, "image_storage_unavailable");

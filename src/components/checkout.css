@@ -1,14 +1,14 @@
 .checkout-page {
   min-height: 75vh;
-  background: var(--cream);
-  color: var(--teal);
+  background: var(--page-bg);
+  color: var(--text-primary);
   padding-bottom: 100px;
 }
 
 .checkout-banner {
   min-height: 245px;
-  background: var(--teal);
-  color: var(--ivory);
+  background: var(--accent);
+  color: var(--text-on-accent);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -19,7 +19,7 @@
 
 .checkout-banner > span,
 .checkout-success > span {
-  color: var(--gold);
+  color: var(--text-accent);
   letter-spacing: 5px;
   font-size: 10px;
 }
@@ -62,7 +62,7 @@
 .checkout-information,
 .checkout-payment,
 .checkout-summary {
-  background: var(--ivory);
+  background: var(--surface-bg);
   border: 1px solid var(--border);
   padding: 30px;
 }
@@ -98,8 +98,8 @@
 .checkout-information textarea {
   width: 100%;
   border: 1px solid var(--border);
-  background: #fffefa;
-  color: var(--teal);
+  background: var(--surface-raised);
+  color: var(--text-primary);
   padding: 13px 14px;
   outline: none;
   font-size: 13px;
@@ -125,7 +125,7 @@
   gap: 12px;
   padding: 16px;
   border: 1px solid var(--gold);
-  background: #faf6ed;
+  background: var(--surface-raised);
   font-size: 13px;
 }
 
@@ -154,7 +154,7 @@
 
 .checkout-summary-product span,
 .checkout-summary-row span {
-  color: var(--muted);
+  color: var(--text-muted);
   line-height: 1.8;
 }
 
@@ -170,13 +170,13 @@
 }
 
 .checkout-summary-total strong {
-  color: var(--gold);
+  color: var(--text-accent);
   white-space: nowrap;
 }
 
 .checkout-error {
-  color: #a34f42;
-  background: #f8e9e5;
+  color: var(--error);
+  background: var(--error-bg);
   padding: 13px;
   font-size: 12px;
   line-height: 1.7;
@@ -189,7 +189,7 @@
   justify-content: center;
   align-items: center;
   border: 1px solid var(--teal);
-  background: var(--teal);
+  background: var(--accent);
   color: white;
   font-size: 13px;
   cursor: pointer;
@@ -197,8 +197,9 @@
 }
 
 .checkout-submit:hover {
-  background: var(--gold);
+  background: var(--accent-gold);
   border-color: var(--gold);
+  color: var(--text-on-gold);
 }
 
 .checkout-success,
@@ -206,7 +207,7 @@
   width: min(650px, 90%);
   margin: 80px auto;
   padding: 55px 30px;
-  background: var(--ivory);
+  background: var(--surface-bg);
   border: 1px solid var(--border);
   text-align: center;
 }
@@ -224,7 +225,7 @@
   display: grid;
   place-items: center;
   margin: 0 auto 25px;
-  color: var(--gold);
+  color: var(--text-accent);
   font-size: 30px;
   animation: fakhara-success-check 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -259,13 +260,13 @@
 
 .checkout-success-card {
   padding: 20px;
-  background: #faf6ec;
+  background: var(--surface-raised);
   border: 1px solid var(--border);
 }
 
 .checkout-success-card h2 {
   margin-bottom: 14px;
-  color: var(--gold);
+  color: var(--text-accent);
   font-family: "DM Sans", sans-serif;
   font-size: 10px;
   font-weight: 600;
@@ -293,7 +294,7 @@
   gap: 12px;
   padding-bottom: 12px;
   border-bottom: 1px solid rgba(222, 213, 197, 0.7);
-  color: var(--teal);
+  color: var(--text-primary);
   font-size: 12px;
 }
 
@@ -305,12 +306,12 @@
 .checkout-success-card__name {
   display: block;
   margin-bottom: 4px;
-  color: var(--teal);
+  color: var(--text-primary);
 }
 
 .checkout-success-card__meta {
   display: block;
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 10.5px;
 }
 
@@ -328,7 +329,7 @@
   gap: 16px;
   margin: 0 0 28px;
   padding: 16px 20px;
-  background: var(--teal);
+  background: var(--accent);
   color: #f3ead9;
   font-size: 12px;
   letter-spacing: 0.04em;
@@ -359,28 +360,28 @@
 
 .checkout-success h1 {
   font-size: 32px;
-  color: var(--teal);
+  color: var(--text-primary);
 }
 
 .checkout-success > p {
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 13px;
   margin: 15px 0 25px;
 }
 
 .checkout-order-number {
-  background: #f4eee3;
+  background: var(--surface-muted);
   padding: 18px;
   margin: 20px 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 12px;
 }
 
 .checkout-order-number strong {
-  color: var(--teal);
+  color: var(--text-primary);
   letter-spacing: 2px;
   font-size: 18px;
 }
@@ -395,7 +396,7 @@
 }
 
 .checkout-secondary-link {
-  color: var(--teal);
+  color: var(--text-primary);
   font-size: 13px;
   font-weight: 700;
   text-decoration: none;

@@ -3,7 +3,7 @@
   display: inline-flex;
   width: max-content;
   flex: none;
-  color: var(--gold);
+  color: var(--text-accent);
   direction: ltr;
   line-height: 0;
 }
@@ -22,7 +22,7 @@
   position: absolute;
   inset: 0 auto 0 0;
   overflow: hidden;
-  color: var(--gold);
+  color: var(--text-accent);
   white-space: nowrap;
 }
 
@@ -35,7 +35,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 11px;
   line-height: 1.5;
 }
@@ -45,14 +45,14 @@
 }
 
 .product-rating-compact--loading {
-  color: var(--gold);
+  color: var(--text-accent);
   font-size: 15px;
   letter-spacing: 2px;
   line-height: 1;
 }
 
 .product-rating-compact--error {
-  color: #8f6458;
+  color: var(--error);
   font-size: 10px;
   line-height: 1.5;
 }
@@ -69,7 +69,7 @@
 }
 
 .product-rating-panel__eyebrow {
-  color: var(--gold);
+  color: var(--text-accent);
   font-size: 10px;
   letter-spacing: 4px;
 }
@@ -91,7 +91,7 @@
   width: 55px;
   height: 1px;
   margin: 22px auto 0;
-  background: var(--gold);
+  background: var(--accent-gold);
 }
 
 .product-rating-panel__state {
@@ -100,9 +100,9 @@
   align-items: center;
   gap: 16px;
   padding: 45px 20px;
-  background: var(--ivory);
+  background: var(--surface-bg);
   border: 1px solid var(--border);
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 13px;
   text-align: center;
 }
@@ -111,14 +111,14 @@
   padding: 10px 24px;
   background: transparent;
   border: 1px solid var(--gold);
-  color: var(--teal);
+  color: var(--text-primary);
   font-size: 12px;
   transition: background 0.25s ease, color 0.25s ease;
 }
 
 .product-rating-panel__retry:hover {
-  background: var(--gold);
-  color: white;
+  background: var(--accent-gold);
+  color: var(--text-on-gold);
 }
 
 .product-rating-panel__content {
@@ -139,7 +139,7 @@
 }
 
 .product-rating-summary__average {
-  color: var(--teal);
+  color: var(--text-primary);
   font-family: "Playfair Display", serif;
   font-size: 58px;
   font-weight: 500;
@@ -150,20 +150,20 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 12px;
 }
 
 .product-rating-form {
   align-self: start;
   padding: 30px;
-  background: var(--ivory);
+  background: var(--surface-bg);
   border: 1px solid var(--border);
 }
 
 .product-rating-form h3,
 .product-reviews h3 {
-  color: var(--teal);
+  color: var(--text-primary);
   font-family: "Playfair Display", serif;
   font-size: 22px;
   font-weight: 500;
@@ -180,7 +180,7 @@
 }
 
 .product-reviews h3 span {
-  color: var(--gold);
+  color: var(--text-accent);
   font-family: "Inter", sans-serif;
   font-size: 12px;
 }
@@ -207,7 +207,7 @@
 
 .product-rating-picker__star:hover,
 .product-rating-picker__star.is-active {
-  color: var(--gold);
+  color: var(--text-accent);
 }
 
 .product-rating-picker__star:hover {
@@ -221,7 +221,7 @@
 
 .product-rating-form__selection {
   margin: 0 0 20px;
-  color: var(--gold);
+  color: var(--text-accent);
   font-size: 12px;
 }
 
@@ -233,7 +233,7 @@
 .product-rating-form__review > span {
   display: block;
   margin-bottom: 9px;
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 12px;
 }
 
@@ -242,9 +242,9 @@
   min-height: 115px;
   padding: 13px 14px;
   resize: vertical;
-  background: white;
+  background: var(--surface-raised);
   border: 1px solid var(--border);
-  color: var(--teal);
+  color: var(--text-primary);
   font-family: inherit;
   font-size: 13px;
   line-height: 1.8;
@@ -264,14 +264,14 @@
 }
 
 .product-rating-form__counter {
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 10px;
 }
 
 .product-rating-form__submit {
   min-height: 44px;
   padding: 10px 24px;
-  background: var(--teal);
+  background: var(--accent);
   border: 1px solid var(--teal);
   color: white;
   font-size: 12px;
@@ -279,8 +279,9 @@
 }
 
 .product-rating-form__submit:hover:not(:disabled) {
-  background: var(--gold);
+  background: var(--accent-gold);
   border-color: var(--gold);
+  color: var(--text-on-gold);
 }
 
 .product-rating-form__submit:disabled {
@@ -295,17 +296,17 @@
 }
 
 .product-rating-form__message.is-error {
-  color: #8f4d3f;
+  color: var(--error);
 }
 
 .product-rating-form__message.is-success {
-  color: var(--teal);
+  color: var(--text-primary);
 }
 
 .product-reviews__empty {
   margin: 0;
   padding: 30px 0;
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 13px;
   line-height: 1.8;
 }
@@ -330,23 +331,23 @@
 }
 
 .product-reviews__meta time {
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 10px;
 }
 
 .product-reviews__item p {
   margin: 13px 0 9px;
-  color: var(--teal);
+  color: var(--text-primary);
   font-size: 13px;
   line-height: 1.9;
 }
 
 .product-reviews__item p em {
-  color: var(--muted);
+  color: var(--text-muted);
 }
 
 .product-reviews__author {
-  color: var(--gold);
+  color: var(--text-accent);
   font-size: 9px;
   letter-spacing: 1.5px;
   text-transform: uppercase;

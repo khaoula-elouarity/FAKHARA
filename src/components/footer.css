@@ -60,7 +60,7 @@ transition: .3s;
 
 .footer-socials a:hover {
 background: #bd985d;
-color: #123f3b;
+color: var(--text-primary);
 }
 
 .footer-column {

@@ -18,7 +18,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: var(--ivory);
+  background: var(--surface-bg);
   border: 1px solid rgba(189, 152, 93, 0.55);
   box-shadow: 0 34px 90px -28px rgba(10, 35, 32, 0.68);
   animation: search-overlay-panel-in 0.3s ease both;
@@ -33,14 +33,14 @@
 }
 
 .search-overlay-heading > div > span {
-  color: var(--gold);
+  color: var(--text-accent);
   font-size: 9px;
   letter-spacing: 2.7px;
 }
 
 .search-overlay-heading h2 {
   margin: 7px 0 0;
-  color: var(--teal);
+  color: var(--text-primary);
   font-size: clamp(26px, 4vw, 38px);
   line-height: 1.15;
 }
@@ -54,7 +54,7 @@
   border: 1px solid var(--border);
   border-radius: 50%;
   background: transparent;
-  color: var(--teal);
+  color: var(--text-primary);
   font-size: 24px;
   line-height: 1;
   transition: color 0.25s ease, border-color 0.25s ease,
@@ -65,7 +65,7 @@
 .search-overlay-close:focus-visible {
   border-color: var(--gold);
   background: rgba(189, 152, 93, 0.1);
-  color: var(--gold);
+  color: var(--text-accent);
   transform: rotate(90deg);
 }
 
@@ -87,7 +87,7 @@
   width: 23px;
   height: 23px;
   flex-shrink: 0;
-  color: var(--gold);
+  color: var(--text-accent);
 }
 
 .search-overlay-input-row input {
@@ -97,13 +97,13 @@
   border: none;
   outline: none;
   background: transparent;
-  color: var(--teal);
+  color: var(--text-primary);
   font-size: clamp(17px, 2.6vw, 22px);
   line-height: 1.4;
 }
 
 .search-overlay-input-row input::placeholder {
-  color: #9b9a90;
+  color: var(--text-muted);
   opacity: 1;
 }
 
@@ -119,8 +119,8 @@
   place-items: center;
   border: 1px solid var(--border);
   border-radius: 50%;
-  background: white;
-  color: var(--muted);
+  background: var(--surface-raised);
+  color: var(--text-muted);
   font-size: 18px;
   line-height: 1;
   transition: color 0.25s ease, border-color 0.25s ease;
@@ -129,7 +129,7 @@
 .search-overlay-clear:hover,
 .search-overlay-clear:focus-visible {
   border-color: var(--gold);
-  color: var(--gold);
+  color: var(--text-accent);
 }
 
 .search-overlay-content {
@@ -143,7 +143,7 @@
 }
 
 .search-overlay-idle > p {
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 13px;
   line-height: 1.8;
 }
@@ -153,7 +153,7 @@
 }
 
 .search-overlay-suggestions > span {
-  color: var(--gold);
+  color: var(--text-accent);
   font-size: 9px;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -169,8 +169,8 @@
 .search-overlay-suggestions button {
   padding: 9px 14px;
   border: 1px solid var(--border);
-  background: white;
-  color: var(--teal);
+  background: var(--surface-raised);
+  color: var(--text-primary);
   font-size: 11px;
   transition: color 0.25s ease, border-color 0.25s ease,
     background-color 0.25s ease;
@@ -180,7 +180,7 @@
 .search-overlay-suggestions button:focus-visible {
   border-color: var(--gold);
   background: rgba(189, 152, 93, 0.09);
-  color: var(--gold);
+  color: var(--text-accent);
 }
 
 .search-overlay-status {
@@ -191,7 +191,7 @@
   justify-content: center;
   gap: 12px;
   text-align: center;
-  color: var(--muted);
+  color: var(--text-muted);
 }
 
 .search-overlay-status p {
@@ -217,19 +217,19 @@
   place-items: center;
   border: 1px solid rgba(189, 152, 93, 0.5);
   border-radius: 50%;
-  color: var(--gold);
+  color: var(--text-accent);
   font-family: "Playfair Display", serif;
   font-size: 22px;
 }
 
 .search-overlay-empty h3 {
-  color: var(--teal);
+  color: var(--text-primary);
   font-size: 24px;
 }
 
 .search-overlay-results-count {
   margin: 0 0 13px;
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 9px;
   letter-spacing: 1.8px;
   text-transform: uppercase;
@@ -248,7 +248,7 @@
   gap: 14px;
   padding: 11px;
   border: 1px solid var(--border);
-  background: white;
+  background: var(--surface-raised);
   transition: border-color 0.25s ease, transform 0.25s ease,
     box-shadow 0.25s ease;
   animation: search-overlay-result-in 0.35s ease both;
@@ -267,7 +267,7 @@
   display: grid;
   place-items: center;
   overflow: hidden;
-  background: linear-gradient(135deg, #eee7d9, #f9f6ef);
+  background: linear-gradient(135deg, var(--surface-muted), var(--surface-raised));
 }
 
 .search-overlay-result-image > span {
@@ -292,7 +292,7 @@
 }
 
 .search-overlay-result-info > span {
-  color: var(--gold);
+  color: var(--text-accent);
   font-size: 8px;
   letter-spacing: 1.3px;
   text-transform: uppercase;
@@ -301,7 +301,7 @@
 .search-overlay-result-info h3 {
   margin: 4px 0 9px;
   overflow: hidden;
-  color: var(--teal);
+  color: var(--text-primary);
   font-size: 16px;
   line-height: 1.35;
   text-overflow: ellipsis;
@@ -315,7 +315,7 @@
 }
 
 .search-overlay-result-bottom strong {
-  color: var(--gold);
+  color: var(--text-accent);
   font-size: 11px;
   font-weight: 600;
   white-space: nowrap;
@@ -326,7 +326,7 @@
   align-items: center;
   gap: 5px;
   border-bottom: 1px solid rgba(189, 152, 93, 0.55);
-  color: var(--teal);
+  color: var(--text-primary);
   font-size: 9px;
   line-height: 1.5;
   white-space: nowrap;
@@ -334,7 +334,7 @@
 }
 
 .search-overlay-result-bottom > a:hover {
-  color: var(--gold);
+  color: var(--text-accent);
 }
 
 .search-overlay-result-arrow {

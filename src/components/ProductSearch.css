@@ -1,6 +1,6 @@
 .product-search-page {
-background: var(--cream);
-color: var(--teal);
+background: var(--page-bg);
+color: var(--text-primary);
 min-height: 70vh;
 padding-bottom: 90px;
 }
@@ -11,7 +11,7 @@ padding: 75px 7% 55px;
 }
 
 .product-search-heading > span {
-color: var(--gold);
+color: var(--text-accent);
 letter-spacing: 3px;
 font-size: 10px;
 }
@@ -22,7 +22,7 @@ margin: 18px 0;
 }
 
 .product-search-heading p {
-color: var(--muted);
+color: var(--text-muted);
 line-height: 2;
 }
 
@@ -36,7 +36,7 @@ display: grid;
 grid-template-columns: 2fr 1.3fr 1fr 1fr 1.4fr;
 gap: 12px;
 padding: 22px;
-background: var(--ivory);
+background: var(--surface-bg);
 border: 1px solid var(--border);
 }
 
@@ -45,9 +45,9 @@ border: 1px solid var(--border);
 min-width: 0;
 width: 100%;
 padding: 13px 10px;
-background: white;
+background: var(--surface-raised);
 border: 1px solid var(--border);
-color: var(--teal);
+color: var(--text-primary);
 outline: none;
 font-size: 12px;
 }
@@ -58,7 +58,7 @@ border-color: var(--gold);
 }
 
 .product-search-count {
-color: var(--muted);
+color: var(--text-muted);
 font-size: 12px;
 margin: 25px 0;
 }
@@ -70,7 +70,7 @@ gap: 25px;
 }
 
 .search-product-card {
-background: var(--ivory);
+background: var(--surface-bg);
 border: 1px solid var(--border);
 transition: transform .3s, border-color .3s;
 }
@@ -83,7 +83,7 @@ border-color: var(--gold);
 .search-product-image {
 position: relative;
 height: 250px;
-background: linear-gradient(135deg, #eee7d9, #f9f6ef);
+background: linear-gradient(135deg, var(--surface-muted), var(--surface-raised));
 display: grid;
 place-items: center;
 overflow: hidden;
@@ -115,13 +115,13 @@ margin: -2px 0 14px;
 }
 
 .search-product-info p {
-color: var(--gold);
+color: var(--text-accent);
 font-weight: 600;
 margin-bottom: 17px;
 }
 
 .search-product-info > a {
-color: var(--teal);
+color: var(--text-primary);
 font-size: 12px;
 border-bottom: 1px solid var(--gold);
 padding-bottom: 4px;
@@ -130,15 +130,15 @@ padding-bottom: 4px;
 .product-search-empty {
 padding: 75px 20px;
 text-align: center;
-background: var(--ivory);
+background: var(--surface-bg);
 border: 1px solid var(--border);
-color: var(--muted);
+color: var(--text-muted);
 }
 
 .product-search-empty span {
 display: block;
 font-size: 40px;
-color: var(--gold);
+color: var(--text-accent);
 margin-bottom: 15px;
 }
 
@@ -203,7 +203,7 @@ transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
 }
 
 .product-search-input:focus {
-background: #fffdfa;
+background: var(--surface-raised);
 box-shadow: 0 0 0 3px rgba(189, 152, 93, 0.14);
 }
 

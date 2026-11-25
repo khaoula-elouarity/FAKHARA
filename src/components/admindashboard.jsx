@@ -12,34 +12,41 @@
  */
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  ClipboardList,
+  Compass,
+  House,
+  LayoutDashboard,
+  MessageSquare,
+  Package,
+  Settings2,
+  Sparkles,
+  Tags,
+  UsersRound,
+} from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { useLanguage } from "../context/Languagecontext.jsx";
 import { useStore } from "../context/StoreContext.jsx";
 import { useToast } from "../context/ToastContext.jsx";
 import {
-  adminLogin,
   adminLogout,
   adminMe,
   createAdminCategory,
   createAdminProduct,
   deleteAdminCategory,
   deleteAdminContact,
-  deleteAdminCustomization,
   deleteAdminOrder,
   deleteAdminProduct,
   fetchAdminCategories,
   fetchAdminContacts,
   fetchAdminCustomer,
   fetchAdminCustomers,
-  fetchAdminCustomizations,
   fetchAdminOrders,
   fetchAdminProducts,
   fetchAdminStats,
-  setAdminToken,
   updateAdminCategory,
   updateAdminContactStatus,
-  updateAdminCustomizationStatus,
   updateAdminOrderStatus,
   updateAdminProduct,
   uploadAdminImage,
@@ -54,27 +61,13 @@ const ui = {
   ar: {
     title: "لوحة إدارة فخارة",
     subtitle: "إدارة المنتجات والطلبات والعملاء",
-    loginTitle: "دخول الإدارة",
-    loginHint: "أدخل بيانات حساب الإدارة للمتابعة.",
     email: "البريد الإلكتروني",
-    password: "كلمة المرور",
-    login: "تسجيل الدخول",
-    loggingIn: "...",
     logout: "تسجيل الخروج",
-    loginError: "تعذر تسجيل الدخول. يرجى المحاولة مجدداً.",
-    loginInvalidCredentials: "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
-    loginRateLimited:
-      "محاولات دخول كثيرة. يرجى الانتظار بضع دقائق ثم المحاولة مجدداً.",
-    loginServerError: "خادم الإدارة غير متاح مؤقتاً. يرجى المحاولة لاحقاً.",
-    loginNetworkError:
-      "تعذر الاتصال بالخادم. تحقق من تشغيل الخادم واتصالك بالشبكة.",
-    loginValidationError: "يرجى إدخال بريد إلكتروني وكلمة مرور صالحين.",
     overview: "نظرة عامة",
     orders: "الطلبات",
     products: "المنتجات",
     categories: "المجموعات",
     messages: "الرسائل",
-    customizations: "طلبات التخصيص",
     customers: "العملاء",
     homepageContent: "محتوى الصفحة الرئيسية",
     featuredSection: "قطعة تستحق الاكتشاف",
@@ -113,7 +106,6 @@ const ui = {
     confirmedOrders: "طلبات مؤكدة",
     deliveredOrders: "طلبات تم تسليمها",
     newMessages: "رسائل جديدة",
-    newCustomizations: "تخصيصات جديدة",
     orderHistory: "سجل الطلبات",
     customerDetails: "تفاصيل العميل",
     view: "عرض",
@@ -186,16 +178,10 @@ const ui = {
     subject: "الموضوع",
     message: "الرسالة",
     product: "المنتج",
-    color: "اللون",
-    decoration: "الزخرفة",
-    customText: "النص المخصص",
-    quantity: "الكمية",
-    notes: "ملاحظات",
     noOrders: "لا توجد طلبات.",
     noProducts: "لا توجد منتجات.",
     noCategories: "لا توجد مجموعات.",
     noMessages: "لا توجد رسائل.",
-    noCustomizations: "لا توجد طلبات تخصيص.",
     noCustomers: "لا يوجد عملاء.",
     saveError: "تعذر حفظ البيانات.",
     deleteError: "تعذر حذف العنصر.",
@@ -221,28 +207,13 @@ const ui = {
   fr: {
     title: "Administration FAKHARA",
     subtitle: "Gérez les produits, commandes et clients",
-    loginTitle: "Connexion administrateur",
-    loginHint: "Saisissez vos identifiants pour continuer.",
     email: "E-mail",
-    password: "Mot de passe",
-    login: "Se connecter",
-    loggingIn: "...",
     logout: "Se déconnecter",
-    loginError: "Connexion impossible. Réessayez.",
-    loginInvalidCredentials: "E-mail ou mot de passe incorrect.",
-    loginRateLimited:
-      "Trop de tentatives. Patientez quelques minutes puis réessayez.",
-    loginServerError:
-      "Le serveur d'administration est momentanément indisponible. Réessayez plus tard.",
-    loginNetworkError:
-      "Impossible de joindre le serveur. Vérifiez qu'il est démarré et votre connexion réseau.",
-    loginValidationError: "Saisissez un e-mail et un mot de passe valides.",
     overview: "Vue d'ensemble",
     orders: "Commandes",
     products: "Produits",
     categories: "Collections",
     messages: "Messages",
-    customizations: "Personnalisations",
     customers: "Clients",
     homepageContent: "Contenu de la page d'accueil",
     featuredSection: "Pièce à découvrir",
@@ -281,7 +252,6 @@ const ui = {
     confirmedOrders: "Commandes confirmées",
     deliveredOrders: "Commandes livrées",
     newMessages: "Nouveaux messages",
-    newCustomizations: "Nouvelles demandes",
     orderHistory: "Historique des commandes",
     customerDetails: "Détails du client",
     view: "Voir",
@@ -354,16 +324,10 @@ const ui = {
     subject: "Sujet",
     message: "Message",
     product: "Produit",
-    color: "Couleur",
-    decoration: "Décoration",
-    customText: "Texte personnalisé",
-    quantity: "Quantité",
-    notes: "Notes",
     noOrders: "Aucune commande.",
     noProducts: "Aucun produit.",
     noCategories: "Aucune collection.",
     noMessages: "Aucun message.",
-    noCustomizations: "Aucune demande.",
     noCustomers: "Aucun client.",
     saveError: "Impossible d'enregistrer.",
     deleteError: "Impossible de supprimer.",
@@ -389,27 +353,13 @@ const ui = {
   en: {
     title: "FAKHARA Admin",
     subtitle: "Manage products, orders and customers",
-    loginTitle: "Admin sign in",
-    loginHint: "Enter your administrator credentials to continue.",
     email: "Email",
-    password: "Password",
-    login: "Sign in",
-    loggingIn: "...",
     logout: "Sign out",
-    loginError: "Sign-in failed. Please try again.",
-    loginInvalidCredentials: "Incorrect email or password.",
-    loginRateLimited: "Too many attempts. Wait a few minutes and try again.",
-    loginServerError:
-      "The admin server is temporarily unavailable. Try again later.",
-    loginNetworkError:
-      "Cannot reach the server. Check that it is running and your network connection.",
-    loginValidationError: "Enter a valid email address and password.",
     overview: "Overview",
     orders: "Orders",
     products: "Products",
     categories: "Collections",
     messages: "Messages",
-    customizations: "Customizations",
     customers: "Customers",
     homepageContent: "Homepage content",
     featuredSection: "Pieces worth discovering",
@@ -448,7 +398,6 @@ const ui = {
     confirmedOrders: "Confirmed orders",
     deliveredOrders: "Delivered orders",
     newMessages: "New messages",
-    newCustomizations: "New requests",
     orderHistory: "Order history",
     customerDetails: "Customer details",
     view: "View",
@@ -521,16 +470,10 @@ const ui = {
     subject: "Subject",
     message: "Message",
     product: "Product",
-    color: "Color",
-    decoration: "Decoration",
-    customText: "Custom text",
-    quantity: "Quantity",
-    notes: "Notes",
     noOrders: "No orders yet.",
     noProducts: "No products yet.",
     noCategories: "No collections yet.",
     noMessages: "No messages yet.",
-    noCustomizations: "No customization requests yet.",
     noCustomers: "No customers yet.",
     saveError: "Could not save.",
     deleteError: "Could not delete.",
@@ -561,7 +504,6 @@ const tabs = [
   "products",
   "categories",
   "messages",
-  "customizations",
   "customers",
   "homepageContent",
   "featuredSection",
@@ -569,13 +511,25 @@ const tabs = [
   "settings",
 ];
 
+const TAB_ICONS = {
+  overview: LayoutDashboard,
+  orders: ClipboardList,
+  products: Package,
+  categories: Tags,
+  messages: MessageSquare,
+  customers: UsersRound,
+  homepageContent: House,
+  featuredSection: Sparkles,
+  discoveryPages: Compass,
+  settings: Settings2,
+};
+
 const TAB_PERMISSIONS = {
   overview: "orders:read",
   orders: "orders:read",
   products: "products:read",
   categories: "categories:read",
   messages: "contacts:read",
-  customizations: "customizations:read",
   customers: "customers:read",
 };
 
@@ -585,7 +539,6 @@ const TAB_ROUTES = {
   products: "/admin/products",
   categories: "/admin/categories",
   messages: "/admin/messages",
-  customizations: "/admin/customizations",
   customers: "/admin/customers",
   homepageContent: "/admin/homepage-content",
   featuredSection: "/admin/featured-section",
@@ -689,17 +642,15 @@ function orderTotalForCustomer(customer) {
 
 /**
  * Vérifie côté navigateur que la session admin est valide.
- * Une tentative invalide (token absent, expiré, ou admin désactivé) est nettoyée
- * et l'utilisateur est redirigé vers la page de connexion admin.
+ * Une tentative invalide (cookie absent, expiré, ou admin désactivé) redirige
+ * l'utilisateur vers la page de connexion admin.
  */
 async function validateAdminSession() {
-  // The secure httpOnly cookie is the source of truth. Legacy tokens stored in
-  // localStorage by older versions are cleared automatically on failure.
+  // The secure httpOnly cookie is the only browser-side session credential.
   try {
     const payload = await adminMe();
     return payload?.admin || null;
   } catch {
-    setAdminToken("");
     return null;
   }
 }
@@ -714,9 +665,6 @@ export default function AdminDashboard() {
 
   const [admin, setAdmin] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
-  const [loginForm, setLoginForm] = useState({ email: "", password: "" });
-  const [loginError, setLoginError] = useState("");
-  const [loginLoading, setLoginLoading] = useState(false);
 
   const [activeTab, setActiveTab] = useState(
     () => tabFromPath(location.pathname) || "overview"
@@ -728,7 +676,6 @@ export default function AdminDashboard() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [messages, setMessages] = useState([]);
-  const [customizations, setCustomizations] = useState([]);
   const [customers, setCustomers] = useState([]);
 
   const [orderStatusFilter, setOrderStatusFilter] = useState("all");
@@ -753,16 +700,13 @@ export default function AdminDashboard() {
     });
   }, []);
 
-  // Dedicated login URL: unauthenticated visitors always land on /admin/login,
-  // authenticated administrators are sent to the dashboard.
   useEffect(() => {
-    if (!authChecked) return;
+    if (!authChecked || admin) return;
 
-    if (!admin && location.pathname !== "/admin/login") {
-      navigate("/admin/login", { replace: true });
-    } else if (admin && location.pathname === "/admin/login") {
-      navigate("/admin", { replace: true });
-    }
+    navigate("/account/login", {
+      replace: true,
+      state: { from: location.pathname },
+    });
   }, [admin, authChecked, location.pathname, navigate]);
 
   const can = useCallback(
@@ -857,14 +801,6 @@ export default function AdminDashboard() {
         );
       }
 
-      if (can("customizations:read")) {
-        jobs.push(
-          fetchAdminCustomizations().then((payload) =>
-            setCustomizations(payload.requests || [])
-          )
-        );
-      }
-
       if (can("customers:read")) {
         jobs.push(
           fetchAdminCustomers().then((payload) =>
@@ -877,9 +813,8 @@ export default function AdminDashboard() {
       await Promise.all([reload(), reloadSettings()]);
     } catch (error) {
       if (error.status === 401) {
-        setAdminToken("");
         setAdmin(null);
-        navigate("/admin/login", { replace: true });
+        navigate("/account/login", { replace: true });
       } else {
         setLoadError(error.code || "request_failed");
       }
@@ -954,46 +889,6 @@ export default function AdminDashboard() {
     ...salesTrend.map((day) => Number(day.revenue) || 0)
   );
 
-  async function handleLogin(event) {
-    event.preventDefault();
-    setLoginLoading(true);
-    setLoginError("");
-    try {
-      const payload = await adminLogin(
-        loginForm.email.trim(),
-        loginForm.password
-      );
-      // Authentication is carried by the httpOnly cookie; no long-lived token
-      // is kept in JavaScript-accessible storage.
-      setAdminToken("");
-      setAdmin(payload.admin);
-      setLoginForm({ email: "", password: "" });
-      const intendedTab = tabFromPath(location.pathname);
-      navigate(intendedTab ? routeForTab(intendedTab) : "/admin", {
-        replace: true,
-      });
-    } catch (error) {
-      // Keep the distinction between a real credential error, a rate limit,
-      // an unreachable server and a validation problem. This makes the login
-      // screen actionable instead of blaming the credentials for everything.
-      if (error?.status === 401) {
-        setLoginError(t.loginInvalidCredentials);
-      } else if (error?.status === 429) {
-        setLoginError(t.loginRateLimited);
-      } else if (error?.status === 400) {
-        setLoginError(t.loginValidationError);
-      } else if (error?.status >= 500) {
-        setLoginError(t.loginServerError);
-      } else if (!error?.status || error?.code === "network_error") {
-        setLoginError(t.loginNetworkError);
-      } else {
-        setLoginError(t.loginError);
-      }
-    } finally {
-      setLoginLoading(false);
-    }
-  }
-
   async function logout() {
     try {
       await adminLogout();
@@ -1001,12 +896,11 @@ export default function AdminDashboard() {
       // The local session is cleared regardless of the server response.
     }
 
-    setAdminToken("");
     setAdmin(null);
     setActiveTab("overview");
     setCustomerDetail(null);
     setCategoryDelete(null);
-    navigate("/admin/login", { replace: true });
+    navigate("/account/login", { replace: true });
   }
 
   function showSaved() {
@@ -1344,80 +1238,8 @@ export default function AdminDashboard() {
     }
   }
 
-  async function changeCustomizationStatus(request, status) {
-    try {
-      await updateAdminCustomizationStatus(request.id, status);
-      setCustomizations((current) =>
-        current.map((item) => (item.id === request.id ? { ...item, status } : item))
-      );
-      showSaved();
-    } catch {
-      addToast({ type: "error", message: t.saveError });
-    }
-  }
-
-  // Bloc de connexion affiché tant que la vérification n'est pas terminée
-  // ou avant qu'un administrateur ne soit connecté.
-  if (!authChecked) {
-    return (
-      <main className="admin-page admin-auth-page">
-        <div className="admin-empty">{t.loading}</div>
-      </main>
-    );
-  }
-
-  if (!admin) {
-    return (
-      <main className="admin-page admin-auth-page">
-        <section className="admin-login-card">
-          <span>FAKHARA MANAGEMENT</span>
-          <h1>{t.loginTitle}</h1>
-          <p>{t.loginHint}</p>
-          <form onSubmit={handleLogin}>
-            <label>
-              {t.email}
-              <input
-                type="email"
-                autoComplete="username"
-                value={loginForm.email}
-                onChange={(event) => {
-                  setLoginForm((current) => ({
-                    ...current,
-                    email: event.target.value,
-                  }));
-                  setLoginError("");
-                }}
-                required
-              />
-            </label>
-            <label>
-              {t.password}
-              <input
-                type="password"
-                autoComplete="current-password"
-                value={loginForm.password}
-                onChange={(event) => {
-                  setLoginForm((current) => ({
-                    ...current,
-                    password: event.target.value,
-                  }));
-                  setLoginError("");
-                }}
-                required
-              />
-            </label>
-            {loginError && (
-              <p className="admin-error" role="alert">
-                {loginError}
-              </p>
-            )}
-            <button type="submit" disabled={loginLoading}>
-              {loginLoading ? t.loggingIn : t.login}
-            </button>
-          </form>
-        </section>
-      </main>
-    );
+  if (!authChecked || !admin) {
+    return null;
   }
 
   return (
@@ -1448,7 +1270,13 @@ export default function AdminDashboard() {
             className={activeTab === tab ? "active" : ""}
             onClick={() => openTab(tab)}
           >
-            {t[tab]}
+            {React.createElement(TAB_ICONS[tab], {
+              className: "admin-tab-icon",
+              size: 17,
+              strokeWidth: 1.7,
+              "aria-hidden": true,
+            })}
+            <span>{t[tab]}</span>
           </button>
         ))}
       </nav>
@@ -2069,64 +1897,6 @@ export default function AdminDashboard() {
                         type="button"
                         className="admin-danger"
                         onClick={() => handleDelete(() => deleteAdminContact(message.id))}
-                      >
-                        {t.delete}
-                      </button>
-                    )}
-                  </div>
-                </article>
-              ))}
-            </div>
-          )}
-        </section>
-      )}
-
-      {activeTab === "customizations" && (
-        <section className="admin-section">
-          <h2>{t.customizations}</h2>
-          {customizations.length === 0 ? (
-            <div className="admin-empty">{t.noCustomizations}</div>
-          ) : (
-            <div className="admin-card-grid">
-              {customizations.map((request) => (
-                <article className="admin-data-card" key={request.id}>
-                  <span>{formatDate(request.createdAt, language)}</span>
-                  <h3>{request.product}</h3>
-                  <p>
-                    <strong>{t.color}:</strong> {request.color} ·{" "}
-                    <strong>{t.decoration}:</strong> {request.decoration}
-                  </p>
-                  {request.customText && (
-                    <p><strong>{t.customText}:</strong> {request.customText}</p>
-                  )}
-                  {request.notes && <p><strong>{t.notes}:</strong> {request.notes}</p>}
-                  <p><strong>{t.quantity}:</strong> {request.quantity}</p>
-                  <div className="admin-inline-actions">
-                    <select
-                      value={request.status}
-                      disabled={!canWrite("customizations")}
-                      onChange={(event) =>
-                        changeCustomizationStatus(request, event.target.value)
-                      }
-                    >
-                      {[
-                        "pending",
-                        "processing",
-                        "completed",
-                        "cancelled",
-                      ].map((status) => (
-                        <option value={status} key={status}>
-                          {t.statuses[status]}
-                        </option>
-                      ))}
-                    </select>
-                    {canWrite("customizations") && (
-                      <button
-                        type="button"
-                        className="admin-danger"
-                        onClick={() =>
-                          handleDelete(() => deleteAdminCustomization(request.id))
-                        }
                       >
                         {t.delete}
                       </button>

@@ -2,8 +2,8 @@
 
 .collections-page {
   min-height: 70vh;
-  background: var(--cream);
-  color: var(--teal);
+  background: var(--page-bg);
+  color: var(--text-primary);
 }
 
 /* Hero */
@@ -18,7 +18,7 @@
       rgba(189, 152, 93, 0.18),
       transparent 58%
     ),
-    var(--teal);
+    var(--accent);
   text-align: center;
 }
 
@@ -43,7 +43,7 @@
 }
 
 .collections-eyebrow {
-  color: var(--gold);
+  color: var(--text-accent);
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 4px;
@@ -75,7 +75,7 @@
   width: 56px;
   height: 1px;
   margin: 26px auto 0;
-  background: var(--gold);
+  background: var(--accent-gold);
 }
 
 /* Grid */
@@ -92,8 +92,8 @@
   min-height: 240px;
   padding: 40px;
   border: 1px solid var(--border);
-  background: var(--ivory);
-  color: var(--muted);
+  background: var(--surface-bg);
+  color: var(--text-muted);
   font-size: 14px;
   text-align: center;
 }
@@ -110,7 +110,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: var(--ivory);
+  background: var(--surface-bg);
   border: 1px solid var(--border);
   transition: transform 0.35s ease, box-shadow 0.35s ease,
     border-color 0.35s ease;
@@ -136,7 +136,7 @@
   position: relative;
   height: 245px;
   overflow: hidden;
-  background: #eee8dc;
+  background: var(--surface-muted);
 }
 
 .collections-media img {
@@ -163,7 +163,7 @@
       rgba(189, 152, 93, 0.14),
       transparent 68%
     ),
-    #eee8dc;
+    var(--surface-muted);
 }
 
 .collections-placeholder-mark {
@@ -202,7 +202,7 @@
 }
 
 .collections-card-label {
-  color: var(--gold);
+  color: var(--text-accent);
   font-size: 8px;
   font-weight: 600;
   letter-spacing: 2.4px;
@@ -210,7 +210,7 @@
 
 .collections-card-body h2 {
   margin: 10px 0 9px;
-  color: var(--teal);
+  color: var(--text-primary);
   font-family: "Playfair Display", serif;
   font-size: 22px;
   font-weight: 500;
@@ -223,12 +223,12 @@
 }
 
 .collections-card:hover .collections-card-body h2 {
-  color: #8a6a38;
+  color: var(--text-accent);
 }
 
 .collections-card-body p {
   flex: 1;
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 12px;
   line-height: 1.9;
 }
@@ -244,7 +244,7 @@
 }
 
 .collections-card-count {
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 10px;
   letter-spacing: 0.4px;
 }
@@ -253,20 +253,20 @@
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  color: var(--teal);
+  color: var(--text-primary);
   font-size: 11px;
   font-weight: 500;
   transition: color 0.3s ease;
 }
 
 .collections-card-cta span {
-  color: var(--gold);
+  color: var(--text-accent);
   font-size: 12px;
   transition: transform 0.3s ease;
 }
 
 .collections-card:hover .collections-card-cta {
-  color: #8a6a38;
+  color: var(--text-accent);
 }
 
 .collections-card:hover .collections-card-cta span {

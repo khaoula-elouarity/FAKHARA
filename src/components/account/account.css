@@ -1,7 +1,7 @@
 .account-page {
   min-height: 75vh;
-  background: var(--cream);
-  color: var(--teal);
+  background: var(--page-bg);
+  color: var(--text-primary);
   padding-bottom: 100px;
 }
 
@@ -9,7 +9,7 @@
   min-height: 55vh;
   display: grid;
   place-items: center;
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 13px;
   letter-spacing: 1px;
 }
@@ -17,8 +17,8 @@
 .account-banner,
 .account-auth-banner {
   min-height: 245px;
-  background: var(--teal);
-  color: var(--ivory);
+  background: var(--accent);
+  color: var(--text-on-accent);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -44,7 +44,7 @@
 
 .account-banner > span,
 .account-auth-banner > span {
-  color: var(--gold);
+  color: var(--text-accent);
   letter-spacing: 5px;
   font-size: 10px;
   position: relative;
@@ -92,7 +92,7 @@
 .account-sidebar {
   position: sticky;
   top: 108px;
-  background: var(--ivory);
+  background: var(--surface-bg);
   border: 1px solid var(--border);
   padding: 26px 20px;
 }
@@ -110,7 +110,7 @@
   border-radius: 50%;
   border: 1px solid var(--gold);
   background: rgba(189, 152, 93, 0.1);
-  color: var(--teal);
+  color: var(--text-primary);
   display: grid;
   place-items: center;
   font-family: "Playfair Display", serif;
@@ -127,7 +127,7 @@
 }
 
 .account-user-card p {
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 11px;
   word-break: break-word;
 }
@@ -135,7 +135,7 @@
 .account-user-card > span {
   display: block;
   margin-top: 9px;
-  color: var(--gold);
+  color: var(--text-accent);
   font-size: 9px;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -168,9 +168,9 @@
 }
 
 .account-nav button.is-active {
-  background: var(--teal);
+  background: var(--accent);
   border-color: var(--teal);
-  color: var(--ivory);
+  color: var(--text-on-accent);
 }
 
 .account-nav-icon {
@@ -183,7 +183,7 @@
   margin-top: 12px;
   border-top: 1px solid var(--border);
   padding-top: 16px;
-  color: #8f3a35;
+  color: var(--error);
 }
 
 .account-nav .account-nav-logout:hover {
@@ -196,7 +196,7 @@
 }
 
 .account-section {
-  background: var(--ivory);
+  background: var(--surface-bg);
   border: 1px solid var(--border);
   padding: 32px;
 }
@@ -211,7 +211,7 @@
 
 .account-eyebrow {
   display: block;
-  color: var(--gold);
+  color: var(--text-accent);
   font-size: 9px;
   letter-spacing: 2.5px;
   text-transform: uppercase;
@@ -232,7 +232,7 @@
 }
 
 .account-section-head p {
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 12px;
   line-height: 1.8;
   margin-top: 7px;
@@ -252,7 +252,7 @@
 }
 
 .account-welcome p {
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 12px;
   line-height: 1.9;
   margin-top: 9px;
@@ -266,7 +266,7 @@
   display: grid;
   place-items: center;
   border: 1px solid var(--gold);
-  color: var(--gold);
+  color: var(--text-accent);
   font-family: "Playfair Display", serif;
   font-size: 38px;
 }
@@ -280,13 +280,13 @@
 
 .account-stats article {
   border: 1px solid var(--border);
-  background: #fffefa;
+  background: var(--surface-raised);
   padding: 20px;
 }
 
 .account-stats span {
   display: block;
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 10px;
   letter-spacing: 0.8px;
   text-transform: uppercase;
@@ -297,7 +297,7 @@
   font-family: "Playfair Display", serif;
   font-size: 26px;
   font-weight: 500;
-  color: var(--teal);
+  color: var(--text-primary);
 }
 
 .account-overview-grid {
@@ -308,7 +308,7 @@
 
 .account-panel {
   border: 1px solid var(--border);
-  background: #fffefa;
+  background: var(--surface-raised);
   padding: 23px;
 }
 
@@ -329,8 +329,16 @@
   margin-bottom: 0;
 }
 
+.account-panel-head-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
 .account-muted {
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 12px;
   line-height: 1.8;
 }
@@ -372,11 +380,11 @@
   border: none;
   background: transparent;
   text-align: start;
-  color: var(--teal);
+  color: var(--text-primary);
 }
 
 .account-mini-orders button:hover strong {
-  color: var(--gold);
+  color: var(--text-accent);
 }
 
 .account-mini-orders button > span:first-child {
@@ -392,7 +400,7 @@
 }
 
 .account-mini-orders small {
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 10px;
 }
 
@@ -404,7 +412,7 @@
 
 .account-mini-address strong {
   display: block;
-  color: var(--teal);
+  color: var(--text-primary);
   font-size: 14px;
   margin-bottom: 4px;
 }
@@ -432,8 +440,8 @@
 .account-field textarea {
   width: 100%;
   border: 1px solid var(--border);
-  background: #fffefa;
-  color: var(--teal);
+  background: var(--surface-raised);
+  color: var(--text-primary);
   padding: 13px 14px;
   outline: none;
   font-size: 13px;
@@ -471,7 +479,7 @@
   gap: 10px;
   padding: 13px 22px;
   border: 1px solid var(--teal);
-  background: var(--teal);
+  background: var(--accent);
   color: white;
   font-size: 11px;
   letter-spacing: 0.3px;
@@ -479,8 +487,9 @@
 }
 
 .account-button:hover {
-  background: var(--gold);
+  background: var(--accent-gold);
   border-color: var(--gold);
+  color: var(--text-on-gold);
   transform: translateY(-1px);
 }
 
@@ -497,11 +506,11 @@
 .account-button--ghost {
   background: transparent;
   border-color: var(--gold);
-  color: var(--teal);
+  color: var(--text-primary);
 }
 
 .account-button--ghost:hover {
-  background: var(--teal);
+  background: var(--accent);
   border-color: var(--teal);
   color: white;
 }
@@ -509,7 +518,7 @@
 .account-text-button {
   border: none;
   background: transparent;
-  color: var(--gold);
+  color: var(--text-accent);
   font-size: 11px;
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -517,33 +526,33 @@
 }
 
 .account-text-button:hover {
-  color: var(--teal);
+  color: var(--text-primary);
 }
 
 .account-text-link {
-  color: var(--gold);
+  color: var(--text-accent);
   font-size: 11px;
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 
 .account-text-link:hover {
-  color: var(--teal);
+  color: var(--text-primary);
 }
 
 .account-alert {
   padding: 11px 14px;
-  border: 1px solid #e2b9b5;
-  background: #fbf0ef;
-  color: #8f3a35;
+  border: 1px solid color-mix(in srgb, var(--error) 45%, var(--border));
+  background: var(--error-bg);
+  color: var(--error);
   font-size: 12px;
   line-height: 1.7;
 }
 
 .account-alert--success {
-  border-color: #b9d4c2;
-  background: #eef6f0;
-  color: #2f6b45;
+  border-color: color-mix(in srgb, var(--success) 45%, var(--border));
+  background: var(--success-bg);
+  color: var(--success);
 }
 
 .account-checkbox {
@@ -564,7 +573,7 @@
 
 .account-address-form {
   border: 1px solid var(--gold);
-  background: #faf6ed;
+  background: var(--surface-raised);
   padding: 24px;
   margin-bottom: 26px;
   display: flex;
@@ -584,7 +593,7 @@
 
 .account-address {
   border: 1px solid var(--border);
-  background: #fffefa;
+  background: var(--surface-raised);
   padding: 21px;
   display: flex;
   flex-direction: column;
@@ -606,12 +615,12 @@
   font-family: "Playfair Display", serif;
   font-size: 18px;
   font-weight: 500;
-  color: var(--teal);
+  color: var(--text-primary);
 }
 
 .account-address-default {
   border: 1px solid var(--gold);
-  color: var(--gold);
+  color: var(--text-accent);
   font-size: 8px;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -631,18 +640,18 @@
 .account-address-actions button {
   border: none;
   background: transparent;
-  color: var(--gold);
+  color: var(--text-accent);
   font-size: 10px;
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 
 .account-address-actions button:hover {
-  color: var(--teal);
+  color: var(--text-primary);
 }
 
 .account-address-actions button.is-danger {
-  color: #8f3a35;
+  color: var(--error);
 }
 
 .account-orders {
@@ -653,7 +662,7 @@
 
 .account-order {
   border: 1px solid var(--border);
-  background: #fffefa;
+  background: var(--surface-raised);
 }
 
 .account-order.is-open {
@@ -678,11 +687,11 @@
 .account-order-number {
   font-family: "Playfair Display", serif;
   font-size: 16px;
-  color: var(--teal);
+  color: var(--text-primary);
 }
 
 .account-order-date {
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 10px;
 }
 
@@ -704,7 +713,7 @@
   gap: 14px;
   padding: 11px 21px;
   border-top: 1px solid var(--border);
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 11px;
 }
 
@@ -749,8 +758,8 @@
 .account-order-item-placeholder {
   display: grid;
   place-items: center;
-  background: var(--cream);
-  color: var(--gold);
+  background: var(--page-bg);
+  color: var(--text-accent);
   font-family: "Playfair Display", serif;
   font-size: 20px;
 }
@@ -768,7 +777,7 @@
 }
 
 .account-order-items li > div span {
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 10px;
 }
 
@@ -787,7 +796,7 @@
 
 .account-order-info h4,
 .account-order-tracking h4 {
-  color: var(--gold);
+  color: var(--text-accent);
   font-size: 9px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -808,7 +817,7 @@
   display: flex;
   justify-content: space-between;
   gap: 15px;
-  color: var(--muted);
+  color: var(--text-muted);
 }
 
 .account-order-totals > div strong {
@@ -818,12 +827,12 @@
 .account-order-totals .account-order-totals-grand {
   border-top: 1px solid var(--border);
   padding-top: 9px;
-  color: var(--teal);
+  color: var(--text-primary);
   font-size: 14px;
 }
 
 .account-order-totals .account-order-totals-grand strong {
-  color: var(--teal);
+  color: var(--text-primary);
 }
 
 .account-order-tracking {
@@ -870,44 +879,44 @@
   height: 27px;
   border-radius: 50%;
   border: 1px solid var(--border);
-  background: var(--ivory);
-  color: var(--muted);
+  background: var(--surface-bg);
+  color: var(--text-muted);
   display: grid;
   place-items: center;
   font-size: 10px;
 }
 
 .account-timeline-label {
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 9px;
   line-height: 1.5;
 }
 
 .account-timeline li.is-complete .account-timeline-dot {
-  background: var(--teal);
+  background: var(--accent);
   border-color: var(--teal);
   color: white;
 }
 
 .account-timeline li.is-complete::before {
-  background: var(--teal);
+  background: var(--accent);
 }
 
 .account-timeline li.is-current .account-timeline-dot {
-  background: var(--gold);
+  background: var(--accent-gold);
   border-color: var(--gold);
-  color: white;
+  color: var(--text-on-gold);
   box-shadow: 0 0 0 4px rgba(189, 152, 93, 0.16);
 }
 
 .account-timeline li.is-current .account-timeline-label {
-  color: var(--teal);
+  color: var(--text-primary);
 }
 
 .account-timeline-cancelled {
-  border: 1px solid #e2b9b5;
-  background: #fbf0ef;
-  color: #8f3a35;
+  border: 1px solid color-mix(in srgb, var(--error) 45%, var(--border));
+  background: var(--error-bg);
+  color: var(--error);
   padding: 10px 13px;
   font-size: 11px;
   margin-top: 10px;
@@ -924,45 +933,45 @@
 }
 
 .account-status--pending {
-  background: #f3ead9;
-  border-color: #e3cfaa;
-  color: #8a6a32;
+  background: var(--warning-bg);
+  border-color: var(--warning);
+  color: var(--warning);
 }
 
 .account-status--confirmed {
-  background: #e4ece9;
-  border-color: #c4d7d1;
-  color: var(--teal);
+  background: var(--success-bg);
+  border-color: var(--success);
+  color: var(--success);
 }
 
 .account-status--preparing {
-  background: #efe7da;
-  border-color: #ddcbb0;
-  color: #7a5f35;
+  background: var(--warning-bg);
+  border-color: var(--warning);
+  color: var(--warning);
 }
 
 .account-status--shipped {
-  background: #e2ebe8;
-  border-color: #bfd3cc;
-  color: var(--teal-light);
+  background: var(--accent);
+  border-color: var(--accent-hover);
+  color: var(--text-on-accent);
 }
 
 .account-status--out_for_delivery {
-  background: #e9e4f1;
-  border-color: #cec4e0;
-  color: #5b4a7a;
+  background: var(--surface-muted);
+  border-color: var(--border);
+  color: var(--text-primary);
 }
 
 .account-status--delivered {
-  background: #e3efe6;
-  border-color: #b9d4c2;
-  color: #2f6b45;
+  background: var(--success-bg);
+  border-color: var(--success);
+  color: var(--success);
 }
 
 .account-status--cancelled {
-  background: #f4e2e0;
-  border-color: #e2b9b5;
-  color: #8f3a35;
+  background: var(--error-bg);
+  border-color: var(--error);
+  color: var(--error);
 }
 
 .account-profile-grid {
@@ -998,11 +1007,11 @@
 }
 
 .account-details dt {
-  color: var(--muted);
+  color: var(--text-muted);
 }
 
 .account-details dd {
-  color: var(--teal);
+  color: var(--text-primary);
   text-align: end;
   word-break: break-word;
 }
@@ -1011,7 +1020,7 @@
 
 .account-auth-page {
   min-height: 75vh;
-  background: var(--cream);
+  background: var(--page-bg);
   padding-bottom: 100px;
 }
 
@@ -1025,7 +1034,7 @@
   margin: -72px auto 0;
   display: grid;
   grid-template-columns: 0.86fr 1.14fr;
-  background: var(--ivory);
+  background: var(--surface-bg);
   border: 1px solid var(--border);
   box-shadow: 0 30px 70px -40px rgba(18, 63, 59, 0.55);
   position: relative;
@@ -1066,14 +1075,14 @@
   display: grid;
   place-items: center;
   border: 1px solid var(--gold);
-  color: var(--gold);
+  color: var(--text-accent);
   font-family: "Playfair Display", serif;
   font-size: 31px;
   margin-bottom: 26px;
 }
 
 .account-auth-aside__eyebrow {
-  color: var(--gold);
+  color: var(--text-accent);
   font-size: 9px;
   letter-spacing: 3px;
   text-transform: uppercase;
@@ -1141,29 +1150,29 @@
 .account-auth-switch {
   margin-top: 4px;
   text-align: center;
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 11px;
 }
 
 .account-auth-switch a {
-  color: var(--gold);
+  color: var(--text-accent);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 
 .account-auth-switch a:hover {
-  color: var(--teal);
+  color: var(--text-primary);
 }
 
 .account-auth-help {
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 11px;
   line-height: 1.7;
 }
 
 .account-dev-link {
   border: 1px dashed var(--gold);
-  background: #faf6ed;
+  background: var(--surface-raised);
   padding: 13px;
   display: flex;
   flex-direction: column;
@@ -1172,14 +1181,14 @@
 }
 
 .account-dev-link strong {
-  color: var(--gold);
+  color: var(--text-accent);
   font-size: 9px;
   letter-spacing: 1px;
   text-transform: uppercase;
 }
 
 .account-dev-link a {
-  color: var(--teal);
+  color: var(--text-primary);
   text-decoration: underline;
   text-underline-offset: 3px;
   word-break: break-all;

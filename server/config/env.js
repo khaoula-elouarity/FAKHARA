@@ -24,7 +24,10 @@ const dataDir = path.resolve(
 );
 const nodeEnv = process.env.NODE_ENV || "development";
 
-const productionClientOrigin = "https://fakhara-elouarity.vercel.app";
+const productionClientOrigins = [
+  "https://fakhara-elouarity.vercel.app",
+  "https://my-fakhara.vercel.app",
+];
 
 function normalizeOrigin(value) {
   try {
@@ -54,7 +57,7 @@ function resolveClientOrigins() {
   if (nodeEnv === "production") {
     return [
       ...new Set([
-        productionClientOrigin,
+        ...productionClientOrigins,
         ...configuredOrigins,
         ...configuredAlternateOrigins,
       ]),
@@ -143,6 +146,8 @@ export const env = {
   adminName: process.env.ADMIN_NAME || "FAKHARA Admin",
   adminEmail: (process.env.ADMIN_EMAIL || "").toLowerCase().trim(),
   adminPassword: process.env.ADMIN_PASSWORD || "",
+  adminBootstrapSecret: process.env.ADMIN_BOOTSTRAP_SECRET || "",
+  adminVerificationCode: process.env.ADMIN_VERIFICATION_CODE || "",
   deliveryDefaults: {
     Casablanca: 25,
     Rabat: 30,

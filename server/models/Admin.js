@@ -50,6 +50,7 @@ const adminSchema = new Schema(
     },
     isActive: { type: Boolean, default: true },
     lastLoginAt: { type: Date, default: null },
+    tokenVersion: { type: Number, default: 0 },
   },
   {
     timestamps: true,
@@ -57,6 +58,7 @@ const adminSchema = new Schema(
       transform(_document, result) {
         result.id = String(result._id);
         delete result.passwordHash;
+        delete result.tokenVersion;
         delete result.__v;
         return result;
       },

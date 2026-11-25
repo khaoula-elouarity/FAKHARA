@@ -1,0 +1,101 @@
+/*
+ * From Uiverse.io by karthik092726122003 - https://uiverse.io/karthik092726122003/clever-crab-26
+ * MIT License, Copyright (c) karthik092726122003
+ */
+.back-navigation {
+  width: min(1320px, 92%);
+  height: 88px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  z-index: 1;
+}
+
+.back-navigation--admin {
+  width: min(1440px, 94%);
+}
+
+.uiverse-back-button {
+  width: 76px;
+  height: 76px;
+  flex: 0 0 76px;
+  display: grid;
+  place-items: center;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid #e8e8e8;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-primary, #292929);
+  cursor: pointer;
+  transition: background-color 0.3s ease, border-color 0.3s ease,
+    color 0.3s ease, transform 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.uiverse-back-arrow {
+  width: 14px;
+  height: 14px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-bottom: 2px solid currentColor;
+  border-left: 2px solid currentColor;
+  transform: translate(-25%, -50%) rotate(45deg);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.uiverse-back-arrow + .uiverse-back-arrow {
+  opacity: 0;
+  transform: translate(30px, -50%) rotate(45deg);
+}
+
+.uiverse-back-button:hover {
+  border-color: currentColor;
+  background-color: color-mix(in srgb, var(--text-primary, #292929) 7%, transparent);
+}
+
+.uiverse-back-button:hover .uiverse-back-arrow:first-child {
+  opacity: 0;
+  transform: translate(-30px, -50%) rotate(45deg);
+}
+
+.uiverse-back-button:hover .uiverse-back-arrow + .uiverse-back-arrow {
+  opacity: 1;
+  transform: translate(-25%, -50%) rotate(45deg);
+}
+
+.uiverse-back-button:active {
+  transform: scale(0.94);
+}
+
+.uiverse-back-button:focus-visible {
+  outline: 3px solid var(--gold, #bd985d);
+  outline-offset: 4px;
+}
+
+@media (max-width: 900px) {
+  .back-navigation {
+    width: 90%;
+    height: 78px;
+  }
+
+  .back-navigation--admin {
+    width: 94%;
+  }
+}
+
+@media (max-width: 480px) {
+  .back-navigation {
+    height: 72px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .uiverse-back-button,
+  .uiverse-back-arrow {
+    transition-duration: 0.01ms;
+  }
+}

@@ -1,65 +1,34 @@
 import { useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 import { useLanguage } from "../context/Languagecontext.jsx";
 import { useToast } from "../context/ToastContext.jsx";
 import { confirmOrderReceipt, trackOrder } from "../services/api.js";
+import { hasOrderTrackingAccess } from "../utils/orderTrackingAccess.js";
 import "./TrackOrder.css";
-
-const TRACKING_FLOW = [
-  "pending",
-  "confirmed",
-  "preparing",
-  "shipped",
-  "out_for_delivery",
-  "delivered",
-];
 
 const content = {
   ar: {
-    eyebrow: "خدمة العملاء",
-    title: "تتبع طلبي",
-    subtitle:
-      "أدخلي رقم الطلب ورقم الهاتف المستخدم عند تقديم الطلب لمعرفة حالته الآن.",
-    orderNumber: "رقم الطلب",
+    title: "تتبع طلباتي",
+    subtitle: "أدخل الاسم الكامل ورقم الهاتف المستخدمين عند تقديم الطلب.",
+    fullName: "الاسم الكامل",
     phone: "رقم الهاتف",
-    trackButton: "تتبع الطلب",
-    tracking: "جارٍ التحقق من الطلب...",
-    notYet: "بانتظار التحديث",
-    resultTitle: "حالة الطلب",
-    orderDate: "تاريخ الطلب",
-    orderStatus: "الحالة الحالية",
-    customer: "العميل",
-    payment: "طريقة الدفع",
-    cashOnDelivery: "الدفع عند الاستلام",
-    items: "المنتجات",
-    quantity: "الكمية",
-    subtotal: "المجموع الفرعي",
-    deliveryFee: "رسوم التوصيل",
+    submit: "عرض الطلبات",
+    loading: "جارٍ البحث...",
+    invalid: "أدخل الاسم الكامل ورقم هاتف صحيحًا.",
+    noOrders: "لم نعثر على طلبات بهذه المعلومات. تحقق منها وحاول مرة أخرى.",
+    network: "الخادم غير متاح حاليًا. حاول مرة أخرى بعد قليل.",
+    unavailable: "تعذر تحميل الطلبات. حاول مرة أخرى.",
+    rateLimit: "محاولات كثيرة. انتظر قليلًا ثم حاول مرة أخرى.",
+    order: "الطلب",
+    date: "تاريخ الطلب",
     total: "الإجمالي",
-    timelineTitle: "مراحل الطلب",
-    receivedTitle: "هل استلمتِ طلبك فعلاً؟",
-    receivedMessage:
-      "لا تؤكدي الاستلام إلا بعد استلام المنتج بين يديكِ. سيتم تحديث حالة الطلب إلى «تم التوصيل» بعد تأكيدكِ فقط.",
-    confirmReceipt: "تأكيد الاستلام",
-    yesReceived: "نعم، استلمت الطلب",
-    cancel: "إلغاء",
-    confirming: "جارٍ تأكيد الاستلام...",
-    confirmed: "تم تأكيد الاستلام. شكراً لكِ!",
-    cancelledTitle: "تم إلغاء هذا الطلب",
-    cancelledMessage: "إذا كان لديكِ أي استفسار، تواصلي معنا عبر صفحة اتصل بنا.",
-    trackAgain: "تتبع طلب آخر",
-    home: "العودة للرئيسية",
-    errorInvalid: "أدخلي رقم طلب ورقم هاتف صحيحين.",
-    errorNotFound:
-      "رقم الطلب ورقم الهاتف غير متطابقين. تأكدي من البيانات وحاولي مجدداً.",
-    errorNetwork: "الخادم غير متاح حالياً. حاولي بعد قليل.",
-    errorDatabase: "تعذر الوصول إلى بيانات الطلبات. حاولي بعد قليل.",
-    errorRateLimit: "محاولات كثيرة جداً. انتظري قليلاً ثم حاولي مجدداً.",
-    errorDeliveryNotReady:
-      "يمكن تأكيد الاستلام عندما يكون الطلب قيد التوصيل فقط.",
-    errorGeneric: "تعذر تحميل حالة الطلب. حاولي مجدداً.",
-    stages: {
+    status: "الحالة الحالية",
+    confirmReceipt: "تأكيد استلام الطلب",
+    confirmPrompt: "هل استلمت هذا الطلب بالفعل؟",
+    receiptSaved: "تم تأكيد استلام الطلب.",
+    receiptError: "تعذر تأكيد الاستلام. حاول مرة أخرى.",
+    statuses: {
       pending: "تم استلام الطلب",
       confirmed: "تم تأكيد الطلب",
       preparing: "قيد التحضير",
@@ -70,51 +39,26 @@ const content = {
     },
   },
   fr: {
-    eyebrow: "Service client",
-    title: "Suivre ma commande",
-    subtitle:
-      "Saisissez le numéro de commande et le téléphone utilisés lors de la commande pour connaître son état en direct.",
-    orderNumber: "Numéro de commande",
+    title: "Suivre mes commandes",
+    subtitle: "Saisissez le nom complet et le téléphone utilisés lors de la commande.",
+    fullName: "Nom complet",
     phone: "Numéro de téléphone",
-    trackButton: "Suivre la commande",
-    tracking: "Vérification de la commande...",
-    notYet: "En attente",
-    resultTitle: "État de la commande",
-    orderDate: "Date de commande",
-    orderStatus: "Statut actuel",
-    customer: "Cliente",
-    payment: "Paiement",
-    cashOnDelivery: "Paiement à la livraison",
-    items: "Produits",
-    quantity: "Quantité",
-    subtotal: "Sous-total",
-    deliveryFee: "Frais de livraison",
+    submit: "Afficher les commandes",
+    loading: "Recherche en cours...",
+    invalid: "Saisissez un nom complet et un numéro de téléphone valides.",
+    noOrders: "Aucune commande trouvée pour ces informations. Vérifiez-les et réessayez.",
+    network: "Le serveur est momentanément indisponible. Réessayez bientôt.",
+    unavailable: "Impossible de charger les commandes. Réessayez.",
+    rateLimit: "Trop de tentatives. Patientez puis réessayez.",
+    order: "Commande",
+    date: "Date de commande",
     total: "Total",
-    timelineTitle: "Étapes de la commande",
-    receivedTitle: "Have you actually received your order?",
-    receivedMessage:
-      "Ne confirmez la réception qu'après avoir reçu le produit. La commande passera au statut « Livrée » uniquement après votre confirmation.",
+    status: "Statut actuel",
     confirmReceipt: "Confirmer la réception",
-    yesReceived: "Oui, j'ai reçu ma commande",
-    cancel: "Annuler",
-    confirming: "Confirmation de la réception...",
-    confirmed: "Réception confirmée. Merci !",
-    cancelledTitle: "Cette commande a été annulée",
-    cancelledMessage:
-      "Pour toute question, contactez-nous via la page Contact.",
-    trackAgain: "Suivre une autre commande",
-    home: "Retour à l'accueil",
-    errorInvalid: "Saisissez un numéro de commande et un téléphone valides.",
-    errorNotFound:
-      "Le numéro de commande et le téléphone ne correspondent pas. Vérifiez vos informations.",
-    errorNetwork:
-      "Le serveur est momentanément indisponible. Réessayez.",
-    errorDatabase: "Impossible d'accéder aux commandes. Réessayez.",
-    errorRateLimit: "Trop de tentatives. Patientez puis réessayez.",
-    errorDeliveryNotReady:
-      "La réception ne peut être confirmée que lorsque la commande est en cours de livraison.",
-    errorGeneric: "Impossible de charger l'état de la commande. Réessayez.",
-    stages: {
+    confirmPrompt: "Avez-vous bien reçu cette commande ?",
+    receiptSaved: "Réception de la commande confirmée.",
+    receiptError: "Impossible de confirmer la réception. Réessayez.",
+    statuses: {
       pending: "Commande reçue",
       confirmed: "Commande confirmée",
       preparing: "En préparation",
@@ -125,417 +69,218 @@ const content = {
     },
   },
   en: {
-    eyebrow: "Customer care",
-    title: "Track My Order",
-    subtitle:
-      "Enter your order number and the phone number used when placing the order to see its live status.",
-    orderNumber: "Order number",
+    title: "Track my orders",
+    subtitle: "Enter the full name and phone number used when placing your order.",
+    fullName: "Full name",
     phone: "Phone number",
-    trackButton: "Track order",
-    tracking: "Checking your order...",
-    notYet: "Awaiting update",
-    resultTitle: "Order status",
-    orderDate: "Order date",
-    orderStatus: "Current status",
-    customer: "Customer",
-    payment: "Payment",
-    cashOnDelivery: "Cash on delivery",
-    items: "Items",
-    quantity: "Quantity",
-    subtotal: "Subtotal",
-    deliveryFee: "Delivery fee",
+    submit: "Find orders",
+    loading: "Searching...",
+    invalid: "Enter a full name and a valid phone number.",
+    noOrders: "No orders matched those details. Check them and try again.",
+    network: "The server is temporarily unavailable. Please try again shortly.",
+    unavailable: "Could not load orders. Please try again.",
+    rateLimit: "Too many attempts. Wait a moment and try again.",
+    order: "Order",
+    date: "Order date",
     total: "Total",
-    timelineTitle: "Order progress",
-    receivedTitle: "Have you actually received your order?",
-    receivedMessage:
-      "Only confirm receipt once you have the product in hand. Your order will change to Delivered only after you explicitly confirm.",
-    confirmReceipt: "Confirm Receipt",
-    yesReceived: "Yes, I received it",
-    cancel: "Cancel",
-    confirming: "Confirming receipt...",
-    confirmed: "Receipt confirmed. Thank you!",
-    cancelledTitle: "This order was cancelled",
-    cancelledMessage:
-      "If you have any questions, contact us through the Contact page.",
-    trackAgain: "Track another order",
-    home: "Back to home",
-    errorInvalid: "Enter a valid order number and phone number.",
-    errorNotFound:
-      "The order number and phone number do not match. Check your details and try again.",
-    errorNetwork:
-      "The server is temporarily unavailable. Please try again shortly.",
-    errorDatabase:
-      "Could not reach the order database. Please try again shortly.",
-    errorRateLimit: "Too many attempts. Wait a moment and try again.",
-    errorDeliveryNotReady:
-      "Receipt can only be confirmed when the order is out for delivery.",
-    errorGeneric: "Could not load the order status. Please try again.",
-    stages: {
-      pending: "Order Received",
-      confirmed: "Order Confirmed",
+    status: "Current status",
+    confirmReceipt: "Confirm receipt",
+    confirmPrompt: "Have you received this order?",
+    receiptSaved: "Order receipt confirmed.",
+    receiptError: "Could not confirm receipt. Please try again.",
+    statuses: {
+      pending: "Order received",
+      confirmed: "Order confirmed",
       preparing: "Preparing",
       shipped: "Shipped",
-      out_for_delivery: "Out for Delivery",
+      out_for_delivery: "Out for delivery",
       delivered: "Delivered",
       cancelled: "Cancelled",
     },
   },
 };
 
-function localized(value, language) {
-  if (!value || typeof value !== "object") {
-    return "";
-  }
-
-  return value[language] || value.en || value.fr || value.ar || "";
-}
-
 function formatDate(value, language) {
-  if (!value) {
-    return "";
-  }
-
-  const locale =
-    language === "ar" ? "ar-MA" : language === "fr" ? "fr-FR" : "en-GB";
-
-  try {
-    return new Intl.DateTimeFormat(locale, {
-      dateStyle: "medium",
-      timeStyle: "short",
-    }).format(new Date(value));
-  } catch {
-    return new Date(value).toLocaleString();
-  }
+  if (!value) return "";
+  const locale = language === "ar" ? "ar-MA" : language === "fr" ? "fr-FR" : "en-GB";
+  return new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(
+    new Date(value)
+  );
 }
 
 function formatMoney(value, language) {
-  return new Intl.NumberFormat(language === "fr" ? "fr-MA" : "en-MA", {
+  const locale = language === "ar" ? "ar-MA" : language === "fr" ? "fr-MA" : "en-MA";
+  return new Intl.NumberFormat(locale, {
     style: "currency",
     currency: "MAD",
     maximumFractionDigits: 2,
   }).format(Number(value) || 0);
 }
 
-function buildTimeline(order, t, language) {
-  const history = [...(order.statusHistory || [])]
-    .filter((entry) => TRACKING_FLOW.includes(entry.status))
-    .sort((a, b) => new Date(a.at) - new Date(b.at));
-  const cancelled = order.status === "cancelled";
-  const currentIndex = TRACKING_FLOW.indexOf(order.status);
-  const reachedStatuses = new Set(history.map((entry) => entry.status));
-
-  return TRACKING_FLOW.map((status, index) => {
-    const entry = history.find((item) => item.status === status);
-    const isCurrent =
-      !cancelled && order.status !== "delivered" && index === currentIndex;
-    const isComplete = Boolean(entry) && !isCurrent;
-
-    return {
-      status,
-      label: t.stages[status],
-      state: isCurrent ? "current" : isComplete ? "complete" : "pending",
-      at: entry?.at ? formatDate(entry.at, language) : "",
-      source: reachedStatuses.has(status) ? entry?.source || "system" : "",
-    };
-  });
-}
-
 export default function TrackOrder() {
   const { language } = useLanguage();
   const { addToast } = useToast();
-  const [searchParams] = useSearchParams();
   const t = content[language] || content.en;
-
-  const [form, setForm] = useState({
-    orderNumber: (searchParams.get("order") || "").toUpperCase(),
-    phone: "",
-  });
-  const [credentials, setCredentials] = useState(null);
-  const [order, setOrder] = useState(null);
+  const [form, setForm] = useState({ fullName: "", phone: "" });
+  const [orders, setOrders] = useState([]);
+  const [searched, setSearched] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
-  const [confirming, setConfirming] = useState(false);
+  const [confirmingOrder, setConfirmingOrder] = useState("");
 
-  const timeline = order ? buildTimeline(order, t, language) : [];
-
-  function errorMessage(code) {
-    if (code === "invalid_orderNumber" || code === "invalid_phone") {
-      return t.errorInvalid;
-    }
-    if (code === "verification_failed" || code === "order_not_found") {
-      return t.errorNotFound;
-    }
-    if (code === "network_error") {
-      return t.errorNetwork;
-    }
-    if (code === "database_unavailable") {
-      return t.errorDatabase;
-    }
-    if (code === "rate_limit_exceeded") {
-      return t.errorRateLimit;
-    }
-    if (code === "delivery_not_ready") {
-      return t.errorDeliveryNotReady;
-    }
-    return t.errorGeneric;
-  }
-
-  function updateField(event) {
-    const { name, value } = event.target;
-    setForm((current) => ({ ...current, [name]: value }));
-    setError("");
+  if (!hasOrderTrackingAccess()) {
+    return <Navigate to="/" replace />;
   }
 
   async function handleSubmit(event) {
     event.preventDefault();
-
-    const orderNumber = form.orderNumber.trim().toUpperCase();
+    const fullName = form.fullName.trim();
     const phone = form.phone.trim();
 
-    if (!orderNumber || !phone) {
-      setError(t.errorInvalid);
+    if (!fullName || !/^[0-9+\s().-]{8,20}$/.test(phone)) {
+      setError(t.invalid);
       return;
     }
 
     setLoading(true);
     setError("");
+    setOrders([]);
+    setSearched(false);
 
     try {
-      const payload = await trackOrder({ orderNumber, phone });
-      const nextOrder = payload?.order;
-
-      if (!payload?.success || !nextOrder?.orderNumber) {
-        throw new Error("incomplete_tracking_response");
-      }
-
-      setCredentials({ orderNumber, phone });
-      setOrder(nextOrder);
-      setShowConfirm(false);
+      const payload = await trackOrder({ fullName, phone });
+      setOrders(Array.isArray(payload?.orders) ? payload.orders : []);
+      setSearched(true);
     } catch (requestError) {
-      setError(errorMessage(requestError?.code));
+      if (requestError?.code === "invalid_fullName" || requestError?.code === "invalid_phone") {
+        setError(t.invalid);
+      } else if (requestError?.code === "network_error") {
+        setError(t.network);
+      } else if (requestError?.code === "rate_limit_exceeded") {
+        setError(t.rateLimit);
+      } else {
+        setError(t.unavailable);
+      }
     } finally {
       setLoading(false);
     }
   }
 
-  async function handleConfirmReceipt() {
-    if (!credentials) {
-      return;
-    }
+  async function handleConfirmReceipt(orderNumber) {
+    if (!window.confirm(t.confirmPrompt)) return;
 
-    setConfirming(true);
+    setConfirmingOrder(orderNumber);
     setError("");
-
     try {
-      const payload = await confirmOrderReceipt(credentials);
-      const nextOrder = payload?.order;
-
-      if (!payload?.success || !nextOrder?.orderNumber) {
-        throw new Error("incomplete_confirmation_response");
+      const payload = await confirmOrderReceipt({
+        orderNumber,
+        phone: form.phone.trim(),
+      });
+      if (!payload?.success || !payload?.order?.status) {
+        throw new Error("incomplete_receipt_response");
       }
-
-      setOrder(nextOrder);
-      setShowConfirm(false);
-      addToast({ type: "success", message: t.confirmed });
-    } catch (requestError) {
-      setError(errorMessage(requestError?.code));
+      setOrders((current) =>
+        current.map((order) =>
+          order.orderNumber === orderNumber
+            ? { ...order, status: payload.order.status }
+            : order
+        )
+      );
+      addToast({ type: "success", message: t.receiptSaved });
+    } catch {
+      setError(t.receiptError);
     } finally {
-      setConfirming(false);
+      setConfirmingOrder("");
     }
-  }
-
-  function resetTracking() {
-    setOrder(null);
-    setCredentials(null);
-    setForm({ orderNumber: "", phone: "" });
-    setShowConfirm(false);
-    setError("");
   }
 
   return (
     <main className="track-page">
       <section className="track-intro">
-        <p className="eyebrow">{t.eyebrow}</p>
         <h1>{t.title}</h1>
         <p>{t.subtitle}</p>
       </section>
 
       <section className="track-search-card" aria-label={t.title}>
-        <form onSubmit={handleSubmit} className="track-form">
+        <form onSubmit={handleSubmit} className="track-form" noValidate>
           <label>
-            <span>{t.orderNumber}</span>
+            <span>{t.fullName}</span>
             <input
-              name="orderNumber"
-              value={form.orderNumber}
-              onChange={updateField}
-              placeholder="FK-000000"
-              autoComplete="off"
+              name="fullName"
+              value={form.fullName}
+              onChange={(event) => {
+                setForm((current) => ({ ...current, fullName: event.target.value }));
+                setOrders([]);
+                setSearched(false);
+                setError("");
+              }}
+              autoComplete="name"
+              maxLength={120}
               required
             />
           </label>
-
           <label>
             <span>{t.phone}</span>
             <input
               name="phone"
-              value={form.phone}
-              onChange={updateField}
               type="tel"
+              value={form.phone}
+              onChange={(event) => {
+                setForm((current) => ({ ...current, phone: event.target.value }));
+                setOrders([]);
+                setSearched(false);
+                setError("");
+              }}
               autoComplete="tel"
+              maxLength={20}
               required
             />
           </label>
-
           <button type="submit" disabled={loading} className="track-submit">
-            {loading ? t.tracking : t.trackButton}
+            {loading ? t.loading : t.submit}
           </button>
         </form>
-
-        {error && <p className="track-error">{error}</p>}
+        {error && <p className="track-error" role="alert">{error}</p>}
       </section>
 
-      {order && (
-        <section className="track-result" aria-live="polite">
-          <div className="track-result-header">
-            <div>
-              <p className="eyebrow">{t.resultTitle}</p>
-              <h2>{order.orderNumber}</h2>
-            </div>
-            <span className={`track-status track-status--${order.status}`}>
-              {t.stages[order.status] || order.status}
-            </span>
-          </div>
-
-          <div className="track-meta">
-            <div>
-              <span>{t.orderDate}</span>
-              <strong>{formatDate(order.createdAt, language)}</strong>
-            </div>
-            <div>
-              <span>{t.customer}</span>
-              <strong>{order.customer.fullName}</strong>
-            </div>
-            <div>
-              <span>{t.phone}</span>
-              <strong dir="ltr">{order.customer.phone}</strong>
-            </div>
-            <div>
-              <span>{t.payment}</span>
-              <strong>{t.cashOnDelivery}</strong>
-            </div>
-          </div>
-
-          <div className="track-columns">
-            <div className="track-panel">
-              <h3>{t.timelineTitle}</h3>
-
-              {order.status === "cancelled" && (
-                <div className="track-cancelled">
-                  <strong>{t.cancelledTitle}</strong>
-                  <p>{t.cancelledMessage}</p>
-                </div>
-              )}
-
-              <ol className="track-timeline">
-                {timeline.map((step, index) => (
-                  <li className={`is-${step.state}`} key={step.status}>
-                    <span className="track-dot" aria-hidden="true">
-                      {step.state === "complete" ? "✓" : index + 1}
-                    </span>
-                    <div className="track-step-body">
-                      <strong>{step.label}</strong>
-                      <span>
-                        {step.at ? `${t.orderDate}: ${step.at}` : t.notYet}
-                      </span>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-            </div>
-
-            <div className="track-panel">
-              <h3>{t.items}</h3>
-              <div className="track-items">
-                {order.items.map((item) => (
-                  <div
-                    className="track-item"
-                    key={`${item.productId}-${item.variant?.key || ""}`}
-                  >
-                    <div>
-                      <strong>
-                        {localized(item.name, language) || item.productId}
-                      </strong>
-                      {item.variant?.name && (
-                        <span>{localized(item.variant.name, language)}</span>
-                      )}
-                      <small>
-                        {t.quantity}: {item.quantity}
-                      </small>
-                    </div>
-                    <strong>
-                      {formatMoney(item.price * item.quantity, language)}
-                    </strong>
-                  </div>
-                ))}
+      {orders.length > 0 && (
+        <section className="track-results" aria-live="polite">
+          {orders.map((order) => (
+            <article className="track-result" key={order.orderNumber}>
+              <div>
+                <span>{t.order}</span>
+                <strong>{order.orderNumber}</strong>
               </div>
-
-              <div className="track-totals">
-                <div>
-                  <span>{t.subtotal}</span>
-                  <strong>{formatMoney(order.subtotal, language)}</strong>
-                </div>
-                <div>
-                  <span>{t.deliveryFee}</span>
-                  <strong>{formatMoney(order.deliveryFee, language)}</strong>
-                </div>
-                <div className="is-total">
-                  <span>{t.total}</span>
-                  <strong>{formatMoney(order.total, language)}</strong>
-                </div>
+              <div>
+                <span>{t.date}</span>
+                <strong>{formatDate(order.createdAt, language)}</strong>
               </div>
-            </div>
-          </div>
-
-          {order.status === "out_for_delivery" && (
-            <div className="track-confirmation">
-              <h3>{t.receivedTitle}</h3>
-              <p>{t.receivedMessage}</p>
-
-              {!showConfirm ? (
-                <button type="button" onClick={() => setShowConfirm(true)}>
-                  {t.confirmReceipt}
+              <div>
+                <span>{t.total}</span>
+                <strong>{formatMoney(order.total, language)}</strong>
+              </div>
+              <div>
+                <span>{t.status}</span>
+                <strong className={`track-status track-status--${order.status}`}>
+                  {t.statuses[order.status] || order.status}
+                </strong>
+              </div>
+              {order.status === "out_for_delivery" && (
+                <button
+                  type="button"
+                  className="track-confirm-receipt"
+                  onClick={() => handleConfirmReceipt(order.orderNumber)}
+                  disabled={Boolean(confirmingOrder)}
+                >
+                  {confirmingOrder === order.orderNumber ? t.loading : t.confirmReceipt}
                 </button>
-              ) : (
-                <div className="track-confirmation-actions">
-                  <button
-                    type="button"
-                    className="is-primary"
-                    onClick={handleConfirmReceipt}
-                    disabled={confirming}
-                  >
-                    {confirming ? t.confirming : t.yesReceived}
-                  </button>
-                  <button
-                    type="button"
-                    className="is-secondary"
-                    onClick={() => setShowConfirm(false)}
-                    disabled={confirming}
-                  >
-                    {t.cancel}
-                  </button>
-                </div>
               )}
-            </div>
-          )}
-
-          <div className="track-actions">
-            <button type="button" onClick={resetTracking}>
-              {t.trackAgain}
-            </button>
-            <Link to="/">{t.home}</Link>
-          </div>
+            </article>
+          ))}
         </section>
+      )}
+      {searched && !loading && !error && orders.length === 0 && (
+        <p className="track-empty" aria-live="polite">{t.noOrders}</p>
       )}
     </main>
   );

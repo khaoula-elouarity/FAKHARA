@@ -1,10 +1,11 @@
-import React from "react";
-import { Routes, Route } from "react-router-dom";
+import React, { lazy, Suspense, useEffect, useState } from "react";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 
 import Header from "./components/Header.jsx";
 import Footer from "./components/footer.jsx";
 import Loading from "./components/Loading.jsx";
 import ScrollToTop from "./components/ScrollToTop.jsx";
+import BackNavigation from "./components/BackNavigation.jsx";
 import WhatsAppButton from "./components/WhatsAppButton.jsx";
 
 import Home from "./components/home.jsx";
@@ -19,7 +20,6 @@ import TrackOrder from "./components/TrackOrder.jsx";
 import About from "./components/About.jsx";
 import Contact from "./components/contact.jsx";
 import ProductSearch from "./components/ProductSearch.jsx";
-import AdminDashboard from "./components/admindashboard.jsx";
 import Account from "./components/account/Account.jsx";
 import RequireAuth from "./components/account/RequireAuth.jsx";
 import {
@@ -28,8 +28,11 @@ import {
   Register,
   ResetPassword,
 } from "./components/account/AccountAuth.jsx";
+import { adminMe } from "./services/api.js";
 
 import "./App.css";
+
+const AdminDashboard = lazy(() => import("./components/admindashboard.jsx"));
 
 function NotFound() {
   return (
@@ -40,12 +43,63 @@ function NotFound() {
   );
 }
 
+function AdminGate({ children }) {
+  const [checked, setChecked] = useState(false);
+  const [allowed, setAllowed] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+
+    adminMe()
+      .then(() => {
+        if (active) {
+          setAllowed(true);
+          setChecked(true);
+        }
+      })
+      .catch(() => {
+        if (active) {
+          setAllowed(false);
+          setChecked(true);
+        }
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  if (!checked) return null;
+
+  if (!allowed) {
+    return <Navigate to="/account/login" replace />;
+  }
+
+  return children;
+}
+
+function AdminRoute() {
+  return (
+    <AdminGate>
+      <Suspense fallback={null}>
+        <AdminDashboard />
+      </Suspense>
+    </AdminGate>
+  );
+}
+
 export default function App() {
+  const { pathname } = useLocation();
+  const isAdminRoute =
+    pathname === "/admin" || pathname.startsWith("/admin/");
+
   return (
     <div className="app">
       <Loading />
 
       <Header />
+
+      <BackNavigation />
 
       <ScrollToTop />
 
@@ -82,21 +136,25 @@ export default function App() {
             </RequireAuth>
           }
         />
-        <Route path="/admin/login" element={<AdminDashboard />} />
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin/orders" element={<AdminDashboard />} />
-        <Route path="/admin/products" element={<AdminDashboard />} />
-        <Route path="/admin/categories" element={<AdminDashboard />} />
-        <Route path="/admin/messages" element={<AdminDashboard />} />
-        <Route path="/admin/customizations" element={<AdminDashboard />} />
-        <Route path="/admin/customers" element={<AdminDashboard />} />
-        <Route path="/admin/featured-section" element={<AdminDashboard />} />
-        <Route path="/admin/discovery-pages" element={<AdminDashboard />} />
-        <Route path="/admin/settings" element={<AdminDashboard />} />
+        <Route path="/admin/login" element={<AdminRoute />} />
+        <Route path="/admin" element={<AdminRoute />} />
+        <Route
+          path="/admin/customizations"
+          element={<Navigate to="/admin" replace />}
+        />
+        <Route path="/admin/orders" element={<AdminRoute />} />
+        <Route path="/admin/products" element={<AdminRoute />} />
+        <Route path="/admin/categories" element={<AdminRoute />} />
+        <Route path="/admin/messages" element={<AdminRoute />} />
+        <Route path="/admin/customers" element={<AdminRoute />} />
+        <Route path="/admin/homepage-content" element={<AdminRoute />} />
+        <Route path="/admin/featured-section" element={<AdminRoute />} />
+        <Route path="/admin/discovery-pages" element={<AdminRoute />} />
+        <Route path="/admin/settings" element={<AdminRoute />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
 
-      <Footer />
+      {!isAdminRoute && <Footer />}
     </div>
   );
 }

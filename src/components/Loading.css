@@ -1,8 +1,10 @@
 .intro {
-  --intro-gold: #bd985d;
-  --intro-gold-light: #ddc18d;
-  --intro-teal: #123f3b;
-  --intro-ivory: #f7f3eb;
+  --intro-gold: var(--accent-gold);
+  --intro-gold-light: var(--text-accent);
+  --intro-teal: var(--accent);
+  --intro-ivory: var(--page-bg);
+  --intro-backdrop-start: #fdfaf4;
+  --intro-backdrop-end: #efe6d6;
   --intro-rest-size: clamp(2.8rem, 7.2vw, 6rem);
   --intro-f-size: calc(var(--intro-rest-size) * 1.62);
   --intro-ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
@@ -32,10 +34,16 @@
   z-index: 0;
   background: radial-gradient(
     120% 100% at 50% 42%,
-    #fdfaf4 0%,
+    var(--intro-backdrop-start) 0%,
     var(--intro-ivory) 46%,
-    #efe6d6 100%
+    var(--intro-backdrop-end) 100%
   );
+}
+
+:root[data-theme="night"] .intro {
+  --intro-teal: var(--text-primary);
+  --intro-backdrop-start: #202b27;
+  --intro-backdrop-end: #121917;
 }
 
 .intro__backdrop::before {
@@ -214,7 +222,7 @@
   text-indent: 0.3em;
   text-transform: uppercase;
   white-space: nowrap;
-  color: rgba(18, 63, 59, 0.7);
+  color: var(--text-secondary);
 }
 
 .intro__sweep {

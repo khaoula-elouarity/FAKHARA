@@ -1,22 +1,74 @@
 @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Tajawal:wght@400;500;600;700&display=swap');
 
 :root {
+  color-scheme: light;
   font-family: "DM Sans", sans-serif;
-  color: #173f3b;
-  background: #f7f3eb;
+  color: var(--text-primary);
+  background: var(--page-bg);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 
-  --teal: #123f3b;
-  --teal-light: #20554d;
-  --gold: #bd985d;
-  --cream: #f7f3eb;
-  --ivory: #fffdf7;
-  --beige: #eae2d4;
-  --text: #263f39;
-  --muted: #85877d;
+  --page-bg: #f7f3eb;
+  --surface-bg: #fffdf7;
+  --surface-raised: #fffefa;
+  --surface-muted: #eee8dc;
+  --text-primary: #203b36;
+  --text-secondary: #40564f;
+  --text-muted: #68776f;
+  --text-accent: #795923;
+  --text-on-accent: #fffdf7;
+  --accent: #123f3b;
+  --accent-hover: #20554d;
+  --accent-gold: #bd985d;
+  --text-on-gold: #17312d;
   --border: #ded5c5;
+  --input-bg: #fffefa;
+  --focus-ring: rgba(130, 93, 38, 0.42);
+  --success: #286744;
+  --success-bg: #e7f0e8;
+  --warning: #795923;
+  --warning-bg: #f5eddc;
+  --error: #963c32;
+  --error-bg: #f7e9e6;
+  --error-solid: #963c32;
+
+  /* Backward-compatible aliases; component declarations below use semantic roles. */
+  --teal: var(--accent);
+  --teal-light: var(--accent-hover);
+  --gold: var(--accent-gold);
+  --cream: var(--page-bg);
+  --ivory: var(--surface-bg);
+  --beige: var(--surface-muted);
+  --text: var(--text-primary);
+  --muted: var(--text-muted);
+}
+
+:root[data-theme="night"] {
+  color-scheme: dark;
+  --page-bg: #121917;
+  --surface-bg: #19221f;
+  --surface-raised: #202b27;
+  --surface-muted: #25322d;
+  --text-primary: #f0eee6;
+  --text-secondary: #d0d8d1;
+  --text-muted: #aebbb3;
+  --text-accent: #e2c486;
+  --text-on-accent: #fffdf7;
+  --accent: #17473f;
+  --accent-hover: #216054;
+  --accent-gold: #80602f;
+  --text-on-gold: #fffdf7;
+  --border: #3b4b44;
+  --input-bg: #151e1a;
+  --focus-ring: rgba(220, 185, 116, 0.58);
+  --success: #88c99e;
+  --success-bg: #1e3428;
+  --warning: #e3c27c;
+  --warning-bg: #342c1d;
+  --error: #f0a59a;
+  --error-bg: #382321;
+  --error-solid: #81372f;
 }
 
 * {
@@ -34,6 +86,33 @@ body {
   font-family: "DM Sans", sans-serif;
   font-size: 14px;
   font-weight: 400;
+}
+
+body {
+  color: var(--text-primary);
+  background: var(--page-bg);
+}
+
+:root input,
+:root textarea,
+:root select {
+  color: var(--text-primary);
+  background-color: var(--input-bg);
+  border-color: var(--border);
+}
+
+::placeholder {
+  color: var(--text-muted);
+  opacity: 1;
+}
+
+option {
+  color: var(--text-primary);
+  background: var(--surface-raised);
+}
+
+:focus-visible {
+  outline-color: var(--focus-ring);
 }
 
 body,
@@ -94,6 +173,6 @@ h4,
 }
 
 ::selection {
-  background: var(--gold);
-  color: white;
+  background: var(--accent-gold);
+  color: var(--text-on-gold);
 }

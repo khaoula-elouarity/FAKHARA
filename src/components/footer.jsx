@@ -11,7 +11,6 @@ collections: "مجموعاتنا",
 contact: "تواصل معنا",
 home: "الرئيسية",
 about: "من نحن",
-trackOrder: "تتبع طلبي",
 
 contactLink: "اتصل بنا",
 categories: [
@@ -32,7 +31,6 @@ collections: "Nos collections",
 contact: "Contact",
 home: "Accueil",
 about: "À propos",
-trackOrder: "Suivre ma commande",
 
 contactLink: "Nous contacter",
 categories: [
@@ -53,7 +51,6 @@ collections: "Our collections",
 contact: "Contact",
 home: "Home",
 about: "About us",
-trackOrder: "Track My Order",
 
 contactLink: "Contact us",
 categories: [
@@ -70,7 +67,7 @@ rights: "All rights reserved."
 };
 
 export default function Footer() {
-const { language, t } = useLanguage();
+const { language } = useLanguage();
 const content = footerContent[language];
 
 return (
@@ -95,7 +92,6 @@ return (
       <h3>{content.explore}</h3>
       <Link to="/">{content.home}</Link>
       <Link to="/about">{content.about}</Link>
-      <Link to="/track-order">{content.trackOrder}</Link>
       <Link to="/contact">{content.contactLink}</Link>
     </div>
 

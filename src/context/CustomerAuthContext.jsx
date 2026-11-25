@@ -55,7 +55,7 @@ export function CustomerAuthProvider({ children }) {
     const payload = await loginUser(credentials);
     sessionVersion.current += 1;
     setUser(payload?.user || null);
-    return payload?.user || null;
+    return payload;
   }, []);
 
   const register = useCallback(async (profile) => {

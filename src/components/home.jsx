@@ -534,20 +534,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="home-track" id="track-order">
-        <div className="home-track-inner">
-          <div className="home-track-copy">
-            <span className="home-eyebrow">{content.trackLabel}</span>
-            <h2>{content.trackTitle}</h2>
-            <p>{content.trackDescription}</p>
-          </div>
 
-          <Link to="/track-order" className="home-primary-button">
-            {content.trackButton}
-            <span>↗</span>
-          </Link>
-        </div>
-      </section>
 
       {/* VISIT OUR STORE */}
       <section className="home-visit">

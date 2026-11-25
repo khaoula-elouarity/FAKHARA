@@ -1,8 +1,8 @@
 /* FAKHARA HOME PAGE */
 
 .home-page {
-  background: var(--cream);
-  color: var(--teal);
+  background: var(--page-bg);
+  color: var(--text-primary);
 }
 
 /* Shared elements */
@@ -10,7 +10,7 @@
 .home-eyebrow {
   display: block;
   margin-bottom: 19px;
-  color: var(--gold);
+  color: var(--text-accent);
   font-family: "DM Sans", sans-serif;
   font-size: 10px;
   font-weight: 600;
@@ -33,7 +33,7 @@
 .home-section-heading h2,
 .story-content h2,
 .home-visit-content h2 {
-  color: var(--teal);
+  color: var(--text-primary);
   font-family: "Playfair Display", serif;
   font-size: clamp(30px, 3.5vw, 43px);
   font-weight: 500;
@@ -44,7 +44,7 @@
 .story-content > p,
 .home-visit-content > p {
   margin-top: 15px;
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 13px;
   line-height: 2.1;
 }
@@ -66,8 +66,8 @@
       rgba(189, 152, 93, 0.09),
       transparent 65%
     ),
-    #eee8dc;
-  color: #9b8a70;
+    var(--surface-muted);
+  color: var(--text-muted);
   font-family: "DM Sans", sans-serif;
   font-size: 8px;
   letter-spacing: 2px;
@@ -80,7 +80,7 @@
   place-items: center;
   border: 1px solid rgba(189, 152, 93, 0.65);
   border-radius: 50%;
-  color: var(--gold);
+  color: var(--text-accent);
   font-family: "Playfair Display", serif;
   font-size: 24px;
 }
@@ -108,7 +108,7 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  color: var(--teal);
+  color: var(--text-primary);
   font-family: "Playfair Display", serif;
   font-size: clamp(36px, 4vw, 54px);
   font-weight: 500;
@@ -116,14 +116,14 @@
 }
 
 .home-hero-title span {
-  color: var(--gold);
+  color: var(--text-accent);
   font-style: italic;
 }
 
 .home-hero-description {
   max-width: 470px;
   margin-top: 22px;
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 13px;
   line-height: 2.2;
 }
@@ -143,7 +143,7 @@
   align-items: center;
   justify-content: center;
   gap: 17px;
-  background: var(--teal);
+  background: var(--accent);
   border: 1px solid var(--teal);
   color: white;
   font-size: 11px;
@@ -151,15 +151,16 @@
 }
 
 .home-primary-button:hover {
-  background: var(--gold);
+  background: var(--accent-gold);
   border-color: var(--gold);
+  color: var(--text-on-gold);
   transform: translateY(-3px);
 }
 
 .home-text-button {
   padding-bottom: 5px;
   border-bottom: 1px solid var(--gold);
-  color: var(--teal);
+  color: var(--text-primary);
   font-size: 11px;
 }
 
@@ -168,7 +169,7 @@
   align-items: center;
   gap: 12px;
   margin-top: 55px;
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 9px;
   letter-spacing: 1.5px;
 }
@@ -176,7 +177,7 @@
 .home-hero-note span {
   width: 34px;
   height: 1px;
-  background: var(--gold);
+  background: var(--accent-gold);
 }
 
 .home-hero-art {
@@ -236,7 +237,7 @@
   position: absolute;
   bottom: 20px;
   left: 0;
-  color: var(--gold);
+  color: var(--text-accent);
   font-size: 8px;
   letter-spacing: 2px;
 }
@@ -245,7 +246,7 @@
   position: absolute;
   right: 0;
   bottom: 20px;
-  color: var(--gold);
+  color: var(--text-accent);
   font-size: 9px;
   letter-spacing: 2px;
 }
@@ -253,7 +254,7 @@
 /* Brand promise */
 
 .home-promise {
-  background: var(--teal);
+  background: var(--accent);
   color: white;
 }
 
@@ -280,7 +281,7 @@
 }
 
 .promise-number {
-  color: var(--gold);
+  color: var(--text-accent);
   font-family: "Playfair Display", serif;
   font-size: 25px;
 }
@@ -309,7 +310,7 @@
   grid-column: span 2;
   min-width: 0;
   display: block;
-  background: var(--ivory);
+  background: var(--surface-bg);
   border: 1px solid rgba(189, 152, 93, 0.2);
   overflow: hidden;
   transition: transform 0.35s ease, box-shadow 0.35s ease;
@@ -375,21 +376,21 @@
 }
 
 .category-card-info > div > span {
-  color: var(--gold);
+  color: var(--text-accent);
   font-size: 9px;
   letter-spacing: 1px;
 }
 
 .category-card-info h3 {
   margin-top: 7px;
-  color: var(--teal);
+  color: var(--text-primary);
   font-size: 16px;
   font-weight: 600;
 }
 
 .category-card-info p {
   margin-top: 7px;
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 10px;
   line-height: 1.8;
 }
@@ -402,13 +403,13 @@
   place-items: center;
   border: 1px solid var(--gold);
   border-radius: 50%;
-  color: var(--gold);
+  color: var(--text-accent);
   transition: 0.3s ease;
 }
 
 .category-card:hover .category-arrow {
-  background: var(--gold);
-  color: white;
+  background: var(--accent-gold);
+  color: var(--text-on-gold);
 }
 
 .home-centered-action {
@@ -425,13 +426,13 @@
   justify-content: center;
   gap: 17px;
   border: 1px solid var(--gold);
-  color: var(--teal);
+  color: var(--text-primary);
   font-size: 11px;
   transition: 0.3s ease;
 }
 
 .home-outline-button:hover {
-  background: var(--teal);
+  background: var(--accent);
   border-color: var(--teal);
   color: white;
 }
@@ -439,7 +440,7 @@
 /* Featured products */
 
 .home-featured {
-  background: #f0ebe1;
+  background: var(--surface-muted);
 }
 
 .featured-grid {
@@ -450,7 +451,7 @@
 
 .featured-card {
   min-width: 0;
-  background: var(--ivory);
+  background: var(--surface-bg);
   border: 1px solid rgba(189, 152, 93, 0.2);
   overflow: hidden;
   transition: transform 0.35s ease, box-shadow 0.35s ease;
@@ -509,8 +510,8 @@
   height: 35px;
   display: grid;
   place-items: center;
-  background: var(--ivory);
-  color: var(--teal);
+  background: var(--surface-bg);
+  color: var(--text-primary);
 }
 
 .featured-info {
@@ -518,14 +519,14 @@
 }
 
 .featured-card-description {
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 11px;
   line-height: 1.8;
 }
 
 .featured-info h3 {
   margin-top: 10px;
-  color: var(--teal);
+  color: var(--text-primary);
   font-size: 16px;
   font-weight: 500;
 }
@@ -540,13 +541,13 @@
 }
 
 .featured-card-price {
-  color: var(--teal);
+  color: var(--text-primary);
   font-family: "Playfair Display", serif;
   font-size: 16px;
 }
 
 .featured-card-price small {
-  color: var(--gold);
+  color: var(--text-accent);
   font-family: "DM Sans", sans-serif;
   font-size: 9px;
   letter-spacing: 1px;
@@ -559,7 +560,7 @@
   padding: 0;
   border: 0;
   background: none;
-  color: var(--gold);
+  color: var(--text-accent);
   font-size: 10px;
   cursor: pointer;
 }
@@ -613,8 +614,8 @@
   height: 100px;
   display: grid;
   place-items: center;
-  background: var(--teal);
-  color: var(--gold);
+  background: var(--accent);
+  color: var(--text-accent);
   font-family: "Playfair Display", serif;
   font-size: 55px;
 }
@@ -652,7 +653,7 @@
       rgba(255, 255, 255, 0.045),
       transparent 42%
     ),
-    var(--teal);
+    var(--accent);
   box-shadow:
     inset 0 1px 0 rgba(189, 152, 93, 0.18),
     inset 0 -1px 0 rgba(189, 152, 93, 0.18);
@@ -676,7 +677,7 @@
   align-items: flex-start;
   gap: 10px;
   margin: 22px 0 26px;
-  color: var(--gold);
+  color: var(--text-accent);
   font-size: 11px;
   line-height: 1.8;
   letter-spacing: 0.4px;
@@ -687,12 +688,13 @@
   flex: 0 0 18px;
   height: 1px;
   margin-top: 0.68em;
-  background: var(--gold);
+  background: var(--accent-gold);
   opacity: 0.7;
 }
 
 .home-visit .home-primary-button {
-  background: var(--gold);
+  background: var(--accent-gold);
+  color: var(--text-on-gold);
   border-color: var(--gold);
 }
 
@@ -716,7 +718,7 @@
   min-height: 410px;
   display: block;
   border: 0;
-  background: var(--beige);
+  background: var(--surface-muted);
   filter: saturate(0.88) contrast(1.02);
 }
 
@@ -729,7 +731,7 @@
   flex-direction: column;
   overflow: hidden;
   border: 1px solid var(--gold);
-  background: var(--cream);
+  background: var(--page-bg);
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
 }
 
@@ -745,7 +747,7 @@
   place-items: center;
   border: 0;
   background: transparent;
-  color: var(--teal);
+  color: var(--text-primary);
   font-size: 20px;
   line-height: 1;
   transition:
@@ -759,8 +761,8 @@
 
 .home-map-zoom button:hover:not(:disabled),
 .home-map-zoom button:focus-visible {
-  background: var(--gold);
-  color: var(--ivory);
+  background: var(--accent-gold);
+  color: var(--text-on-gold);
 }
 
 .home-map-zoom button:focus-visible {
@@ -782,9 +784,9 @@
   align-items: center;
   gap: 9px;
   padding: 13px 20px;
-  background: var(--cream);
+  background: var(--page-bg);
   border: 1px solid var(--gold);
-  color: var(--teal);
+  color: var(--text-primary);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.7px;
@@ -804,8 +806,8 @@
 
 .home-map-directions:hover,
 .home-map-directions:focus-visible {
-  background: var(--gold);
-  color: var(--ivory);
+  background: var(--accent-gold);
+  color: var(--text-on-gold);
   transform: translateY(-2px);
   box-shadow: 0 14px 30px rgba(0, 0, 0, 0.22);
 }
@@ -860,7 +862,7 @@
   border: 1px solid rgba(189, 152, 93, 0.55);
   border-radius: 50%;
   background: rgba(189, 152, 93, 0.08);
-  color: var(--gold);
+  color: var(--text-accent);
   font-size: 26px;
   line-height: 1;
 }
@@ -872,7 +874,7 @@
 }
 
 .home-map-placeholder small {
-  color: var(--gold);
+  color: var(--text-accent);
   font-size: 8.5px;
   letter-spacing: 2.2px;
   text-transform: uppercase;
@@ -1169,7 +1171,7 @@
     from 0deg,
     transparent 0deg,
     transparent 220deg,
-    var(--gold) 270deg,
+    var(--accent-gold) 270deg,
     #f4dfae 300deg,
     transparent 340deg
   );
@@ -1189,7 +1191,7 @@
   padding: 60px 0;
   background:
     linear-gradient(120deg, rgba(18, 63, 59, 0.97), rgba(32, 85, 77, 0.94)),
-    var(--teal);
+    var(--accent);
 }
 
 .home-track::after {
@@ -1225,7 +1227,7 @@
 }
 
 .home-track .home-eyebrow {
-  color: var(--gold);
+  color: var(--text-accent);
 }
 
 .home-track h2 {
@@ -1242,8 +1244,8 @@
 
 .home-track .home-primary-button {
   flex-shrink: 0;
-  background: var(--gold);
-  color: var(--teal);
+  background: var(--accent-gold);
+  color: var(--text-on-gold);
 }
 
 @media (max-width: 800px) {
@@ -1296,7 +1298,7 @@
   transform: translateX(-50%);
   border: 1px solid var(--gold);
   border-radius: 50%;
-  background: var(--cream);
+  background: var(--page-bg);
 }
 
 .orbit-one {
@@ -1381,7 +1383,7 @@
   background: conic-gradient(
     from 0deg,
     transparent,
-    var(--gold),
+    var(--accent-gold),
     #f4dfae,
     transparent 45%
   );

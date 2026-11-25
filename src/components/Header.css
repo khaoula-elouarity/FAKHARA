@@ -7,7 +7,7 @@ html {
   position: sticky;
   top: 0;
   z-index: 1000;
-  background: rgba(255, 253, 247, 0.96);
+  background: color-mix(in srgb, var(--surface-bg) 96%, transparent);
   border-bottom: 1px solid rgba(189, 152, 93, 0.25);
   box-shadow: 0 10px 30px -24px rgba(18, 63, 59, 0.5);
   backdrop-filter: blur(14px);
@@ -38,7 +38,7 @@ html {
   display: grid;
   place-items: center;
   border: 1px solid var(--gold);
-  color: var(--gold);
+  color: var(--text-accent);
   font-family: "Playfair Display", serif;
   font-size: 31px;
   font-weight: 600;
@@ -54,7 +54,7 @@ html {
 .brand-name {
   display: flex;
   flex-direction: column;
-  color: var(--teal);
+  color: var(--text-primary);
   font-family: "Playfair Display", serif;
   font-size: 19px;
   font-weight: 700;
@@ -63,7 +63,7 @@ html {
 
 .brand-name small {
   margin-top: 3px;
-  color: var(--gold);
+  color: var(--text-accent);
   font-family: "DM Sans", sans-serif;
   font-size: 7px;
   letter-spacing: 1.4px;
@@ -80,7 +80,7 @@ html {
 .nav-link {
   position: relative;
   padding: 9px 0;
-  color: #53645b;
+  color: var(--text-primary);
   font-size: 12px;
   transition: color 0.25s ease;
   white-space: nowrap;
@@ -93,13 +93,13 @@ html {
   right: 0;
   width: 0;
   height: 1px;
-  background: var(--gold);
+  background: var(--accent-gold);
   transition: width 0.3s ease;
 }
 
 .nav-link:hover,
 .nav-link.active {
-  color: var(--gold);
+  color: var(--text-accent);
 }
 
 .nav-link:hover::after,
@@ -118,12 +118,12 @@ html {
   height: 35px;
   display: grid;
   place-items: center;
-  color: var(--teal);
+  color: var(--text-primary);
   transition: color 0.25s ease, transform 0.25s ease;
 }
 
 .header-icon-link:hover {
-  color: var(--gold);
+  color: var(--text-accent);
   transform: translateY(-2px);
 }
 
@@ -190,8 +190,15 @@ html {
   border-bottom: 1px solid var(--gold);
   outline: none;
   background: transparent;
-  color: var(--teal);
+  color: var(--text-primary);
   font-size: 11px;
+  cursor: pointer;
+}
+
+.theme-toggle {
+  padding: 0;
+  border: 0;
+  background: transparent;
   cursor: pointer;
 }
 
@@ -250,7 +257,7 @@ html {
   .mobile-menu-button span {
     width: 23px;
     height: 1.5px;
-    background: var(--teal);
+    background: var(--accent);
   }
 
   .brand-symbol {
@@ -277,7 +284,7 @@ html {
     align-items: stretch;
     gap: 0;
     padding: 12px 6%;
-    background: var(--ivory);
+    background: var(--surface-bg);
     border-bottom: 1px solid var(--border);
     box-shadow: 0 12px 20px rgba(18, 63, 59, 0.07);
   }
@@ -325,8 +332,56 @@ html {
     font-size: 10px;
   }
 }
+
+@media (max-width: 380px) {
+  .header-inner {
+    width: 96%;
+    gap: 5px;
+  }
+
+  .mobile-menu-button {
+    width: 28px;
+    flex: 0 0 28px;
+  }
+
+  .brand-logo {
+    gap: 4px;
+  }
+
+  .brand-symbol {
+    width: 32px;
+    height: 32px;
+  }
+
+  .brand-name {
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+
+  .brand-name small {
+    display: none;
+  }
+
+  .header-actions {
+    gap: 2px;
+  }
+
+  .header-actions .header-icon-link {
+    width: 22px;
+    flex: 0 0 22px;
+  }
+
+  .header-svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .language-select {
+    padding: 7px 2px;
+  }
+}
 .wishlist-link.is-pulsing {
-  color: var(--gold);
+  color: var(--text-accent);
 }
 
 .wishlist-link.is-pulsing .header-svg {
@@ -334,7 +389,7 @@ html {
 }
 
 .cart-link.is-pulsing {
-  color: var(--gold);
+  color: var(--text-accent);
 }
 
 .cart-link.is-pulsing .cart-svg {

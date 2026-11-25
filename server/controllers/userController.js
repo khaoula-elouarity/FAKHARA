@@ -1,11 +1,16 @@
 import { createHash, randomBytes } from "node:crypto";
 
+import Admin, { ADMIN_ROLES } from "../models/Admin.js";
 import Order from "../models/Order.js";
 import User from "../models/User.js";
 import env from "../config/env.js";
 import ApiError from "../utils/ApiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import sendPasswordResetEmail from "../utils/mailer.js";
+import {
+  clearAdminSession,
+  setAdminSessionCookie,
+} from "../middleware/auth.js";
 import {
   USER_COOKIE_NAME,
   USER_COOKIE_OPTIONS,
@@ -139,6 +144,10 @@ function setSessionCookie(response, user) {
   return token;
 }
 
+function clearUserSession(response) {
+  response.clearCookie(USER_COOKIE_NAME, { path: "/" });
+}
+
 export const register = asyncHandler(async (request, response) => {
   const { firstName, lastName, name } = readNameFields(request.body, {
     required: true,
@@ -150,16 +159,19 @@ export const register = asyncHandler(async (request, response) => {
     max: 200,
   });
 
-  const existing = await User.findOne({ email }).select("+passwordHash");
+  const [existing, adminExists] = await Promise.all([
+    User.findOne({ email }).select("+passwordHash"),
+    Admin.exists({ email }),
+  ]);
+
+  if (existing?.passwordHash || adminExists) {
+    throw ApiError.conflict("email_already_registered");
+  }
 
   if (existing) {
     // A guest checkout may already have created a password-less profile with
     // this email. In that case registration upgrades that profile instead of
     // blocking the customer.
-    if (existing.passwordHash) {
-      throw ApiError.conflict("email_already_registered");
-    }
-
     existing.name = name;
     existing.firstName = firstName;
     existing.lastName = lastName;
@@ -169,11 +181,14 @@ export const register = asyncHandler(async (request, response) => {
     await existing.setPassword(password);
     await existing.save();
     await linkOrdersToUser(existing);
+    await clearAdminSession(request, response);
+    clearUserSession(response);
 
     const upgradedToken = setSessionCookie(response, existing);
 
     response.status(201).json({
       success: true,
+      role: "customer",
       token: upgradedToken,
       user: serializeUser(existing),
     });
@@ -192,11 +207,14 @@ export const register = asyncHandler(async (request, response) => {
   await user.setPassword(password);
   await user.save();
   await linkOrdersToUser(user);
+  await clearAdminSession(request, response);
+  clearUserSession(response);
 
   const token = setSessionCookie(response, user);
 
   response.status(201).json({
     success: true,
+    role: "customer",
     token,
     user: serializeUser(user),
   });
@@ -208,33 +226,58 @@ export const login = asyncHandler(async (request, response) => {
     max: 200,
   });
 
-  const user = await User.findOne({ email }).select("+passwordHash");
+  const [user, admin] = await Promise.all([
+    User.findOne({ email }).select("+passwordHash"),
+    Admin.findOne({ email }).select("+passwordHash"),
+  ]);
 
-  if (!user || !user.isActive) {
-    throw ApiError.unauthorized("invalid_credentials");
+  const [validUser, validAdmin] = await Promise.all([
+    user && user.isActive && user.passwordHash
+      ? user.verifyPassword(password)
+      : Promise.resolve(false),
+    admin && admin.isActive && ADMIN_ROLES.includes(admin.role)
+      ? admin.verifyPassword(password)
+      : Promise.resolve(false),
+  ]);
+
+  if (validAdmin) {
+    admin.lastLoginAt = new Date();
+    await admin.save();
+    clearUserSession(response);
+    setAdminSessionCookie(response, admin);
+
+    response.json({
+      success: true,
+      role: admin.role,
+      admin: admin.toJSON(),
+    });
+    return;
   }
 
-  const validPassword = await user.verifyPassword(password);
+  if (validUser) {
+    user.lastLoginAt = new Date();
+    await user.save();
+    await linkOrdersToUser(user);
+    await clearAdminSession(request, response);
+    clearUserSession(response);
 
-  if (!validPassword) {
-    throw ApiError.unauthorized("invalid_credentials");
+    const token = setSessionCookie(response, user);
+
+    response.json({
+      success: true,
+      role: "customer",
+      token,
+      user: serializeUser(user),
+    });
+    return;
   }
 
-  user.lastLoginAt = new Date();
-  await user.save();
-  await linkOrdersToUser(user);
-
-  const token = setSessionCookie(response, user);
-
-  response.json({
-    success: true,
-    token,
-    user: serializeUser(user),
-  });
+  throw ApiError.unauthorized("invalid_credentials");
 });
 
-export const logout = asyncHandler(async (_request, response) => {
-  response.clearCookie(USER_COOKIE_NAME, { path: "/" });
+export const logout = asyncHandler(async (request, response) => {
+  await clearAdminSession(request, response);
+  clearUserSession(response);
 
   response.json({
     success: true,

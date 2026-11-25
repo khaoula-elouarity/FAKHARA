@@ -78,7 +78,11 @@ export function Login() {
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  const from = location.state?.from || "/account";
+  const requestedFrom = location.state?.from;
+  const from =
+    requestedFrom === "/account" || requestedFrom?.startsWith("/account/")
+      ? requestedFrom
+      : "/account";
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -97,7 +101,17 @@ export function Login() {
     setSubmitting(true);
 
     try {
-      await login({ email: form.email.trim(), password: form.password });
+      const payload = await login({
+        email: form.email.trim(),
+        password: form.password,
+      });
+      const role = payload?.role;
+
+      if (role === "admin" || role === "superadmin") {
+        navigate("/admin", { replace: true });
+        return;
+      }
+
       navigate(from, { replace: true });
     } catch (loginError) {
       setError(getAccountError(loginError.code, t));

@@ -1,6 +1,7 @@
+import { createHash, timingSafeEqual } from "crypto";
 import jwt from "jsonwebtoken";
 
-import Admin from "../models/Admin.js";
+import Admin, { ADMIN_ROLES } from "../models/Admin.js";
 import env from "../config/env.js";
 import ApiError from "../utils/ApiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
@@ -16,6 +17,19 @@ export const ADMIN_COOKIE_OPTIONS = {
   maxAge: 7 * 24 * 60 * 60 * 1000,
   path: "/",
 };
+
+export const ADMIN_COOKIE_CLEAR_OPTIONS = {
+  httpOnly: true,
+  sameSite: ADMIN_COOKIE_OPTIONS.sameSite,
+  secure: ADMIN_COOKIE_OPTIONS.secure,
+  path: "/",
+};
+
+export function safeEqual(value, expected) {
+  const left = createHash("sha256").update(String(value)).digest();
+  const right = createHash("sha256").update(String(expected)).digest();
+  return timingSafeEqual(left, right);
+}
 
 function readTokens(request) {
   const tokens = [];
@@ -33,56 +47,83 @@ function readTokens(request) {
   return [...new Set(tokens.filter(Boolean))];
 }
 
-export function signAdminToken(admin) {
-  return jwt.sign(
-    {
-      sub: String(admin._id),
-      role: admin.role,
-      type: "admin",
-    },
-    env.jwtSecret,
-    { expiresIn: env.jwtExpiresIn }
-  );
-}
-
-export const protectAdmin = asyncHandler(async (request, _response, next) => {
+export function readAdminTokenPayload(request) {
   const tokens = readTokens(request);
-
-  if (tokens.length === 0) {
-    throw ApiError.unauthorized("admin_authentication_required");
-  }
-
-  // Accept either the httpOnly cookie (browser) or a Bearer token (API
-  // clients). Trying both means a stale Authorization header left in old
-  // browsers can no longer shadow a perfectly valid session cookie.
-  let payload = null;
 
   for (const token of tokens) {
     try {
       const decoded = jwt.verify(token, env.jwtSecret);
 
-      // A customer token must never be accepted on an administrator route,
-      // even if a customer and an administrator shared an ObjectId.
-      if (decoded?.type === "admin") {
-        payload = decoded;
-        break;
+      if (decoded?.type === "admin" && decoded?.sub) {
+        return { token, payload: decoded };
       }
     } catch {
       // Try the next credential.
     }
   }
 
-  if (!payload) {
-    throw ApiError.unauthorized("invalid_or_expired_token");
+  return null;
+}
+
+export function signAdminToken(admin) {
+  return jwt.sign(
+    {
+      sub: String(admin._id),
+      role: admin.role,
+      type: "admin",
+      ver: Number(admin.tokenVersion || 0),
+    },
+    env.jwtSecret,
+    { expiresIn: env.jwtExpiresIn }
+  );
+}
+
+export function setAdminSessionCookie(response, admin) {
+  response.cookie(
+    ADMIN_COOKIE_NAME,
+    signAdminToken(admin),
+    ADMIN_COOKIE_OPTIONS
+  );
+}
+
+export async function clearAdminSession(request, response) {
+  const session = readAdminTokenPayload(request);
+
+  if (session?.payload?.sub) {
+    await Admin.findByIdAndUpdate(session.payload.sub, {
+      $inc: { tokenVersion: 1 },
+    }).catch(() => null);
   }
 
-  const admin = await Admin.findById(payload.sub);
+  response.clearCookie(ADMIN_COOKIE_NAME, ADMIN_COOKIE_CLEAR_OPTIONS);
+}
 
-  if (!admin || !admin.isActive) {
+export const protectAdmin = asyncHandler(async (request, _response, next) => {
+  const session = readAdminTokenPayload(request);
+
+  if (!session) {
+    throw ApiError.unauthorized("admin_authentication_required");
+  }
+
+  // Accept either the httpOnly cookie (browser) or a Bearer token (API
+  // clients). Trying both means a stale Authorization header left in old
+  // browsers can no longer shadow a perfectly valid session cookie.
+  const admin = await Admin.findById(session.payload.sub);
+
+  if (
+    !admin ||
+    !admin.isActive ||
+    !ADMIN_ROLES.includes(admin.role)
+  ) {
     throw ApiError.unauthorized("admin_account_unavailable");
   }
 
+  if (Number(session.payload.ver || 0) !== Number(admin.tokenVersion || 0)) {
+    throw ApiError.unauthorized("admin_session_revoked");
+  }
+
   request.admin = admin;
+  request.adminToken = session.token;
   next();
 });
 
