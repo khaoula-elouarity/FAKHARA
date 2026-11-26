@@ -256,6 +256,12 @@ function normalizeProduct(
   const name = readLocalized(body?.name, "name", {
     required: requireAll,
   });
+  if (requireAll && !name.ar) {
+    throw ApiError.badRequest("invalid_name_ar", {
+      field: "name.ar",
+      message: "Arabic product name is required.",
+    });
+  }
   const cardTitle = readLocalized(body?.cardTitle, "cardTitle");
   const category = readString(body?.category, "category", {
     required: requireAll,

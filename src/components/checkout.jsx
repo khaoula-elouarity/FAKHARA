@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useLanguage } from "../context/Languagecontext.jsx";
 import { useStore } from "../context/StoreContext.jsx";
 import { useToast } from "../context/ToastContext.jsx";
+import { localizedContent } from "../utils/localizedContent.js";
 import { useCustomerAuth } from "../context/CustomerAuthContext.jsx";
 import deliveryPrices from "../data/delivery";
 import { ApiRequestError, createOrder } from "../services/api.js";
@@ -203,10 +204,11 @@ export default function Checkout() {
         variantKey: item.variantKey || "",
         lineKey: cartLineKey(item),
         displayName: variant
-          ? `${product.name[language] || product.name.en} - ${
-              variant.name?.[language] || variant.name?.en || ""
-            }`
-          : product.name[language] || product.name.en,
+          ? `${localizedContent(product.name, language)} - ${localizedContent(
+              variant.name,
+              language
+            )}`
+          : localizedContent(product.name, language),
         unitPrice:
           variant?.price !== null && variant?.price !== undefined
             ? variant.price
@@ -328,9 +330,9 @@ export default function Checkout() {
                   >
                     <div>
                       <span className="checkout-success-card__name">
-                        {item.name?.[language] || item.name?.en}
-                        {item.variant?.name?.[language]
-                          ? ` - ${item.variant.name[language]}`
+                        {localizedContent(item.name, language)}
+                        {localizedContent(item.variant?.name, language)
+                          ? ` - ${localizedContent(item.variant.name, language)}`
                           : ""}
                       </span>
                       <span className="checkout-success-card__meta">

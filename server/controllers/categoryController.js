@@ -13,6 +13,12 @@ import {
 
 function normalizeCategory(body) {
   const name = readLocalized(body?.name, "name", { required: true });
+  if (!name.ar) {
+    throw ApiError.badRequest("invalid_name_ar", {
+      field: "name.ar",
+      message: "Arabic category name is required.",
+    });
+  }
   const requestedSlug = readString(body?.slug, "slug", {
     required: false,
     max: 120,

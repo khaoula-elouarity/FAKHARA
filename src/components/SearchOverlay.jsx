@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { useLanguage } from "../context/Languagecontext.jsx";
 import { useStore } from "../context/StoreContext.jsx";
 import { searchProducts } from "../services/api.js";
+import { localizedContent } from "../utils/localizedContent.js";
 import "./SearchOverlay.css";
 
 const content = {
@@ -74,34 +75,15 @@ const content = {
 };
 
 function localizedProductName(product, language, fallback) {
-  return (
-    product?.name?.[language] ||
-    product?.name?.en ||
-    product?.name?.fr ||
-    product?.name?.ar ||
-    fallback
-  );
+  return localizedContent(product?.name, language, fallback);
 }
 
 function localizedCategoryName(product, language, fallback) {
-  return (
-    product?.categoryName?.[language] ||
-    product?.categoryName?.en ||
-    product?.categoryName?.fr ||
-    product?.categoryName?.ar ||
-    fallback
-  );
+  return localizedContent(product?.categoryName, language, fallback);
 }
 
 function categoryLabel(category, language) {
-  return (
-    category?.name?.[language] ||
-    category?.name?.en ||
-    category?.name?.fr ||
-    category?.name?.ar ||
-    category?.slug ||
-    ""
-  );
+  return localizedContent(category?.name, language, category?.slug || "");
 }
 
 export default function SearchOverlay({ open, onClose }) {

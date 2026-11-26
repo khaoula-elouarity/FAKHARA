@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useLanguage } from "../context/Languagecontext.jsx";
 import { useStore } from "../context/StoreContext.jsx";
 import { useToast } from "../context/ToastContext.jsx";
+import { localizedContent } from "../utils/localizedContent.js";
 import {
   addProductToCart,
   getFeedback,
@@ -106,7 +107,7 @@ export default function Wishlist() {
                   {product.image ? (
                     <img
                       src={product.image}
-                      alt={product.name[language] || product.name.en}
+                      alt={localizedContent(product.name, language)}
                     />
                   ) : (
                     <span>F</span>
@@ -114,7 +115,7 @@ export default function Wishlist() {
                 </Link>
 
                 <div className="wishlist-card-info">
-                  <h2>{product.name[language] || product.name.en}</h2>
+                  <h2>{localizedContent(product.name, language)}</h2>
 
                   <strong>
                     {product.price} {t.currency}

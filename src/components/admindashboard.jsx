@@ -27,6 +27,7 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { useLanguage } from "../context/Languagecontext.jsx";
+import { localizedContent } from "../utils/localizedContent.js";
 import { useStore } from "../context/StoreContext.jsx";
 import { useToast } from "../context/ToastContext.jsx";
 import {
@@ -607,7 +608,7 @@ const emptyCategory = {
 };
 
 function localized(value, language) {
-  return value?.[language] || value?.en || value?.fr || value?.ar || "";
+  return localizedContent(value, language);
 }
 
 function normalizeGallerySlots(value) {
@@ -1172,16 +1173,14 @@ export default function AdminDashboard() {
     }
   }
 
-  function setProductTextField(field, value) {
+  function setProductTextField(field, code, value) {
     setProductForm((current) =>
       current
         ? {
             ...current,
             [field]: {
               ...current[field],
-              ar: value,
-              fr: value,
-              en: value,
+              [code]: value,
             },
           }
         : current
@@ -2028,16 +2027,22 @@ export default function AdminDashboard() {
                   <span>{t.productInfoHint}</span>
                 </div>
                 <div className="admin-product-fields">
-                  <label>
-                    {t.productName}
-                    <input
-                      value={productForm.name.ar}
-                      onChange={(event) =>
-                        setProductTextField("name", event.target.value)
-                      }
-                      required
-                    />
-                  </label>
+                  {["ar", "fr", "en"].map((code) => (
+                    <label key={`product-name-${code}`}>
+                      {code === "ar"
+                        ? t.nameAr
+                        : code === "fr"
+                          ? t.nameFr
+                          : t.nameEn}
+                      <input
+                        value={productForm.name[code] || ""}
+                        onChange={(event) =>
+                          setProductTextField("name", code, event.target.value)
+                        }
+                        required={code === "ar"}
+                      />
+                    </label>
+                  ))}
                   <label>
                     {t.category}
                     <select
@@ -2110,16 +2115,29 @@ export default function AdminDashboard() {
                       }
                     />
                   </label>
-                  <label className="admin-form-wide">
-                    {t.productDescription}
-                    <textarea
-                      rows="3"
-                      value={productForm.description.ar}
-                      onChange={(event) =>
-                        setProductTextField("description", event.target.value)
-                      }
-                    />
-                  </label>
+                  {["ar", "fr", "en"].map((code) => (
+                    <label
+                      className="admin-form-wide"
+                      key={`product-description-${code}`}
+                    >
+                      {code === "ar"
+                        ? t.descriptionAr
+                        : code === "fr"
+                          ? t.descriptionFr
+                          : t.descriptionEn}
+                      <textarea
+                        rows="3"
+                        value={productForm.description[code] || ""}
+                        onChange={(event) =>
+                          setProductTextField(
+                            "description",
+                            code,
+                            event.target.value
+                          )
+                        }
+                      />
+                    </label>
+                  ))}
                 </div>
               </div>
 
@@ -2316,7 +2334,7 @@ export default function AdminDashboard() {
                         name: { ...current.name, [code]: event.target.value },
                       }))
                     }
-                    required={code === "en"}
+                    required={code === "ar"}
                   />
                 </label>
               ))}

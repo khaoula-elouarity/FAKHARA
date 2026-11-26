@@ -2,6 +2,7 @@ import React from "react";
 import { Link, useParams } from "react-router-dom";
 import { useLanguage } from "../context/Languagecontext.jsx";
 import { useStore } from "../context/StoreContext.jsx";
+import { localizedContent } from "../utils/localizedContent.js";
 import "./collection.css";
 import ProductRating from "./ProductRating.jsx";
 import WishlistButton from "./wishlistbutton.jsx";
@@ -46,6 +47,13 @@ const collectionInfo = {
   },
 };
 
+const collectionBannerClasses = {
+  tagines: "collection-banner--tagines",
+  "plates-bowls": "collection-banner--plates-bowls",
+  cups: "collection-banner--cups",
+  decor: "collection-banner--decor",
+};
+
 function EmptyProductImage() {
   return (
     <div className="collection-product-image">
@@ -53,10 +61,6 @@ function EmptyProductImage() {
       <span className="image-note">PRODUCT IMAGE</span>
     </div>
   );
-}
-
-function localized(value, language) {
-  return value?.[language] || value?.en || value?.fr || value?.ar || "";
 }
 
 export default function Collection() {
@@ -89,11 +93,11 @@ export default function Collection() {
   const fallbackInfo = collectionInfo[category]?.[language] || collectionInfo[category]?.en;
   const content = {
     title:
-      localized(storedCategory.name, language) ||
+      localizedContent(storedCategory.name, language) ||
       fallbackInfo?.title ||
       category,
     subtitle:
-      localized(storedCategory.description, language) ||
+      localizedContent(storedCategory.description, language) ||
       fallbackInfo?.subtitle ||
       "",
   };
@@ -129,9 +133,9 @@ export default function Collection() {
 
   return (
     <main className="collection-page">
-      <section className="collection-banner">
-        <div className="collection-banner-pattern"></div>
-
+      <section
+        className={`collection-banner ${collectionBannerClasses[category] || ""}`}
+      >
         <div className="collection-banner-content">
           <div className="collection-breadcrumb">
             <Link to="/">{t.home}</Link>
@@ -177,7 +181,10 @@ export default function Collection() {
                   <div className="collection-image-wrap">
                     <WishlistButton productId={product.id} />
                     {product.image ? (
-                      <img src={product.image} alt={product.name[language] || product.name.en} />
+                      <img
+                        src={product.image}
+                        alt={localizedContent(product.name, language)}
+                      />
                     ) : (
                       <EmptyProductImage />
                     )}
@@ -187,11 +194,12 @@ export default function Collection() {
                   <div className="collection-product-info">
                     <h3>
                       {product.cardTitle?.[language] ||
-                        product.cardTitle?.en ||
-                        product.name[language] ||
-                        product.name.en}
+                        product.name?.[language] ||
+                        product.name?.ar ||
+                        product.cardTitle?.ar ||
+                        localizedContent(product.name, language)}
                     </h3>
-                    <p>{product.description[language] || product.description.en}</p>
+                    <p>{localizedContent(product.description, language)}</p>
                     <div className="collection-product-rating">
                       <ProductRating
                         productId={product.id}

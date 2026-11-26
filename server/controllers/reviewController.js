@@ -5,7 +5,10 @@ import { createCustomerSession } from "../customerSession.js";
 import ApiError from "../utils/ApiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
-const customerSession = createCustomerSession({ dataDir: env.dataDir });
+const customerSession = createCustomerSession({
+  dataDir: env.dataDir,
+  fallbackSecret: env.jwtSecret,
+});
 const MAX_REVIEW_LENGTH = 1000;
 
 async function ensureProductExists(productId) {

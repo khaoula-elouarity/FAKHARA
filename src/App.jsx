@@ -90,6 +90,8 @@ function AdminRoute() {
 
 export default function App() {
   const { pathname } = useLocation();
+  const isCollectionsRoute =
+    pathname === "/collections" || pathname.startsWith("/collections/");
   const isAdminRoute =
     pathname === "/admin" || pathname.startsWith("/admin/");
 
@@ -99,7 +101,7 @@ export default function App() {
 
       <Header />
 
-      <BackNavigation />
+      {!isCollectionsRoute && <BackNavigation />}
 
       <ScrollToTop />
 

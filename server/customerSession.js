@@ -37,7 +37,7 @@ function localSecretPath(dataDir) {
   return path.join(stateDir, ".rating-secret");
 }
 
-function loadSigningSecret(dataDir) {
+function loadSigningSecret(dataDir, fallbackSecret) {
   for (const name of SIGNING_SECRET_ENV_NAMES) {
     const value = process.env[name];
 
@@ -55,6 +55,15 @@ function loadSigningSecret(dataDir) {
   }
 
   if (isServerlessRuntime()) {
+    // Ratings still need a stable cookie signer when the optional dedicated
+    // rating secret was not configured. Derive a separate key from the
+    // backend's required JWT secret instead of reusing that secret directly.
+    if (fallbackSecret) {
+      return createHmac("sha256", fallbackSecret)
+        .update("fakhara:anonymous-customer-session:v1")
+        .digest("hex");
+    }
+
     throw new Error(
       "FAKHARA_RATING_SECRET or RATING_SECRET must be set in production."
     );
@@ -105,12 +114,12 @@ function isSecureRequest(request) {
   );
 }
 
-export function createCustomerSession({ dataDir }) {
+export function createCustomerSession({ dataDir, fallbackSecret }) {
   let secret = null;
 
   function getSecret() {
     if (secret === null) {
-      secret = loadSigningSecret(dataDir);
+      secret = loadSigningSecret(dataDir, fallbackSecret);
     }
 
     return secret;
@@ -169,7 +178,7 @@ export function createCustomerSession({ dataDir }) {
       `${COOKIE_NAME}=${encodeURIComponent(token)}`,
       "Path=/",
       "HttpOnly",
-      "SameSite=Lax",
+      `SameSite=${isServerlessRuntime() ? "None" : "Lax"}`,
       `Max-Age=${COOKIE_MAX_AGE}`,
     ];
 

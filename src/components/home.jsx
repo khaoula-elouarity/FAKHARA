@@ -8,6 +8,7 @@ import {
   getStoreMapEmbedUrl,
 } from "../utils/storeMap.js";
 import { normalizeFeaturedItems } from "../utils/featuredItems.js";
+import { localizedContent } from "../utils/localizedContent.js";
 import "./home.css";
 
 const categoryVisualPresets = [
@@ -29,10 +30,6 @@ const categoryVisualPresets = [
     imageClassName: "category-card-image-touches",
   },
 ];
-
-function localized(value, language) {
-  return value?.[language] || value?.en || value?.fr || value?.ar || "";
-}
 
 function ImagePlaceholder({
   label,
@@ -72,7 +69,7 @@ export default function Home() {
   const { language, direction } = useLanguage();
   const { categories, products, featuredItems, featuredSection, homepage } =
     useStore();
-  const content = homepage?.[language] || {};
+  const content = { ...(homepage?.ar || {}), ...(homepage?.[language] || {}) };
   const [mapZoom, setMapZoom] = useState(16);
   const tagineImageRef = useRef(null);
   const platesImageRef = useRef(null);
@@ -85,14 +82,14 @@ export default function Home() {
   const featuredSettings = featuredSection || {};
   const featuredVisible = featuredSettings.isVisible !== false;
   const featuredLabelText =
-    localized(featuredSettings.label, language) || content.featuredLabel;
+    localizedContent(featuredSettings.label, language) || content.featuredLabel;
   const featuredTitleText =
-    localized(featuredSettings.title, language) || content.featuredTitle;
+    localizedContent(featuredSettings.title, language) || content.featuredTitle;
   const featuredDescriptionText =
-    localized(featuredSettings.description, language) ||
+    localizedContent(featuredSettings.description, language) ||
     content.featuredDescription;
   const featuredButtonText =
-    localized(featuredSettings.buttonText, language) || content.productButton;
+    localizedContent(featuredSettings.buttonText, language) || content.productButton;
   const featuredCards = normalizeFeaturedItems(featuredItems)
     .map((item, index) => {
       const product = products.find((entry) => entry.id === item.id);
@@ -105,10 +102,10 @@ export default function Home() {
         key: item.id,
         productId: product?.id || item.id,
         name:
-          localized(product?.name, language) ||
-          localized(item.title, language) ||
+          localizedContent(product?.name, language) ||
+          localizedContent(item.title, language) ||
           item.id,
-        description: localized(product?.description, language),
+        description: localizedContent(product?.description, language),
         image: product?.image || item.image,
         price: Number(product?.price) || 0,
         button: featuredButtonText,
@@ -309,8 +306,8 @@ export default function Home() {
 
     return {
       slug: category.id,
-      name: localized(category.name, language) || category.id,
-      description: localized(category.description, language),
+      name: localizedContent(category.name, language) || category.id,
+      description: localizedContent(category.description, language),
       image: category.image || "",
       imageClassName: fallback?.imageClassName,
     };

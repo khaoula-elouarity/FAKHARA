@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useLanguage } from "../context/Languagecontext.jsx";
 import { useStore } from "../context/StoreContext.jsx";
+import { localizedContent } from "../utils/localizedContent.js";
 import { useToast } from "../context/ToastContext.jsx";
 import "./productdetails.css";
 import ProductRating from "./ProductRating.jsx";
@@ -90,11 +91,8 @@ export default function ProductDetails() {
     );
   }
 
-  const productName = product.name[language] || product.name.en;
-  const productDescription =
-    product.description?.[language] ||
-    product.description?.en ||
-    "";
+  const productName = localizedContent(product.name, language);
+  const productDescription = localizedContent(product.description, language);
   const productPageUrl = `${window.location.origin}/product/${encodeURIComponent(
     product.id
   )}`;
@@ -127,10 +125,7 @@ export default function ProductDetails() {
       if (variant.image && !gallerySeen.has(variant.image)) {
         galleryItems.push({
           image: variant.image,
-          name:
-            variant.name?.[language] ||
-            variant.name?.en ||
-            productName,
+          name: localizedContent(variant.name, language) || productName,
         });
         gallerySeen.add(variant.image);
       }
@@ -145,9 +140,7 @@ export default function ProductDetails() {
   const displayedImage =
     selectedVariant?.image || activeGalleryItem?.image || product.image;
   const displayedImageName = selectedVariant
-    ? selectedVariant.name?.[language] ||
-      selectedVariant.name?.en ||
-      productName
+    ? localizedContent(selectedVariant.name, language) || productName
     : activeGalleryItem?.name || productName;
   const displayedPrice =
     selectedVariant?.price !== null &&
@@ -257,9 +250,7 @@ export default function ProductDetails() {
                 <div className="product-variant-options">
                   {variants.map((variant) => {
                     const variantName =
-                      variant.name?.[language] ||
-                      variant.name?.en ||
-                      variant.key;
+                      localizedContent(variant.name, language) || variant.key;
 
                     return (
                       <button

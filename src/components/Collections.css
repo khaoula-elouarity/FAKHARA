@@ -18,7 +18,10 @@
       rgba(189, 152, 93, 0.18),
       transparent 58%
     ),
-    var(--accent);
+    linear-gradient(rgba(13, 53, 48, 0.72), rgba(13, 53, 48, 0.82)),
+    url("/image/collections/collections-hero-bg.jpeg");
+  background-position: center;
+  background-size: auto, auto, cover;
   text-align: center;
 }
 

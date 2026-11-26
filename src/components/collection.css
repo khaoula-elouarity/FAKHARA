@@ -16,14 +16,24 @@
   padding: 65px 20px;
 }
 
-.collection-banner-pattern {
-  position: absolute;
-  inset: 0;
-  opacity: 0.09;
-  background-image:
-    repeating-linear-gradient(45deg, transparent 0 24px, #d9bd8b 25px 26px),
-    repeating-linear-gradient(-45deg, transparent 0 24px, #d9bd8b 25px 26px);
-  mask-image: linear-gradient(to bottom, black, transparent);
+.collection-banner--tagines {
+  background: linear-gradient(rgba(13, 53, 48, 0.7), rgba(13, 53, 48, 0.78)),
+    url("/image/tajine-blur.jpeg") center / cover;
+}
+
+.collection-banner--plates-bowls {
+  background: linear-gradient(rgba(13, 53, 48, 0.7), rgba(13, 53, 48, 0.78)),
+    url("/image/plates-zlaef-blur.jpeg") center / cover;
+}
+
+.collection-banner--cups {
+  background: linear-gradient(rgba(13, 53, 48, 0.7), rgba(13, 53, 48, 0.78)),
+    url("/image/cups-blur.jpeg") center / cover;
+}
+
+.collection-banner--decor {
+  background: linear-gradient(rgba(13, 53, 48, 0.7), rgba(13, 53, 48, 0.78)),
+    url("/image/vases-blur.jpeg") center / cover;
 }
 
 .collection-banner-content {

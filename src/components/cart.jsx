@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useLanguage } from "../context/Languagecontext.jsx";
 import { useStore } from "../context/StoreContext.jsx";
 import { useToast } from "../context/ToastContext.jsx";
+import { localizedContent } from "../utils/localizedContent.js";
 import {
   cartLineKey,
   getFeedback,
@@ -113,10 +114,11 @@ export default function Cart() {
         variantKey: item.variantKey || "",
         displayImage: variant?.image || product.image,
         displayName: variant
-          ? `${product.name[language] || product.name.en} - ${
-              variant.name?.[language] || variant.name?.en || ""
-            }`
-          : product.name[language] || product.name.en,
+          ? `${localizedContent(product.name, language)} - ${localizedContent(
+              variant.name,
+              language
+            )}`
+          : localizedContent(product.name, language),
         unitPrice:
           variant?.price !== null && variant?.price !== undefined
             ? variant.price

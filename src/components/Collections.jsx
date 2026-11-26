@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "../context/Languagecontext.jsx";
 import { useStore } from "../context/StoreContext.jsx";
+import { localizedContent } from "../utils/localizedContent.js";
 import ZellijMosaic from "./ZellijMosaic";
 import "./Collections.css";
 
@@ -147,10 +148,6 @@ const fallbackVisuals = {
   },
 };
 
-function localized(value, language) {
-  return value?.[language] || value?.en || value?.fr || value?.ar || "";
-}
-
 export default function Collections() {
   const { language } = useLanguage();
   const { products, categories, loading } = useStore();
@@ -162,9 +159,9 @@ export default function Collections() {
 
     return {
       category: category.id,
-      title: localized(category.name, language) || fallback.title || category.id,
+      title: localizedContent(category.name, language) || fallback.title || category.id,
       description:
-        localized(category.description, language) ||
+        localizedContent(category.description, language) ||
         fallback.description ||
         "",
       image: category.image || visual.image || "",
@@ -175,14 +172,6 @@ export default function Collections() {
   return (
     <main className="collections-page">
       <section className="collections-hero">
-        <ZellijMosaic
-          tone="emerald"
-          tile={54}
-          opacity={0.14}
-          detail={false}
-          light={false}
-        />
-
         <div className="collections-hero-content">
           <div className="collections-breadcrumb">
             <Link to="/">{t.home}</Link>

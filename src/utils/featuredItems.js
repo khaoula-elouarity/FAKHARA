@@ -1,3 +1,5 @@
+import { localizedContent } from "./localizedContent.js";
+
 export const FEATURED_ITEM_IDS = ["featured-1", "featured-2", "featured-3"];
 
 export const FEATURED_FALLBACK_NAMES = {
@@ -10,7 +12,7 @@ export const DEFAULT_FEATURED_IMAGE =
   "/image/ikhtiyarat/tasmim%20mn%20tin.jpg";
 
 export function localizedText(value, language) {
-  return value?.[language] || value?.en || value?.fr || value?.ar || "";
+  return localizedContent(value, language);
 }
 
 export function normalizeLocalized(value) {

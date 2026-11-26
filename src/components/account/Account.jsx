@@ -8,6 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { useCustomerAuth } from "../../context/CustomerAuthContext.jsx";
 import { useLanguage } from "../../context/Languagecontext.jsx";
+import { localizedContent } from "../../utils/localizedContent.js";
 import { useToast } from "../../context/ToastContext.jsx";
 import {
   createAddress as createAddressRequest,
@@ -197,7 +198,7 @@ function OrderCard({ order, expanded, onToggle, t, language }) {
                 {item.image ? (
                   <img
                     src={item.image}
-                    alt={item.name?.[language] || item.name?.en || ""}
+                    alt={localizedContent(item.name, language)}
                     loading="lazy"
                   />
                 ) : (
@@ -205,13 +206,11 @@ function OrderCard({ order, expanded, onToggle, t, language }) {
                 )}
                 <div>
                   <strong>
-                    {item.name?.[language] || item.name?.en || ""}
+                    {localizedContent(item.name, language)}
                   </strong>
                   {item.variant?.name && (
                     <span>
-                      {item.variant.name?.[language] ||
-                        item.variant.name?.en ||
-                        ""}
+                      {localizedContent(item.variant.name, language)}
                     </span>
                   )}
                   <span>
